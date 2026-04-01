@@ -26,6 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use Iqrf\IdeMacros\MacroFileParser;
 
 /**
@@ -61,7 +62,7 @@ class MacrosController extends BaseIqrfController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['iqrf:macros']);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_macros_read->value]);
 		$response = $response->writeJsonBody($this->macroParser->read());
 		return $this->validators->validateResponse('iqrfIdeMacros', $response);
 	}

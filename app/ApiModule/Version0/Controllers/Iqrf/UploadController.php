@@ -29,6 +29,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Entities\Dpa;
 use App\IqrfNetModule\Enums\DpaInterfaces;
@@ -99,7 +100,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$format = $request->getParsedBody()['format'] ?? null;
@@ -145,7 +146,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
 		$this->validators->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);
@@ -194,7 +195,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
 		$this->validators->validateRequest('uploaderFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);

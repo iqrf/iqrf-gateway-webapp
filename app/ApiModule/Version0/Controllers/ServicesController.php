@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CoreModule\Models\FeatureManager;
+use App\Enums\AccessScope;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -97,6 +98,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'withStatus', type: 'bool', in: 'query', description: 'Include service status')]
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_read->value]);
 		$array = [];
 		foreach ($this->getWhitelistedServices() as $service) {
 			try {
@@ -131,6 +133,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_read->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		/** @var array{active:bool, enabled: bool} $status */
@@ -188,6 +191,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_execute->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		$start = true;
@@ -229,6 +233,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_execute->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		$stop = true;
@@ -264,6 +269,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_execute->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
@@ -294,6 +300,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_execute->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
@@ -324,6 +331,7 @@ class ServicesController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_service_execute->value]);
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {

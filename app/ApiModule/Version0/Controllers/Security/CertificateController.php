@@ -29,6 +29,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseController;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Models\CertificateManager;
 use LogicException;
@@ -70,6 +71,7 @@ class CertificateController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::security_certificates_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->getInfo());
 			return $this->validators->validateResponse('certificate', $response);

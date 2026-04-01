@@ -33,6 +33,7 @@ use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use App\Enums\AccessScope;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use RuntimeException;
@@ -90,7 +91,7 @@ class AwsController extends BaseCloudController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['clouds']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		try {
 			$configuration = $this->getConfiguration($request);
 			$this->manager->createMqttInterface($configuration);

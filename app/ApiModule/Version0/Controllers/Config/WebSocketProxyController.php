@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\Entities\ProxyConfiguration;
 use App\Models\WebSocket\ProxyConfigManager;
+use App\Enums\AccessScope;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -66,7 +67,7 @@ class WebSocketProxyController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:ws-proxy']);
+		$this->validators->checkScopes($request, [AccessScope::config_translator_read->value]);
 		try {
 			$response = $response->writeJsonObject($this->manager->readConfig());
 			return $this->validators->validateResponse('webSocketProxyConfig', $response);
@@ -98,7 +99,7 @@ class WebSocketProxyController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:ws-proxy']);
+		$this->validators->checkScopes($request, [AccessScope::config_translator_write->value]);
 		$this->validators->validateRequest('webSocketProxyConfig', $request);
 		try {
 			$config = ProxyConfiguration::jsonDeserialize($request->getJsonBody());

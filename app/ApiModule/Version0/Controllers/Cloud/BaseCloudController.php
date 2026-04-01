@@ -30,6 +30,7 @@ use App\ApiModule\Version0\Controllers\BaseController;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Models\IManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use App\Enums\AccessScope;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 
@@ -72,7 +73,7 @@ abstract class BaseCloudController extends BaseController {
 	 * @param ApiRequest $request API request to validate
 	 */
 	protected function checkRequest(string $schema, ApiRequest $request): void {
-		$this->validators->checkScopes($request, ['clouds']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->validators->validateRequest($schema, $request);
 	}
 

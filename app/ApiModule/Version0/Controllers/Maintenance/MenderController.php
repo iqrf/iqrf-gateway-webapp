@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CoreModule\Models\FeatureManager;
+use App\Enums\AccessScope;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
@@ -92,7 +93,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:mender']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_mender_execute->value]);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$file = $request->getUploadedFiles()[0];
@@ -129,7 +130,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:mender']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_mender_execute->value]);
 		try {
 			return $response->writeBody($this->manager->commitUpdate());
 		} catch (MenderNoUpdateInProgressException $e) {
@@ -159,7 +160,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:mender']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_mender_execute->value]);
 		try {
 			return $response->writeBody($this->manager->rollbackUpdate());
 		} catch (MenderNoUpdateInProgressException $e) {
@@ -195,7 +196,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:mender']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_mender_execute->value]);
 		if (!$this->featureManager->isEnabled('remount')) {
 			throw new ClientErrorException('Remount feature is not enabled.', ApiResponse::S400_BAD_REQUEST);
 		}

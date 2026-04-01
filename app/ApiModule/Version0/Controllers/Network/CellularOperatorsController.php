@@ -29,6 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\Models\Database\Entities\NetworkOperator;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\NetworkOperatorRepository;
@@ -73,6 +74,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
 		$operators = $this->repository->findAll();
 		$response = $response->writeJsonBody($operators);
 		return $this->validators->validateResponse('networkOperatorList', $response);
@@ -96,6 +98,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);
 		if ($operator === null) {
@@ -133,6 +136,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
 		$this->validators->validateRequest('networkOperator', $request);
 		$json = $request->getJsonBodyCopy(false);
 		$operator = new NetworkOperator($json->name, $json->apn);
@@ -172,6 +176,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);
 		if ($operator === null) {
@@ -202,6 +207,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);
 		if ($operator === null) {

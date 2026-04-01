@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Models\JournalConfigManager;
@@ -68,6 +69,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_journal_read->value]);
 		$this->validators->checkFeatures('journal');
 		try {
 			$response = $response->writeJsonBody($this->configManager->getConfig());
@@ -98,6 +100,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_journal_write->value]);
 		$this->validators->checkFeatures('journal');
 		$this->validators->validateRequest('journal', $request);
 		try {

@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CoreModule\Exceptions\ZipEmptyException;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
 use App\GatewayModule\Models\BackupManager;
@@ -82,7 +83,7 @@ class BackupController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:backup']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute->value]);
 		$this->validators->validateRequest('gatewayBackup', $request);
 		try {
 			$filePath = $this->manager->backup($request->getJsonBodyCopy());
@@ -120,7 +121,7 @@ class BackupController extends BaseMaintenanceController {
 				description: 'Unsupported media type'
 	EOT)]
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['maintenance:backup']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute->value]);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
 		ContentTypeUtil::validContentType($request, $contentTypes);
 		$path = '/tmp/iqrf-gateway-backup-upload.zip';

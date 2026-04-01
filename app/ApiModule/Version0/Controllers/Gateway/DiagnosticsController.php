@@ -28,6 +28,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Models\DiagnosticsManager;
 use Nette\Utils\FileSystem;
 
@@ -64,6 +65,7 @@ class DiagnosticsController extends BaseGatewayController {
 							format: binary
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);
 		$response->writeBody(FileSystem::read($path));

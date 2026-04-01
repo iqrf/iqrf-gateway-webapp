@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\WifiManager;
 
@@ -67,7 +68,7 @@ class WifiController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->list());
 			return $this->validators->validateResponse('networkWifiList', $response);

@@ -29,6 +29,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfRepositoryManager;
+use App\Enums\AccessScope;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 
@@ -66,7 +67,7 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:iqrfRepository']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_read->value]);
 		$response = $response->writeJsonBody($this->manager->readConfig());
 		return $this->validators->validateResponse('iqrfRepositoryConfig', $response);
 	}
@@ -92,7 +93,7 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:iqrfRepository']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_write->value]);
 		$this->validators->validateRequest('iqrfRepositoryConfig', $request);
 		try {
 			$config = $request->getJsonBodyCopy();

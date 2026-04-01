@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Enums\AccessScope;
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Exceptions\InvalidRoleException;
@@ -94,7 +95,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_read->value]);
 		$apiKeys = array_map(
 			static function (ApiKey $apiKey): array {
 				$data = $apiKey->jsonSerialize();
@@ -143,7 +144,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_write->value]);
 		$this->validators->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBodyCopy(false);
 		// Expiration check - required for new keys, can't be verified by schema validator to keep backward compatibility with legacy API keys.
@@ -193,7 +194,7 @@ class ApiKeyController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_read->value]);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -220,7 +221,7 @@ class ApiKeyController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_write->value]);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -256,7 +257,7 @@ class ApiKeyController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_write->value]);
 		$this->validators->validateRequest('apiKeyModify', $request);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
@@ -316,7 +317,7 @@ class ApiKeyController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function revoke(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_apiKeys_write->value]);
 		$this->validators->onlyForUsers($request);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);

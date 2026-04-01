@@ -35,6 +35,7 @@ use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use App\Enums\AccessScope;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -78,7 +79,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		try {
 			$config = $this->mainManager->load();
 			$response = $response->writeJsonBody($config);
@@ -113,7 +114,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->validators->validateRequest('mainConfiguration', $request);
 		try {
 			$this->mainManager->save($request->getJsonBodyCopy());
@@ -142,7 +143,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->validators->validateRequest('daemonComponent', $request);
 		try {
 			$this->componentManager->add($request->getJsonBodyCopy());
@@ -168,7 +169,7 @@ class DaemonController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
@@ -208,7 +209,7 @@ class DaemonController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
@@ -243,7 +244,7 @@ class DaemonController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function getComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		$component = urldecode($request->getParameter('component'));
 		try {
 			$this->manager->setComponent($component);
@@ -296,7 +297,7 @@ class DaemonController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		try {
 			$json = $request->getJsonBodyCopy();
 			$component = urldecode($request->getParameter('component'));
@@ -337,7 +338,7 @@ class DaemonController extends BaseDaemonConfigController {
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function deleteInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$component = urldecode($request->getParameter('component'));
 		$this->manager->setComponent($component);
 		$instance = urldecode($request->getParameter('instance'));
@@ -372,7 +373,7 @@ class DaemonController extends BaseDaemonConfigController {
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		try {
 			$json = $request->getJsonBodyCopy();
 			$component = urldecode($request->getParameter('component'));
@@ -416,7 +417,7 @@ class DaemonController extends BaseDaemonConfigController {
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function getInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		try {
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
@@ -453,7 +454,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->getMessagingInstances());
 			return $this->validators->validateResponse('messagingInstances', $response);
@@ -485,7 +486,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function changeComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->validators->validateRequest('daemonComponentEnabled', $request);
 		try {
 			$reqData = $request->getJsonBodyCopy();

@@ -30,6 +30,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
@@ -94,7 +95,7 @@ class InterfacesController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
 		$typeParam = $request->getQueryParam('type', null);
 		$type = $typeParam === null ? null : InterfaceTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
@@ -118,7 +119,7 @@ class InterfacesController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
 		try {
 			$this->manager->connect($request->getParameter('name'));
 			return $response;
@@ -147,7 +148,7 @@ class InterfacesController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
 		try {
 			$this->manager->disconnect($request->getParameter('name'));
 			return $response;

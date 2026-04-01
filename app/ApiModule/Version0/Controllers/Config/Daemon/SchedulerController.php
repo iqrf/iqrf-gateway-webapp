@@ -38,6 +38,7 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\ZipEmptyException;
+use App\Enums\AccessScope;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -79,7 +80,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		$response = $response->writeJsonBody($this->manager->list());
 		return $this->validators->validateResponse('taskList', $response);
 	}
@@ -109,7 +110,7 @@ class SchedulerController extends BaseDaemonConfigController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->validators->validateRequest('task', $request);
 		$task = $request->getJsonBodyCopy(false);
 		$taskId = $task->taskId;
@@ -138,7 +139,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$this->manager->deleteAll();
 		return $response;
 	}
@@ -161,7 +162,7 @@ class SchedulerController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		$taskId = $request->getParameter('taskId');
 		try {
 			$task = (array) $this->manager->load($taskId);
@@ -186,7 +187,7 @@ class SchedulerController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$taskId = $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
@@ -218,7 +219,7 @@ class SchedulerController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		$taskId = $request->getParameter('taskId');
 		try {
 			$fileName = $this->manager->getFileName($taskId);
@@ -259,7 +260,7 @@ class SchedulerController extends BaseDaemonConfigController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		try {
 			$path = $this->migrationManager->createArchive();
 			$fileName = basename($path);
@@ -295,7 +296,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/InvalidContentType'
 	EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
 		try {
 			match (ContentTypeUtil::getContentType($request)) {
 				'application/zip', 'application/x-zip-compressed' => $this->importZip($request),

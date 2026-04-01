@@ -34,6 +34,7 @@ use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Models\JwtAuthenticator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
+use App\Enums\AccessScope;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\ResourceNotFoundException;
@@ -91,7 +92,7 @@ class AccountController extends BaseController {
 				$ref: '#/components/responses/ForbiddenApiKey'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_read->value]);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$response = $response->writeJsonObject($user);
 		return $this->validators->validateResponse('userDetail', $response);
@@ -122,7 +123,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_write->value]);
 		$this->validators->validateRequest('accountEdit', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$sendVerification = false;
@@ -186,7 +187,7 @@ class AccountController extends BaseController {
 				description: Forbidden
 	EOT)]
 	public function getPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_read->value]);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if ($user->preferences === null) {
 			$user->preferences = new UserPreferences($user);
@@ -214,7 +215,7 @@ class AccountController extends BaseController {
 				description: Forbidden
 	EOT)]
 	public function editPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_write->value]);
 		$this->validators->validateRequest('userPreferences', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$json = $request->getJsonBodyCopy();
@@ -256,7 +257,7 @@ class AccountController extends BaseController {
 				$ref: '#/components/responses/ForbiddenApiKey'
 	EOT)]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_write->value]);
 		$this->validators->validateRequest('passwordChange', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$body = $request->getJsonBodyCopy();
@@ -535,7 +536,7 @@ class AccountController extends BaseController {
 				$ref: '#/components/responses/MailerError'
 	EOT)]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->onlyForUsers($request);
+		$this->validators->checkScopes($request, [AccessScope::account_write->value]);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if ($user->getState()->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);

@@ -29,6 +29,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfConfigManager;
+use App\Enums\AccessScope;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -68,7 +69,7 @@ class BridgeController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:bridge']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_read->value]);
 		try {
 			$config = $this->configManager->getConfig();
 			$response = $response->writeJsonBody($config);
@@ -101,7 +102,7 @@ class BridgeController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:bridge']);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_write->value]);
 		$this->validators->validateRequest('bridgeConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBodyCopy());

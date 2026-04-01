@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\Config\JournalController as JournalConfigController;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
 use App\GatewayModule\Models\JournalReaderManager;
@@ -167,6 +168,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);
 		try {

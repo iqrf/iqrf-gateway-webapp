@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
 use App\GatewayModule\Models\PasswordManager;
 
@@ -71,6 +72,7 @@ class ShellUserController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::security_shellUser_write->value]);
 		$this->validators->checkFeatures(['gatewayPass']);
 		$this->validators->validateRequest('gatewayPassword', $request);
 		try {

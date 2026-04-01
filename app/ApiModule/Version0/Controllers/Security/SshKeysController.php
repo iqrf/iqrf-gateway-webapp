@@ -30,6 +30,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
 use App\GatewayModule\Exceptions\SshKeyExistsException;
@@ -74,7 +75,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['sshKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->listKeyTypes());
 			return $this->validators->validateResponse('sshKeyTypes', $response);
@@ -100,6 +101,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_read->value]);
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$response = $response->writeJsonBody($this->manager->listKeys());
 		return $this->validators->validateResponse('sshKeyList', $response);
@@ -125,7 +127,7 @@ class SshKeysController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['sshKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_read->value]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$response = $response->writeJsonObject($this->manager->getKey($id));
@@ -172,7 +174,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['sshKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_write->value]);
 		$this->validators->validateRequest('sshKeysAdd', $request);
 		try {
 			$failed = $this->manager->addKeys($request->getJsonBodyCopy());
@@ -202,7 +204,7 @@ class SshKeysController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['sshKeys']);
+		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_write->value]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->deleteKey($id);

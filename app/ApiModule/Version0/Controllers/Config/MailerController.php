@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Entities\MailerConfiguration;
+use App\Enums\AccessScope;
 use App\Exceptions\InvalidSmtpConfigException;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\Senders\MailerConfigurationTestMailSender;
@@ -75,7 +76,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['mailer']);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_read->value]);
 		try {
 			$config = $this->manager->read();
 			$response = $response->writeJsonObject($config);
@@ -108,7 +109,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['mailer']);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_write->value]);
 		$this->validators->validateRequest('mailer', $request);
 		try {
 			$configuration = MailerConfiguration::jsonDeserialize($request->getJsonBody());
@@ -149,7 +150,7 @@ class MailerController extends BaseConfigController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['mailer']);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_write->value]);
 		$this->validators->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {

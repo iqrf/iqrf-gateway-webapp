@@ -31,6 +31,7 @@ use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\ConfigModule\Models\AptManager;
+use App\Enums\AccessScope;
 use Nette\IOException;
 
 /**
@@ -69,6 +70,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->read());
 			return $this->validators->validateResponse('aptConfiguration', $response);
@@ -98,6 +100,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_write->value]);
 		$this->validators->validateRequest('aptConfiguration', $request);
 		try {
 			$this->manager->write($request->getJsonBodyCopy());

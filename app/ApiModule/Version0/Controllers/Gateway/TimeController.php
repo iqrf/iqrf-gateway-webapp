@@ -29,6 +29,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
@@ -69,6 +70,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_time_read->value]);
 		try {
 			$time = $this->manager->getTime();
 			$response = $response->writeJsonBody($time);
@@ -93,6 +95,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_time_write->value]);
 		$this->validators->validateRequest('timeSet', $request);
 		try {
 			$time = $request->getJsonBodyCopy();
@@ -118,6 +121,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_time_read->value]);
 		$timezones = $this->manager->availableTimezones();
 		$response = $response->writeJsonBody($timezones);
 		return $this->validators->validateResponse('timezoneList', $response);

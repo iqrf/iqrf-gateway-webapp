@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\NetworkModule\Exceptions\ModemManagerException;
 use App\NetworkModule\Models\CellularManager;
 
@@ -67,7 +68,7 @@ class CellularModemsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->manager->listModems());
 			return $this->validators->validateResponse('modemList', $response);
@@ -89,7 +90,7 @@ class CellularModemsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
 		try {
 			$this->manager->scanModems();
 			return $response;

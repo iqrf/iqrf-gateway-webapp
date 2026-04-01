@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
+use App\Enums\AccessScope;
 use Nette\IOException;
 
 /**
@@ -70,6 +71,7 @@ class FeatureController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_features_read->value]);
 		$config = $this->manager->read();
 		$response = $response->writeJsonBody($config);
 		return $this->validators->validateResponse('featureList', $response);
@@ -95,6 +97,7 @@ class FeatureController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_features_read->value]);
 		$name = urldecode($request->getParameter('feature'));
 		try {
 			$response = $response->writeJsonBody($this->manager->get($name));
@@ -128,6 +131,7 @@ class FeatureController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_features_write->value]);
 		$name = urldecode($request->getParameter('feature'));
 		if (!$this->manager->existsDefault($name)) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);

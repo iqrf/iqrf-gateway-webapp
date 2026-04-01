@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
+use App\Enums\AccessScope;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserStateException;
@@ -94,7 +95,7 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_read->value]);
 		$response = $response->writeJsonBody($this->manager->list([]));
 		return $this->validators->validateResponse('userList', $response);
 	}
@@ -130,7 +131,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
-			$this->validators->checkScopes($request, ['users:admin']);
+			$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		}
 		$this->validators->validateRequest('userCreate', $request);
 		$json = $request->getJsonBodyCopy();
@@ -203,7 +204,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_read->value]);
 		$user = $this->getUser($request);
 		$response = $response->writeJsonObject($user);
 		return $this->validators->validateResponse('userDetail', $response);
@@ -223,7 +224,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		$user = $this->getUser($request);
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
@@ -258,7 +259,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		$user = $this->getUser($request);
 		$this->validators->validateRequest('userEdit', $request);
 		$json = $request->getJsonBodyCopy();
@@ -392,7 +393,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		$user = $this->getUser($request);
 		if ($user->getEmail() === null) {
 			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);

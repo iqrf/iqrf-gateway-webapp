@@ -29,6 +29,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\TuptimeErrorException;
 use App\GatewayModule\Exceptions\TuptimeNotFoundException;
 use App\GatewayModule\Models\PowerManager;
@@ -70,7 +71,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['gateway:power']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute->value]);
 		$response = $response->writeJsonBody($this->powerManager->powerOff());
 		return $this->validators->validateResponse('powerControl', $response);
 	}
@@ -90,7 +91,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['gateway:power']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute->value]);
 		$response = $response->writeJsonBody($this->powerManager->reboot());
 		return $this->validators->validateResponse('powerControl', $response);
 	}
@@ -118,7 +119,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['gateway:power']);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_read->value]);
 		try {
 			$response = $response->writeJsonBody($this->tuptimeManager->list());
 			return $this->validators->validateResponse('tuptimeStats', $response);

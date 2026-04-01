@@ -27,6 +27,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfManager;
+use App\Enums\AccessScope;
 
 /**
  * IQRF physical interface controller
@@ -61,6 +62,7 @@ class InterfacesController extends BaseIqrfController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
 		$interfaces = [
 			'cdc' => $this->manager->getCdcInterfaces(),
 			'spi' => $this->manager->getSpiInterfaces(),

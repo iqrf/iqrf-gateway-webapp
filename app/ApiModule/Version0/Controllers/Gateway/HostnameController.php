@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\GatewayModule\Exceptions\HostnameException;
 use App\GatewayModule\Models\HostnameManager;
 
@@ -71,6 +72,7 @@ class HostnameController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::gateway_information_write->value])
 		$this->validators->validateRequest('hostname', $request);
 		try {
 			$config = $request->getJsonBodyCopy();
