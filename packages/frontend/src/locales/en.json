@@ -602,7 +602,8 @@
 					},
 					"websocket": {
 						"api": "Daemon API",
-						"monitor": "Monitor"
+						"monitor": "Monitor",
+						"token": "Daemon API access token"
 					}
 				},
 				"messages": {
