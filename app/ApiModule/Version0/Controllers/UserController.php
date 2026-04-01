@@ -29,22 +29,18 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\JwtConfigurator;
+use App\ApiModule\Version0\Models\JwtAuthenticator;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
-use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
-use DateTimeImmutable;
-use Lcobucci\JWT\Configuration;
 use Nette\Mail\SendException;
-use Throwable;
 
 /**
  * User manager API controller
@@ -54,28 +50,20 @@ use Throwable;
 class UserController extends BaseController {
 
 	/**
-	 * @var Configuration JWT configuration
-	 */
-	private readonly Configuration $configuration;
-
-	/**
 	 * Constructor
-	 * @param JwtConfigurator $configurator JWT configurator
+	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
-	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
 	public function __construct(
-		JwtConfigurator $configurator,
+		private readonly JwtAuthenticator $jwtAuthenticator,
 		private readonly EntityManager $entityManager,
-		private readonly GatewayInfoUtil $gatewayInfo,
 		private readonly UserManager $manager,
 		RestApiSchemaValidator $validator,
 		private readonly PasswordRecoveryMailSender $passwordRecoverySender
 	) {
-		$this->configuration = $configurator->create();
 		parent::__construct($validator);
 	}
 
@@ -326,7 +314,7 @@ class UserController extends BaseController {
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		try {
 			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
 		} catch (SendException) {
@@ -388,7 +376,7 @@ class UserController extends BaseController {
 			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		return $response->writeJsonBody($json);
 	}
 
@@ -427,7 +415,7 @@ class UserController extends BaseController {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		return $response->writeJsonBody($json);
 	}
 
@@ -466,34 +454,8 @@ class UserController extends BaseController {
 		}
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		return $response->writeJsonBody($json);
-	}
-
-	/**
-	 * Creates a new JWT token
-	 * @param User $user User
-	 * @return string JWT token
-	 */
-	private function createToken(User $user): string {
-		try {
-			$now = new DateTimeImmutable();
-			$us = $now->format('u');
-			$now = $now->modify('-' . $us . ' usec');
-		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		$gwId = $this->gatewayInfo->getIdNullable();
-		$builder = $this->configuration->builder()
-			->issuedAt($now)
-			->expiresAt($now->modify('+90 min'))
-			->withClaim('uid', $user->getId());
-		if ($gwId !== null) {
-			$builder->issuedBy($gwId)->identifiedBy($gwId);
-		}
-		$signer = $this->configuration->signer();
-		$signingKey = $this->configuration->signingKey();
-		return $builder->getToken($signer, $signingKey)->toString();
 	}
 
 }
