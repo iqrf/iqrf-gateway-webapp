@@ -39,6 +39,8 @@ interface ImportMetaEnv {
 	VITE_URL_IQRF_SYNC: string;
 	/// REST API URL
 	VITE_URL_REST_API: string;
+	/// WebSocket proxy server URL
+	VITE_URL_WEBSOCKET_PROXY: string;
 }
 
 interface ImportMeta {

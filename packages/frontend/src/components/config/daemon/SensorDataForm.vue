@@ -106,6 +106,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -190,9 +191,17 @@ async function getConfig(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.getConfig(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.getConfig(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 function handleGetConfigResponse(rsp: DaemonApiResponse): void {
@@ -221,9 +230,17 @@ async function onSubmit(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.setConfig(config.value, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.setConfig(config.value, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleSetConfigResponse(rsp: DaemonApiResponse): void {

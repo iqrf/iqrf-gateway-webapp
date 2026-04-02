@@ -20,9 +20,12 @@ import '@iqrf/iqrf-vue-ui/style';
 
 import App from '@/App.vue';
 import { registerPlugins } from '@/plugins';
+import { useMonitorStore } from '@/store/monitorSocket';
 
 const app: VueApp<Element> = createApp(App);
 registerPlugins(app);
+const monitorStore = useMonitorStore();
+monitorStore.initSocket();
 
 app.mount('#app');
 

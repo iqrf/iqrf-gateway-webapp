@@ -91,7 +91,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns IQRF Gateway Daemon WebSocket API URL
-	 * @return {string} IQRF Gateway DaemonWebSocket API URL
+	 * @return {string} IQRF Gateway Daemon WebSocket API URL
 	 */
 	public getDaemonApiUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_API.length > 0) {
@@ -129,6 +129,17 @@ export default class UrlBuilder {
 	 */
 	public getRestApiUrlFromHostname(hostname: string): string {
 		return `//${hostname}${this.isDev ? ':8080' : this.port}${import.meta.env.VITE_BASE_URL}api/v0/`;
+	}
+
+	/**
+	 * Returns WebSocket proxy server URL
+	 * @return {string} WebSocket proxy server URL
+	 */
+	public getWebSocketProxyUrl(): string {
+		if (import.meta.env.VITE_URL_WEBSOCKET_PROXY.length > 0) {
+			return import.meta.env.VITE_URL_WEBSOCKET_PROXY;
+		}
+		return this.wsProtocol + this.hostname + (this.isDev ? ':9000': `${this.port}/wsProxy`);
 	}
 
 }

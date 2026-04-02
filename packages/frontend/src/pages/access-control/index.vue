@@ -63,6 +63,12 @@ const links: Ref<DisambiguationLink[]> = ref([
 		roles: [UserRole.Admin],
 	},
 	{
+		title: i18n.t('pages.accessControl.daemonAccessTokens.title'),
+		description: i18n.t('pages.accessControl.daemonAccessTokens.description'),
+		to: '/access-control/daemon-access-tokens',
+		roles: [UserRole.Admin],
+	},
+	{
 		title: i18n.t('pages.accessControl.mosquittoUsers.title'),
 		description: i18n.t('pages.accessControl.mosquittoUsers.description'),
 		to: '/access-control/mosquitto-users',

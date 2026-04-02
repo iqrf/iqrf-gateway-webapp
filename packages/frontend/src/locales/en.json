@@ -12,6 +12,8 @@
 			"refresh": "Refresh",
 			"reload": "Reload",
 			"restore": "Restore",
+			"revoke": "Revoke",
+			"rotate": "Rotate",
 			"save": "Save",
 			"selectAll": "Select all",
 			"send": "Send",
@@ -31,7 +33,9 @@
 			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",
+			"createdAt": "Created at",
 			"description": "Description",
+			"expiration": "Expiration",
 			"format": "Format",
 			"general": "General",
 			"hostname": "Hostname",
@@ -61,16 +65,20 @@
 				"trace": "Trace",
 				"warning": "Warning"
 			},
+			"status": "Status",
 			"username": "Username",
 			"value": "Value"
 		},
 		"messages": {
 			"fetchFailed": "An error has occurred while fetching data.",
+			"noDaemonMessage": "Cannot send message, no message passed.",
 			"noDevice": "No device bonded to address {address}.",
 			"noDevices": "No devices exist in network.",
 			"noNodes": "No node devices exist in network.",
 			"offlineCoordinator": "Coordinator device may be offline.",
-			"offlineDevice": "Device at address {address} may be offline."
+			"offlineDevice": "Device at address {address} may be offline.",
+			"proxyUnavailable": "Daemon API server not available, cannot send message: {mType}",
+			"serviceModeActive": "Daemon is in service mode, cannot send message: {mType}"
 		},
 		"states": {
 			"active": "Active",
@@ -148,6 +156,71 @@
 				"validations": {
 					"description": {
 						"required": "Please enter API key description."
+					}
+				}
+			},
+			"daemonAccessTokens": {
+				"absoluteExpiration": "Absolute expiration",
+				"actions": {
+					"add": "Add Daemon API access token",
+					"reload": "Reload Daemon API access tokens",
+					"revoke": "Revoke Daemon API access token",
+					"rotate": "Rotate Daemon API access token"
+				},
+				"count": "Unit count",
+				"display": {
+					"copyFailed": "Failed to copy Daemon API access token to clipboard.",
+					"copySuccess": "Daemon API access token has been copied to clipboard.",
+					"prompt": "Before closing this dialog, copy and store the new Daemon API access token below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"title": "Generated Daemon API access token"
+				},
+				"messages": {
+					"create": {
+						"failed": "Failed to create a new Daemon API access token.",
+						"success": "A new Daemon API access token has been sucessfully created."
+					},
+					"list": {
+						"failed": "Failed to retrieve Daemon API access token list."
+					},
+					"revoke": {
+						"failed": "Failed to revoke Daemon API access token ID {id}.",
+						"success": "Daemon API access token ID {id} has been successfully revoked."
+					},
+					"rotate": {
+						"failed": "Failed to rotate Daemon API access token ID {id}.",
+						"success": "Daemon API access token ID {id} has been successfully rotated."
+					}
+				},
+				"noData": {
+					"empty": "No Daemon API access token records found.",
+					"fetchError": "Daemon API access tokens could not be retrieved."
+				},
+				"owner": "Token owner",
+				"relativeExpiration": "Relative expiration",
+				"revoke": {
+					"prompt": "Are you sure you want to revoke Daemon API access token ID {id}?",
+					"title": "Daemon API access token revoke confirmation"
+				},
+				"rotate": {
+					"prompt": "Are you sure you want to rotate Daemon API access token ID {id}? The current token shall be revoked an a new token will take its place.",
+					"title": "Daemon API access token rotate confirmation"
+				},
+				"service": "Service mode permissions",
+				"states": {
+					"expired": "EXPIRED",
+					"revoked": "REVOKED",
+					"valid": "VALID"
+				},
+				"unit": "Time unit",
+				"units": {
+					"day": "Day(s)",
+					"month": "Month(s)",
+					"week": "Week(s)",
+					"year": "Year(s)"
+				},
+				"validations": {
+					"owner": {
+						"required": "Please enter token owner."
 					}
 				}
 			},
@@ -529,7 +602,8 @@
 					},
 					"websocket": {
 						"api": "Daemon API",
-						"monitor": "Monitor"
+						"monitor": "Monitor",
+						"token": "Daemon API access token"
 					}
 				},
 				"messages": {
@@ -1765,6 +1839,30 @@
 						"required": "Please enter package update interval."
 					}
 				}
+			},
+			"ws-proxy": {
+				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve WebSocket proxy server configuration."
+					},
+					"save": {
+						"failed": "Failed to save WebSocket proxy server configuration.",
+						"success": "WebSocket proxy server configuration successfully saved."
+					}
+				},
+				"proxy": "Proxy server host",
+				"token": "Access token",
+				"upstream": "Upstream server address",
+				"validation": {
+					"proxy": {
+						"hostname": "Proxy server host should be IPv4, IPv6, localhost or fully-qualified domain name.",
+						"required": "Please enter proxy server address."
+					},
+					"upstream": {
+						"required": "Please enter upstream server address.",
+						"url": "Upstream server address is not valid."
+					}
+				}
 			}
 		},
 		"dev": {
@@ -1924,6 +2022,9 @@
 							"timeout": "Current mode change request timed out."
 						}
 					},
+					"noData": {
+						"fetchError": "Current gateway mode could not be retrieved."
+					},
 					"title": "Current mode"
 				},
 				"modes": {
@@ -1942,6 +2043,9 @@
 							"failed": "Failed to change startup mode.",
 							"success": "Startup mode successfully changed to {mode}."
 						}
+					},
+					"noData": {
+						"fetchError": "Startup gateway mode could not be retrieved."
 					},
 					"title": "Startup mode"
 				}
@@ -2056,6 +2160,10 @@
 					},
 					"iqrf-gateway-uploader": {
 						"name": "IQRF Gateway Uploader"
+					},
+					"iqrf-gateway-webapp-proxy": {
+						"description": "Proxy server for communication with Daemon API WebSocket server.",
+						"name": "WebSocket Proxy Server"
 					},
 					"mender-client": {
 						"description": "Mender is an over-the-air update manager for IoT and embedded devices.",
@@ -3838,6 +3946,22 @@
 			}
 		},
 		"layout": {
+			"overlay": {
+				"proxyServer": {
+					"table": {
+						"serverConnected": "Connected to proxy server",
+						"upstreamConnected": "Connected to Daemon API",
+						"upstreamReconnectDelay": "Next reconnect attempt"
+					},
+					"text": "Connection to proxy server or Daemon API not available. Features requiring IQRF network may not be available. Please try again later or contact your network administrator.",
+					"title": "Daemon API unavailable"
+				},
+				"serviceMode": {
+					"button": "Go to mode change",
+					"text": "This feature is currently unavailable as IQRF Gateway Daemon is in service mode. To use this feature, change the current mode to operational or forwarding.",
+					"title": "Service mode active"
+				}
+			},
 			"themeSwitch": {
 				"title": "Switch theme"
 			}
@@ -3923,6 +4047,32 @@
 			}
 		},
 		"status": {
+			"daemonApi": {
+				"messages": {
+					"proxyAuthFailed": "Failed to authenticate connection to proxy server.",
+					"proxySessionRefreshNoSessionId": "Cannot refresh session, session ID missing.",
+					"proxySessionRefreshNoSocket": "Cannot refresh proxy session, socket does not exist.",
+					"upstreamAuthFailed": "Failed to authenticate upstream session.",
+					"upstreamDisconnected": "Connection to upstream server lost."
+				},
+				"proxy": {
+					"status": "Proxy server status",
+					"values": {
+						"connected": "Connected",
+						"reconnecting": "Reconnecting"
+					}
+				},
+				"upstream": {
+					"nextAttempt": "Next attempt",
+					"status": "Daemon API status",
+					"values": {
+						"disconnected": "Disconnected",
+						"ready": "Ready",
+						"reconnecting": "Reconnecting",
+						"unknown": "Unknown"
+					}
+				}
+			},
 			"monitor": {
 				"data-collecting": {
 					"notRunning": "Data collecting not running.",
@@ -3962,6 +4112,10 @@
 			"apiKeys": {
 				"description": "Manage API keys.",
 				"title": "API keys"
+			},
+			"daemonAccessTokens": {
+				"description": "Manage Daemon API access tokens.",
+				"title": "Daemon access tokens"
 			},
 			"description": "Manage access via users, API or SSH keys.",
 			"mosquittoUsers": {
@@ -4100,6 +4254,10 @@
 			"unattendedUpgrades": {
 				"description": "Configure automatic unattended upgrades service.",
 				"title": "Automatic upgrades"
+			},
+			"ws-proxy": {
+				"description": "Configure WebSocket proxy server for communication with Daemon API.",
+				"title": "WebSocket proxy"
 			}
 		},
 		"dev": {

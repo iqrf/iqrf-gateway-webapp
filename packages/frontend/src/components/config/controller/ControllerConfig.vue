@@ -44,7 +44,7 @@ limitations under the License.
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='text, heading, text, heading@2, text, heading@2, text, heading@3'
+				type='text, heading@3, text, heading@2, text, heading@2, text, heading@3'
 			>
 				<v-responsive>
 					<span v-if='configuration !== null'>
@@ -52,81 +52,62 @@ limitations under the License.
 							<legend class='section-legend'>
 								{{ $t('components.config.controller.form.sections.websocket') }}
 							</legend>
-							<v-row :no-gutters='display.mobile.value'>
-								<v-col
-									cols='12'
-									md='6'
-								>
-									<ITextInput
-										v-model='configuration.wsServers.api'
-										:label='$t("components.config.controller.form.websocket.api")'
-										:rules='[
-											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.api.required")),
-											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.api.invalid"), /^wss?$/),
-										]'
-										:prepend-inner-icon='mdiLinkVariant'
-										required
-									>
-										<template #append-inner>
-											<WebsocketUrlForm
-												:card-title='$t("components.config.controller.form.websocket.api")'
-												:url='configuration.wsServers.api'
-												@edited='(val: string) => configuration!.wsServers.api = val'
-											/>
-										</template>
-									</ITextInput>
-								</v-col>
-								<v-col
-									cols='12'
-									md='6'
-								>
-									<ITextInput
-										v-model='configuration.wsServers.monitor'
-										:label='$t("components.config.controller.form.websocket.monitor")'
-										:rules='[
-											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.monitor.required")),
-											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.monitor.invalid"), /^wss?$/),
-										]'
-										:prepend-inner-icon='mdiLinkVariant'
-										required
-									>
-										<template #append-inner>
-											<WebsocketUrlForm
-												:card-title='$t("components.config.controller.form.websocket.monitor")'
-												:url='configuration.wsServers.monitor'
-												@edited='(val: string) => configuration!.wsServers.monitor = val'
-											/>
-										</template>
-									</ITextInput>
-								</v-col>
-							</v-row>
+							<ITextInput
+								v-model='configuration.wsServers.api'
+								:label='$t("components.config.controller.form.websocket.api")'
+								:rules='[
+									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.api.required")),
+									(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.api.invalid"), /^wss?$/),
+								]'
+								:prepend-inner-icon='mdiLinkVariant'
+								required
+							>
+								<template #append-inner>
+									<WebsocketUrlForm
+										:card-title='$t("components.config.controller.form.websocket.api")'
+										:url='configuration.wsServers.api'
+										@edited='(val: string) => configuration!.wsServers.api = val'
+									/>
+								</template>
+							</ITextInput>
+							<IPasswordInput
+								v-model='configuration.wsServers.token'
+								:label='$t("components.config.controller.form.websocket.token")'
+								:prepend-inner-icon='mdiKey'
+							/>
+							<ITextInput
+								v-model='configuration.wsServers.monitor'
+								:label='$t("components.config.controller.form.websocket.monitor")'
+								:rules='[
+									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.monitor.required")),
+									(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.monitor.invalid"), /^wss?$/),
+								]'
+								:prepend-inner-icon='mdiLinkVariant'
+								required
+							>
+								<template #append-inner>
+									<WebsocketUrlForm
+										:card-title='$t("components.config.controller.form.websocket.monitor")'
+										:url='configuration.wsServers.monitor'
+										@edited='(val: string) => configuration!.wsServers.monitor = val'
+									/>
+								</template>
+							</ITextInput>
 							<legend class='section-legend'>
 								{{ $t('components.config.controller.form.sections.logging') }}
 							</legend>
-							<v-row :no-gutters='display.mobile.value'>
-								<v-col
-									cols='12'
-									md='6'
-								>
-									<ITextInput
-										v-model='configuration.logger.filePath'
-										:label='$t("components.config.controller.form.logging.path")'
-										:prepend-inner-icon='mdiFileDocument'
-										:rules='[
-											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath.required")),
-										]'
-										required
-									/>
-								</v-col>
-								<v-col
-									cols='12'
-									md='6'
-								>
-									<ControllerLoggingSeverityInput
-										v-model='configuration.logger.severity'
-									/>
-								</v-col>
-							</v-row>
+							<ITextInput
+								v-model='configuration.logger.filePath'
+								:label='$t("components.config.controller.form.logging.path")'
+								:prepend-inner-icon='mdiFileDocument'
+								:rules='[
+									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath.required")),
+								]'
+								required
+							/>
+							<ControllerLoggingSeverityInput
+								v-model='configuration.logger.severity'
+							/>
 							<v-table
 								density='compact'
 								class='mb-4'
@@ -250,97 +231,68 @@ limitations under the License.
 							<legend class='section-legend'>
 								{{ $t('components.config.controller.form.sections.pins') }}
 							</legend>
-							<v-row :no-gutters='display.mobile.value'>
-								<v-col
-									cols='12'
-									md='4'
-								>
-									<INumberInput
-										v-model='configuration.resetButton.button'
-										:label='$t("components.config.controller.form.pins.buttonPin")'
-										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
-										]'
-										:prepend-inner-icon='mdiRadioboxBlank'
-										required
-									/>
-								</v-col>
-								<v-col
-									cols='12'
-									md='4'
-								>
-									<INumberInput
-										v-model='configuration.statusLed.greenLed'
-										:label='$t("components.config.controller.form.pins.greenLedPin")'
-										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
-										]'
-										:prepend-inner-icon='mdiLedVariantOutline'
-										required
-									/>
-								</v-col>
-								<v-col
-									cols='12'
-									md='4'
-								>
-									<INumberInput
-										v-model='configuration.statusLed.redLed'
-										:label='$t("components.config.controller.form.pins.redLedPin")'
-										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
-										]'
-										:prepend-inner-icon='mdiLedVariantOn'
-										required
-									/>
-								</v-col>
-							</v-row>
+							<INumberInput
+								v-model='configuration.resetButton.button'
+								:label='$t("components.config.controller.form.pins.buttonPin")'
+								:rules='[
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
+								]'
+								:prepend-inner-icon='mdiRadioboxBlank'
+								required
+							/>
+							<INumberInput
+								v-model='configuration.statusLed.greenLed'
+								:label='$t("components.config.controller.form.pins.greenLedPin")'
+								:rules='[
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
+								]'
+								:prepend-inner-icon='mdiLedVariantOutline'
+								required
+							/>
+							<INumberInput
+								v-model='configuration.statusLed.redLed'
+								:label='$t("components.config.controller.form.pins.redLedPin")'
+								:rules='[
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
+								]'
+								:prepend-inner-icon='mdiLedVariantOn'
+								required
+							/>
 							<v-checkbox
 								v-model='watchdogPins'
 								:label='$t("components.config.controller.form.pins.useWatchdogPins")'
 								hide-details
 								density='compact'
 							/>
-							<v-row :no-gutters='display.mobile.value'>
-								<v-col
-									cols='12'
-									md='4'
-								>
-									<INumberInput
-										v-model='configuration.powerOff.sck'
-										:label='$t("components.config.controller.form.pins.sckPin")'
-										:rules='watchdogPins ?
-											[
-												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
-												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
-											] : []
-										'
-										:prepend-inner-icon='mdiChip'
-										:disabled='!watchdogPins'
-										:required='watchdogPins'
-									/>
-								</v-col>
-								<v-col
-									cols='12'
-									md='4'
-								>
-									<INumberInput
-										v-model='configuration.powerOff.sda'
-										:label='$t("components.config.controller.form.pins.sdaPin")'
-										:rules='watchdogPins ?
-											[
-												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
-												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
-											] : []
-										'
-										:prepend-inner-icon='mdiChip'
-										:disabled='!watchdogPins'
-										:required='watchdogPins'
-									/>
-								</v-col>
-							</v-row>
+							<INumberInput
+								v-model='configuration.powerOff.sck'
+								:label='$t("components.config.controller.form.pins.sckPin")'
+								:rules='watchdogPins ?
+									[
+										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
+									] : []
+								'
+								:prepend-inner-icon='mdiChip'
+								:disabled='!watchdogPins'
+								:required='watchdogPins'
+							/>
+							<INumberInput
+								v-model='configuration.powerOff.sda'
+								:label='$t("components.config.controller.form.pins.sdaPin")'
+								:rules='watchdogPins ?
+									[
+										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
+									] : []
+								'
+								:prepend-inner-icon='mdiChip'
+								:disabled='!watchdogPins'
+								:required='watchdogPins'
+							/>
 						</section>
 						<span class='d-flex justify-space-around'>
 							<v-menu
@@ -397,12 +349,14 @@ import {
 	IActionBtn,
 	ICard,
 	INumberInput,
+	IPasswordInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiChip,
 	mdiFileDocument,
+	mdiKey,
 	mdiLedVariantOn,
 	mdiLedVariantOutline,
 	mdiLinkVariant,
@@ -419,7 +373,6 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
 import ControllerActionInput
@@ -434,7 +387,6 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const display = useDisplay();
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient()
 	.getConfigServices()

@@ -27,6 +27,7 @@ import {
 	MailerService,
 	MenderService,
 	MonitService,
+	WebSocketProxyService,
 } from '../../../src/services/Config';
 import { mockedClient } from '../../mocks/axios';
 
@@ -89,6 +90,12 @@ describe('ConfigServices', (): void => {
 		expect.assertions(1);
 		expect(services.getMonitService())
 			.toBeInstanceOf(MonitService);
+	});
+
+	test('returns WebSocket proxy config service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getWebSocketProxyService())
+			.toBeInstanceOf(WebSocketProxyService);
 	});
 
 });

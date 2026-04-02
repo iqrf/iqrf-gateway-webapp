@@ -21,7 +21,11 @@ limitations under the License.
 		:items='options'
 		:label='$t("components.config.controller.form.button.action")'
 		:prepend-inner-icon='mdiGestureTapHold'
-	/>
+	>
+		<template #append>
+			<slot name="append" />
+		</template>
+	</ISelectInput>
 </template>
 
 <script setup lang='ts'>

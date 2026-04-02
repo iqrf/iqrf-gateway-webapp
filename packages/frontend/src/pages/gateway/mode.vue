@@ -28,6 +28,10 @@ limitations under the License.
 <route>
 {
 	"name": "GatewayMode",
+	"meta": {
+		"isServiceWhitelisted": true,
+		"requiresProxy": true,
+	},
 }
 </route>
 

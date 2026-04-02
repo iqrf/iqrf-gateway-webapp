@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonApiTokenCreated.json",
+	"type": "object",
+	"title": "New Daemon API access token",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"token"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "Daemon API access token ID",
+			"type": "integer",
+			"example": 1
+		},
+		"token": {
+			"$id": "#/properties/token",
+			"title": "Daemon API access token",
+			"type": "string",
+			"example": "iqrfgd2;1;ETi3v8RGLVGXb/uNenhskEiSH/2KussEbantcvjfGQ4="
+		}
+	}
+}
