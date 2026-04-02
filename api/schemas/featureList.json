@@ -12,7 +12,6 @@
 		"iqrfCloudProvisioning",
 		"iqrfGatewayController",
 		"iqrfGatewayInfluxdbBridge",
-		"iqrfGatewayTranslator",
 		"iqrfRepository",
 		"journal",
 		"mender",
@@ -53,9 +52,6 @@
 		},
 		"iqrfGatewayInfluxdbBridge": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayInfluxdbBridge.json"
-		},
-		"iqrfGatewayTranslator": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayTranslator.json"
 		},
 		"iqrfRepository": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfRepository.json"

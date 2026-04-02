@@ -11,9 +11,6 @@ grafana:
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
 	enabled: false
-# IQRF Gateway Translator configuration
-iqrfGatewayTranslator:
-	enabled: false
 # Systemd journal configuration
 journal:
 	enabled: false

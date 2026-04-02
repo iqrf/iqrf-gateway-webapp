@@ -15,13 +15,13 @@
 
 # apcupsd service
 apcupsd:
-	enabled: false
+	enabled: true
 # Show documentation
 docs:
 	enabled: true
 # Default gateway user password change
 gatewayPass:
-	enabled: false
+	enabled: true
 	user: root
 # Grafana dashboard
 grafana:
@@ -29,38 +29,35 @@ grafana:
 	url: /grafana/
 # IQAROS application
 iqaros:
-	enabled: false
+	enabled: true
 # IQRF Cloud Provisioning configuration
 iqrfCloudProvisioning:
 	enabled: false
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
-	enabled: false
+	enabled: true
 # IQRF Gateway InfluxDB Bridge configuration
 iqrfGatewayInfluxdbBridge:
-	enabled: false
-# IQRF Gateway Translator configuration
-iqrfGatewayTranslator:
-	enabled: false
+	enabled: true
 # IQRF Repository Extension configuration
 iqrfRepository:
-	enabled: false
+	enabled: true
 # Systemd journald configuration
 journal:
-	enabled: false
+	enabled: true
 	path: /etc/systemd/journald.conf
 # Mender client configuration
 mender:
-	enabled: false
+	enabled: true
 # Monitoring service
 monit:
-	enabled: false
+	enabled: true
 # Mosquitto user management
 mosquittoPlugin:
-	enabled: false
+	enabled: true
 # Network manager
 networkManager:
-	enabled: false
+	enabled: true
 # Node-RED
 nodeRed:
 	enabled: false
@@ -70,20 +67,20 @@ remount:
 	enabled: false
 # SSH daemon manager
 ssh:
-	enabled: false
+	enabled: true
 # Supervisord dashboard
 supervisord:
 	enabled: false
 	url: /supervisord/
 # IQRF TR native upload
 trUpload:
-	enabled: false
+	enabled: true
 # System updater
 updater:
 	enabled: false
 # Unattended upgrades
 unattendedUpgrades:
-	enabled: false
+	enabled: true
 # IQRF Gateway Webapp version checker
 versionChecker:
 	enabled: false

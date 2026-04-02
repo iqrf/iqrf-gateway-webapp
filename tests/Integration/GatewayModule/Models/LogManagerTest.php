@@ -115,13 +115,11 @@ final class LogManagerTest extends TestCase {
 			LogManager::CONTROLLER,
 			LogManager::DAEMON,
 			LogManager::SETTER,
-			LogManager::TRANSLATOR,
 			LogManager::UPLOADER,
 		];
 		$this->receiveCommandExist(LogManager::CONTROLLER, true);
 		$this->receiveCommandExist('iqrfgd2', true);
 		$this->receiveCommandExist(LogManager::SETTER, true);
-		$this->receiveCommandExist(LogManager::TRANSLATOR, true);
 		$this->receiveCommandExist(LogManager::UPLOADER, true);
 		Assert::same($expected, $this->managerMockCommand->getAvailableServices());
 	}

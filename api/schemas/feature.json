@@ -26,9 +26,6 @@
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayInfluxdbBridge.json"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayTranslator.json"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfRepository.json"
 		},
 		{

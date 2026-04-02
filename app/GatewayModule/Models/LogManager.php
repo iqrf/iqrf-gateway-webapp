@@ -49,11 +49,6 @@ class LogManager {
 	final public const SETTER = 'iqrf-gateway-setter';
 
 	/**
-	 * IQRF Gateway Translator name
-	 */
-	final public const TRANSLATOR = 'iqrf-gateway-translator';
-
-	/**
 	 * IQRF Gateway Uploader name
 	 */
 	final public const UPLOADER = 'iqrf-gateway-uploader';
@@ -67,11 +62,6 @@ class LogManager {
 	 * IQRF Gateway Setter log file
 	 */
 	private const SETTER_LOG = 'iqrf-gateway-setter.log';
-
-	/**
-	 * IQRF Gateway Translator log file
-	 */
-	private const TRANSLATOR_LOG = 'iqrf-gateway-translator.log';
 
 	/**
 	 * IQRF Gateway Uploader log file
@@ -166,13 +156,6 @@ class LogManager {
 				// not found, do not add
 			}
 		}
-		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
-			try {
-				$zipManager->addFileFromText(self::TRANSLATOR_LOG, $this->getLogFromPath(self::TRANSLATOR_LOG));
-			} catch (LogNotFoundException) {
-				// not found, do not add
-			}
-		}
 		if ($this->commandManager->commandExist(self::UPLOADER)) {
 			try {
 				$zipManager->addFileFromText(self::UPLOADER_LOG, $this->getLogFromPath(self::UPLOADER_LOG));
@@ -201,9 +184,6 @@ class LogManager {
 		if ($this->commandManager->commandExist(self::SETTER)) {
 			$services[] = self::SETTER;
 		}
-		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
-			$services[] = self::TRANSLATOR;
-		}
 		if ($this->commandManager->commandExist(self::UPLOADER)) {
 			$services[] = self::UPLOADER;
 		}
@@ -220,7 +200,6 @@ class LogManager {
 			self::CONTROLLER => $this->getLogFromPath(self::CONTROLLER_LOG),
 			self::DAEMON => $this->getLatestDaemonLog(),
 			self::SETTER => $this->getLogFromPath(self::SETTER_LOG),
-			self::TRANSLATOR => $this->getLogFromPath(self::TRANSLATOR_LOG),
 			self::UPLOADER => $this->getLogFromPath(self::UPLOADER_LOG),
 			default => throw new ServiceLogNotAvailableException('Service not found'),
 		};

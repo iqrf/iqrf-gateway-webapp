@@ -22,11 +22,11 @@ features:
 	iqrfCloudProvisioning: IQRF Cloud Provisioning configuration
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayInfluxdbBridge: IQRF Gateway MQTT-InfluxDB Bridge configuration
-	iqrfGatewayTranslator: IQRF Gateway Translator configuration
 	iqrfRepository: IQRF Repository extension configuration
 	journal: Systemd Journald configuration
 	mender: Mender
 	monit: Monit
+	mosquittoPlugin: Mosquitto management
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	remount: Filesystem remount

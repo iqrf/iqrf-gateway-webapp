@@ -37,7 +37,6 @@ use App\GatewayModule\Models\Backup\MonitBackup;
 use App\GatewayModule\Models\Backup\NetworkManagerBackup;
 use App\GatewayModule\Models\Backup\TimeBackup;
 use App\GatewayModule\Models\Backup\TimesyncdBackup;
-use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
@@ -231,7 +230,6 @@ class BackupManager {
 			'services/',
 			'time/',
 			'timesyncd/',
-			'translator/',
 			'uploader/',
 			'webapp/',
 			'nginx/',
@@ -301,8 +299,6 @@ class BackupManager {
 				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'timesyncd/')) {
 				$this->isWhitelisted(TimesyncdBackup::WHITELIST, $file);
-			} elseif (str_starts_with($file, 'translator/')) {
-				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'uploader/')) {
 				$this->isWhitelisted(UploaderBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'webapp/')) {

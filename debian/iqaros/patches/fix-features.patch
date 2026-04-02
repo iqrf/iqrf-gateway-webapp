@@ -1,7 +1,7 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
 @@ -15,13 +15,13 @@
-
+ 
  # apcupsd service
  apcupsd:
 -	enabled: false
@@ -16,7 +16,7 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -29,38 +29,38 @@ grafana:
+@@ -29,35 +29,35 @@
  	url: /grafana/
  # IQAROS application
  iqaros:
@@ -33,9 +33,6 @@
  iqrfGatewayInfluxdbBridge:
 -	enabled: false
 +	enabled: true
- # IQRF Gateway Translator configuration
- iqrfGatewayTranslator:
- 	enabled: false
  # IQRF Repository Extension configuration
  iqrfRepository:
 -	enabled: false
@@ -55,7 +52,8 @@
 +	enabled: true
  # Mosquitto user management
  mosquittoPlugin:
- 	enabled: false
+-	enabled: false
++	enabled: true
  # Network manager
  networkManager:
 -	enabled: false
@@ -63,7 +61,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -70,20 +70,20 @@ remount:
+@@ -67,20 +67,20 @@
  	enabled: false
  # SSH daemon manager
  ssh:

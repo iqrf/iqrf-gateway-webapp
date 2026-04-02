@@ -37,11 +37,6 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	final protected const IQRF_GATEWAY_CONTROLLER = 'IQRF Gateway Controller';
 
 	/**
-	 * IQRF Gateway Translator
-	 */
-	final protected const IQRF_GATEWAY_TRANSLATOR = 'IQRF Gateway Translator';
-
-	/**
 	 * IQRF Gateway Uploader
 	 */
 	final protected const IQRF_GATEWAY_UPLOADER = 'IQRF Gateway Uploader';
@@ -51,7 +46,6 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 */
 	private const SOFTWARES = [
 		self::IQRF_GATEWAY_CONTROLLER,
-		self::IQRF_GATEWAY_TRANSLATOR,
 		self::IQRF_GATEWAY_UPLOADER,
 	];
 
@@ -121,7 +115,6 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	private function getFeatureName(): string {
 		return match ($this->software) {
 			self::IQRF_GATEWAY_CONTROLLER => 'iqrfGatewayController',
-			self::IQRF_GATEWAY_TRANSLATOR => 'iqrfGatewayTranslator',
 			self::IQRF_GATEWAY_UPLOADER => 'trUpload',
 			default => throw new InvalidArgumentException('Invalid software name.'),
 		};
@@ -145,7 +138,6 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	private function zipDir(): string {
 		return match ($this->software) {
 			self::IQRF_GATEWAY_CONTROLLER => 'controller',
-			self::IQRF_GATEWAY_TRANSLATOR => 'translator',
 			self::IQRF_GATEWAY_UPLOADER => 'uploader',
 			default => throw new InvalidArgumentException('Invalid software name.'),
 		};
