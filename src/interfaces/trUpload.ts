@@ -187,4 +187,3 @@ export interface IOsUpgradeParams {
 	 */
 	rfMode?: string
 }
- 

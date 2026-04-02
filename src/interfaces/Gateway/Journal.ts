@@ -97,10 +97,9 @@ export interface IJournalData {
 	 * Cursor of the first record
 	 */
 	startCursor: string
-	
+
 	/**
 	 * Cursor of the last record
 	 */
 	endCursor: string
 }
-

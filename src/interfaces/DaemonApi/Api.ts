@@ -22,7 +22,7 @@ interface IMessagePair {
 	 * Message ID
 	 */
 	msgId: string
-	
+
 	/**
 	 * Request string
 	 */

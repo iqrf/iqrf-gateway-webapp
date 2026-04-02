@@ -33,7 +33,7 @@ export interface IInfoNode extends IInfoDevice {
 	 * Device module ID
 	 */
 	mid: number
-	
+
 	/**
 	 * Is device discovered?
 	 */

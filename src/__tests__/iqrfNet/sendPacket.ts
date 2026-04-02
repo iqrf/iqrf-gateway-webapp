@@ -96,4 +96,3 @@ test('Validate DPA packet', () => {
 	packet = 'nonsense';
 	expect(Packet.validatePacket(packet)).toBeFalsy();
 });
-

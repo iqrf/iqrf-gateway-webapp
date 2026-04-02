@@ -20,9 +20,9 @@
 
 import { faker } from '@faker-js/faker';
 
-context('User management', () => {
+context('User management', (): void => {
 
-	const username = faker.internet.userName();
+	const username = faker.internet.username();
 	const password = faker.internet.password();
 
 	it('Add a new user', () => {
@@ -104,7 +104,7 @@ context('User management', () => {
 			expect(location.pathname).to.eq('/user/add/');
 			expect(location.search).to.be.empty;
 		});
-		const username = faker.internet.userName();
+		const username = faker.internet.username();
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)

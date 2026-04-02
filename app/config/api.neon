@@ -43,4 +43,3 @@ resource:
 		App\ApiModule\Version0\Controllers\:
 			paths:
 				- %appDir%/ApiModule/Version0/Controllers
-

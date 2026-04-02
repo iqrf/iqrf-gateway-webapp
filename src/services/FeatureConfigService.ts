@@ -20,7 +20,7 @@ import {authorizationHeader} from '@/helpers/authorizationHeader';
 /**
  * Feature configuration service
  */
-class FeatureConfigService {	
+class FeatureConfigService {
 	/**
 	 * Retrieves feature configuration
 	 * @param featureName feature name

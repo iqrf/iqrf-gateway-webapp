@@ -45,4 +45,3 @@ export function getRfChannelValidationMessages(rfBand: number): Record<string, s
 		required: message,
 	};
 }
- 

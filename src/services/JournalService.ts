@@ -59,4 +59,3 @@ class JournalService {
 }
 
 export default new JournalService();
- 

@@ -159,8 +159,7 @@ class UserController extends BaseController {
 			}
 		}
 		$this->entityManager->flush();
-		return $response->withStatus(ApiResponse::S200_OK)
-			;
+		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
 	#[Path('/password')]
@@ -352,8 +351,7 @@ class UserController extends BaseController {
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->withStatus(ApiResponse::S200_OK)
-			;
+		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
 	#[Path('/refreshToken')]

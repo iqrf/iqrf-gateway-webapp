@@ -121,8 +121,7 @@ class SchedulerController extends BaseController {
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		}
-		return $response->withStatus(ApiResponse::S201_CREATED)
-			;
+		return $response->withStatus(ApiResponse::S201_CREATED);
 	}
 
 	#[Path('/')]

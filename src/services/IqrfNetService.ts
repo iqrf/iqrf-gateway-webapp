@@ -475,4 +475,3 @@ class IqrfNetService {
 }
 
 export default new IqrfNetService();
- 

@@ -37,7 +37,7 @@ export interface Feature {
  * Gateway password feature
  */
 export interface GatewayPasswordFeature extends Feature {
-	
+
 	/**
 	 * Gateway user name
 	 */

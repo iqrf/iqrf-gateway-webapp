@@ -146,8 +146,7 @@ class DaemonController extends BaseConfigController {
 		$this->validator->validateRequest('daemonComponent', $request);
 		try {
 			$this->componentManager->add($request->getJsonBody(true));
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				;
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -308,8 +307,7 @@ class DaemonController extends BaseConfigController {
 			}
 			$fileName = $this->manager->generateFileName($json);
 			$this->manager->save($json, $fileName);
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				;
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (JsonException $e) {

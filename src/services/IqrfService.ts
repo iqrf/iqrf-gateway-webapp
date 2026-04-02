@@ -17,7 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {UploadUtilFile} from '@/interfaces/trUpload';
- 
+
 interface IqrfInterfacePorts {
 	cdc: Array<string>;
 	spi: Array<string>;
@@ -98,4 +98,3 @@ class IqrfService {
 }
 
 export default new IqrfService();
- 

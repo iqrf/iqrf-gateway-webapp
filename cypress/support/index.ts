@@ -16,4 +16,3 @@
 
 // Import commands.ts using ES2020 syntax:
 import './commands';
-

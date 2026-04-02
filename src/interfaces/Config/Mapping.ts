@@ -36,48 +36,48 @@ export interface IMapping {
 	 */
 	name: string
 
-    /**
-     * Device type
-     */
-    deviceType: ConfigDeviceType
+	/**
+	 * Device type
+	 */
+	deviceType: ConfigDeviceType
 
 	/**
-     * Device name
-     */
-    IqrfInterface: string
-
-    /**
-     * Serial port baud rate
-     */
-    baudRate?: number
-
-    /**
-     * Power enable GPIO pin
-     */
-    powerEnableGpioPin: number
-
-    /**
-     * Bus enable GPIO pin
-     */
-    busEnableGpioPin: number
-
-    /**
-     * Programming mode switch GPIO pin
-     */
-    pgmSwitchGpioPin: number
+	 * Device name
+	 */
+	IqrfInterface: string
 
 	/**
-     * I2C interface enable GPIO pin
-     */
-    i2cEnableGpioPin?: number
+	 * Serial port baud rate
+	 */
+	baudRate?: number
 
-    /**
-     * SPI interface enable GPIO pin
-     */
-    spiEnableGpioPin?: number
+	/**
+	 * Power enable GPIO pin
+	 */
+	powerEnableGpioPin: number
 
-    /**
-     * UART interface enable GPIO pin
-     */
-    uartEnableGpioPin?: number
+	/**
+	 * Bus enable GPIO pin
+	 */
+	busEnableGpioPin: number
+
+	/**
+	 * Programming mode switch GPIO pin
+	 */
+	pgmSwitchGpioPin: number
+
+	/**
+	 * I2C interface enable GPIO pin
+	 */
+	i2cEnableGpioPin?: number
+
+	/**
+	 * SPI interface enable GPIO pin
+	 */
+	spiEnableGpioPin?: number
+
+	/**
+	 * UART interface enable GPIO pin
+	 */
+	uartEnableGpioPin?: number
 }

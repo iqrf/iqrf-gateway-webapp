@@ -159,6 +159,7 @@ class ConnectionManager {
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param string|null $interface Network interface
 	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function up(UuidInterface $uuid, ?string $interface = null): void {
 		$command = sprintf('nmcli -t connection up %s', $uuid->toString());

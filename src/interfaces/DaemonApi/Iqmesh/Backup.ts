@@ -53,7 +53,7 @@ export interface IRestoreData {
 	 * Device address
 	 */
 	Address: string
-	
+
 	/**
 	 * Coordinator data
 	 */
@@ -74,4 +74,3 @@ export interface IRestoreData {
 	 */
 	Version: string
 }
- 

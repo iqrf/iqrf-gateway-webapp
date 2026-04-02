@@ -16,7 +16,7 @@
  */
 
 export interface ErrorResponse {
-       status: 'error',
-       code: number,
-       message: string,
+	status: 'error',
+	code: number,
+	message: string,
 }
