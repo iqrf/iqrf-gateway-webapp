@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mosquittoUserManagement.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mosquittoPlugin.json",
 	"type": "object",
 	"title": "Mosquitto user management",
 	"example": {

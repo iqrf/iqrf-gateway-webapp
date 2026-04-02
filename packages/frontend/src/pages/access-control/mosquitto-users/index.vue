@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "MosquittoUsers",
 	"meta": {
-		"feature": "mosquittoUserManagement",
+		"feature": "mosquittoPlugin",
 		"roles": ["admin"],
 	},
 }

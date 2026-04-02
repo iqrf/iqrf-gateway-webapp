@@ -54,7 +54,7 @@
 -	enabled: false
 +	enabled: true
  # Mosquitto user management
- mosquittoUserManagement:
+ mosquittoPlugin:
  	enabled: false
  # Network manager
  networkManager:

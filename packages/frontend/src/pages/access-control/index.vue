@@ -67,7 +67,7 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.accessControl.mosquittoUsers.description'),
 		to: '/access-control/mosquitto-users',
 		roles: [UserRole.Admin],
-		feature: Feature.mosquittoUserManagement,
+		feature: Feature.mosquittoPlugin,
 	},
 ]);
 </script>

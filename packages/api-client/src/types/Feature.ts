@@ -108,7 +108,7 @@ export enum Feature {
 	/**
 	 * Mosquitto user management feature
 	 */
-	mosquittoUserManagement = 'mosquittoUserManagement',
+	mosquittoPlugin = 'mosquittoPlugin',
 
 	/**
 	 * Network manager feature
