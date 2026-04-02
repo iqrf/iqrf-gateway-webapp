@@ -315,8 +315,6 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timezoneList.json
 		TimezoneSet:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timezoneSet.json
-		TranslatorConfig:
-			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/translatorConfig.json
 		TuptimeStats:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/tuptimeStats.json
 		UploaderFile:

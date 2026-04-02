@@ -44,7 +44,6 @@ if (basename(__DIR__) === 'tests') {
 		'configuration/scheduler/',
 		'controller/',
 		'maintenance/',
-		'translator/',
 		'zip/',
 	];
 	foreach ($dirs as $dir) {

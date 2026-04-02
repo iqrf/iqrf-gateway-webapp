@@ -24,7 +24,7 @@
 				"iqrf": {
 					"$id": "#/properties/software/properties/iqrf",
 					"title": "IQRF Software",
-					"description": "Controller, Daemon, Translator, Webapp and Uploader if available.",
+					"description": "Controller, Daemon, Webapp and Uploader if available.",
 					"type": "boolean"
 				},
 				"mender": {

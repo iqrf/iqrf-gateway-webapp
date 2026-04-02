@@ -39,9 +39,6 @@ iqrfGatewayController:
 # IQRF Gateway InfluxDB Bridge configuration
 iqrfGatewayInfluxdbBridge:
 	enabled: false
-# IQRF Gateway Translator configuration
-iqrfGatewayTranslator:
-	enabled: false
 # IQRF Repository Extension configuration
 iqrfRepository:
 	enabled: false

@@ -202,7 +202,6 @@ class User implements JsonSerializable {
 				'config:controller',
 				'config:daemon',
 				'config:iqrfRepository',
-				'config:translator',
 				'gateway:log',
 				'gateway:power',
 				'iqrf:macros',

@@ -42,9 +42,6 @@ fileManager:
 		iqrfGatewayInfluxdbBridge:
 			directory: %paths.iqrfGatewayInfluxdbBridge.configDir%
 			type: unprivileged
-		iqrfGatewayTranslator:
-			directory: %paths.iqrfGatewayTranslator.configDir%
-			type: unprivileged
 		iqrfGatewayUploader:
 			directory: %paths.iqrfGatewayUploader.configDir%
 			type: unprivileged

@@ -28,7 +28,6 @@ services:
 	sshBackup: App\GatewayModule\Models\Backup\SshBackup
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
 	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandExecutor.commandExecutor, %paths.timesyncd.config%)
-	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(@fileManager.managers.iqrfGatewayTranslator)
 	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(@fileManager.managers.iqrfGatewayUploader)
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%paths.iqrfGatewayWebapp%)
 	- App\GatewayModule\Models\BackupManager([
@@ -44,7 +43,6 @@ services:
 		@sshBackup,
 		@timeBackup,
 		@timesyncdBackup,
-		@translatorBackup,
 		@uploaderBackup,
 		@webappBackup,
 		@gatewayFileBackup

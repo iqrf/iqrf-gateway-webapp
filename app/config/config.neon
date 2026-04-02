@@ -48,10 +48,6 @@ parameters:
 		iqrfGatewayInfluxdbBridge:
 			# Path to directory containing IQRF Gateway Influxdb Bridge configuration
 			configDir: '/etc/iqrf-gateway-influxdb-bridge/'
-		# IQRF Gateway Translator paths
-		iqrfGatewayTranslator:
-			# Path to directory containing IQRF Gateway Translator configuration
-			configDir: '/etc/iqrf-gateway-translator/'
 		# IQRF Gateway Uploader paths
 		iqrfGatewayUploader:
 			# Path to directory containing IQRF Gateway Uploader configuration

@@ -1,8 +1,8 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayTranslator.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mosquittoPlugin.json",
 	"type": "object",
-	"title": "IQRF Gateway Translator",
+	"title": "Mosquitto plugin",
 	"example": {
 		"enabled": false
 	},
@@ -14,7 +14,7 @@
 		"enabled": {
 			"$id": "#/properties/enabled",
 			"type": "boolean",
-			"title": "IQRF Gateway Translator enablement",
+			"title": "Mosquitto plugin enablement",
 			"example": false
 		}
 	}
