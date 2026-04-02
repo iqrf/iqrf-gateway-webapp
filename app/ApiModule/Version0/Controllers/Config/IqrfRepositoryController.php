@@ -97,7 +97,7 @@ class IqrfRepositoryController extends BaseConfigController {
 		try {
 			$config = $request->getJsonBody(true);
 			$this->manager->saveConfig($config);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

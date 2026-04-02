@@ -92,7 +92,7 @@ class GsmController extends NetworkController {
 		self::checkScopes($request, ['network']);
 		try {
 			$this->gsmManager->scanModems();
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ModemManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

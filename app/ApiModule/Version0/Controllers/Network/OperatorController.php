@@ -184,7 +184,7 @@ class OperatorController extends NetworkController {
 		$operator->setPassword($json->password ?? null);
 		$this->entityManager->persist($operator);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{id}')]
@@ -208,7 +208,7 @@ class OperatorController extends NetworkController {
 		}
 		$this->entityManager->remove($operator);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 }

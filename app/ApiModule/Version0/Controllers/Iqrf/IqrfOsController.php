@@ -133,7 +133,7 @@ class IqrfOsController extends IqrfController {
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
 			$this->iqrfOsManager->upgradeOs($request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (DpaRfMissingException | DpaFileNotFoundException | UploaderFileException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UploaderMissingException | UploaderSpiException $e) {

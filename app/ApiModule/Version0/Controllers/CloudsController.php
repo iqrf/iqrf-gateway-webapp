@@ -64,7 +64,7 @@ abstract class CloudsController extends BaseController {
 		try {
 			$this->manager->createMqttInterface($request->getJsonBody());
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
+				;
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ClientErrorException('Missing JSON schema', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {

@@ -182,7 +182,7 @@ class ServicesController extends BaseController {
 				$this->manager->enable('mender-connect');
 			}
 			$this->manager->enable($name, $start);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -226,7 +226,7 @@ class ServicesController extends BaseController {
 				$this->manager->disable('mender-connect');
 			}
 			$this->manager->disable($name, $stop);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -256,7 +256,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->start($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -286,7 +286,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->stop($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -316,7 +316,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->restart($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {

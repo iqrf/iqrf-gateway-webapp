@@ -173,7 +173,7 @@ class ApiKeyController extends BaseController {
 		}
 		$this->entityManager->remove($apiKey);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{id}')]
@@ -214,7 +214,7 @@ class ApiKeyController extends BaseController {
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 }

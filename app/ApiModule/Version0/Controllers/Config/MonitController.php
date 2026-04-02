@@ -105,7 +105,7 @@ class MonitController extends BaseConfigController {
 		$this->validator->validateRequest('monitConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -155,7 +155,7 @@ class MonitController extends BaseConfigController {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
 			$this->manager->enableCheck($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -178,7 +178,7 @@ class MonitController extends BaseConfigController {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
 			$this->manager->disableCheck($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}

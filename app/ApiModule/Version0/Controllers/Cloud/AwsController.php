@@ -96,7 +96,7 @@ class AwsController extends CloudsController {
 			$configuration = $this->getConfiguration($request);
 			$this->manager->createMqttInterface($configuration);
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
+				;
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {

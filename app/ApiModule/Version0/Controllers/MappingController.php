@@ -190,7 +190,7 @@ class MappingController extends BaseController {
 		}
 		$this->entityManager->remove($mapping);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{id}')]
@@ -249,7 +249,7 @@ class MappingController extends BaseController {
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 }

@@ -112,7 +112,7 @@ class ControllerController extends BaseConfigController {
 		$this->validator->validateRequest('controllerConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -228,7 +228,7 @@ class ControllerController extends BaseConfigController {
 		$json = $request->getJsonBody(false);
 		try {
 			$this->pinManager->editPinConfig($id, $json);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -250,7 +250,7 @@ class ControllerController extends BaseConfigController {
 		$id = (int) $request->getParameter('id');
 		try {
 			$this->pinManager->removePinConfig($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}

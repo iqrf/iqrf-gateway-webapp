@@ -76,7 +76,7 @@ class HostnameController extends GatewayController {
 		try {
 			$config = $request->getJsonBody(true);
 			$this->manager->setHostname($config['hostname']);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (HostnameException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

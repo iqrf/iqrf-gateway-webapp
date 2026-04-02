@@ -117,7 +117,7 @@ class MailerController extends BaseConfigController {
 			if ($user->getEmail() !== null) {
 				$this->configurationTestSender->send($user);
 			}
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException | InvalidSmtpConfigException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {
@@ -160,7 +160,7 @@ class MailerController extends BaseConfigController {
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 }

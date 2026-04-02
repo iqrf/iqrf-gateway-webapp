@@ -133,7 +133,7 @@ class FeatureController extends BaseController {
 		$this->validator->validateRequest('features/' . $name, $request);
 		try {
 			$this->manager->edit($name, $request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (FeatureNotFoundException $e) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND, $e);
 		} catch (IOException $e) {

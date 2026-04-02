@@ -117,7 +117,7 @@ class DaemonController extends BaseConfigController {
 		$this->validator->validateRequest('mainConfiguration', $request);
 		try {
 			$this->mainManager->save($request->getJsonBody(true));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -147,7 +147,7 @@ class DaemonController extends BaseConfigController {
 		try {
 			$this->componentManager->add($request->getJsonBody(true));
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
+				;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -176,7 +176,7 @@ class DaemonController extends BaseConfigController {
 		}
 		try {
 			$this->componentManager->delete($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -220,7 +220,7 @@ class DaemonController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{component}')]
@@ -309,7 +309,7 @@ class DaemonController extends BaseConfigController {
 			$fileName = $this->manager->generateFileName($json);
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
+				;
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (JsonException $e) {
@@ -345,7 +345,7 @@ class DaemonController extends BaseConfigController {
 			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->manager->deleteFile($fileName);
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{component}/{instance}')]
@@ -391,7 +391,7 @@ class DaemonController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{component}/{instance}')]
@@ -468,7 +468,7 @@ class DaemonController extends BaseConfigController {
 				$config['components'][$index]['enabled'] = $component['enabled'];
 			}
 			$this->mainManager->save($config);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

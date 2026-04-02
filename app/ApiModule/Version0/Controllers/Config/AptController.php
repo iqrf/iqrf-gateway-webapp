@@ -101,7 +101,7 @@ class AptController extends BaseConfigController {
 		$this->validator->validateRequest('aptConfiguration', $request);
 		try {
 			$this->manager->write($request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (AptErrorException | AptNotFoundException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

@@ -103,7 +103,7 @@ class TimeController extends GatewayController {
 		try {
 			$time = $request->getJsonBody(true);
 			$this->manager->setTime($time);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentTimezoneException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}

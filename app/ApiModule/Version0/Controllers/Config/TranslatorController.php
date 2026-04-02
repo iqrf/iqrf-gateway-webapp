@@ -106,7 +106,7 @@ class TranslatorController extends BaseConfigController {
 		$this->validator->validateRequest('translatorConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

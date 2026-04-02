@@ -219,7 +219,7 @@ class UsersController extends BaseController {
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+			;
 	}
 
 	#[Path('/{id}')]
@@ -324,7 +324,7 @@ class UsersController extends BaseController {
 		}
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+			;
 	}
 
 	#[Path('/{id}/resendVerification')]
@@ -362,7 +362,7 @@ class UsersController extends BaseController {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+			;
 	}
 
 }

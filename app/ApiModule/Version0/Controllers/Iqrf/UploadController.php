@@ -192,7 +192,7 @@ class UploadController extends IqrfController {
 		try {
 			$data = $request->getJsonBody(false);
 			$this->uploadManager->uploadToTr($data->name, $data->type === 'OS');
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UploaderFileException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UploaderMissingException | UploaderSpiException $e) {

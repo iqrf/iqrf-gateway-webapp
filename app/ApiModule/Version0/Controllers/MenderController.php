@@ -122,7 +122,7 @@ class MenderController extends BaseController {
 		$this->validator->validateRequest('menderConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException | JsonException | MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (MenderUnsupportedVersionException $e) {
@@ -323,7 +323,7 @@ class MenderController extends BaseController {
 		try {
 			$conf = $request->getJsonBody(true);
 			$this->manager->remount($conf['mode']);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (MountErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

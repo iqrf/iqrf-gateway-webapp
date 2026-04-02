@@ -122,7 +122,7 @@ class SchedulerController extends BaseController {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
-			->writeBody('Workaround');
+			;
 	}
 
 	#[Path('/')]
@@ -138,7 +138,7 @@ class SchedulerController extends BaseController {
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->manager->deleteAll();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{taskId}')]
@@ -187,7 +187,7 @@ class SchedulerController extends BaseController {
 		$taskId = $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (TaskNotFoundException $e) {
 			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -231,7 +231,7 @@ class SchedulerController extends BaseController {
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/export')]
@@ -306,7 +306,7 @@ class SchedulerController extends BaseController {
 		} catch (InvalidJsonException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	/**

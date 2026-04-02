@@ -141,7 +141,7 @@ class WireguardController extends NetworkController {
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
 			$this->wireguardManager->createInterface($request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (WireguardKeyErrorException $e) {
@@ -179,7 +179,7 @@ class WireguardController extends NetworkController {
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->wireguardManager->editInterface($id, $request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
@@ -213,7 +213,7 @@ class WireguardController extends NetworkController {
 				$this->serviceManager->disable($service);
 			}
 			$this->wireguardManager->removeInterface($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException) {
@@ -243,7 +243,7 @@ class WireguardController extends NetworkController {
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->start($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException) {
@@ -273,7 +273,7 @@ class WireguardController extends NetworkController {
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->stop($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException) {
@@ -303,7 +303,7 @@ class WireguardController extends NetworkController {
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->enable($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException) {
@@ -333,7 +333,7 @@ class WireguardController extends NetworkController {
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->disable($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException) {

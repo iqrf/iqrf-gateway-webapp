@@ -160,7 +160,7 @@ class UserController extends BaseController {
 		}
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+			;
 	}
 
 	#[Path('/password')]
@@ -201,7 +201,7 @@ class UserController extends BaseController {
 		} catch (SendException) {
 			// ignore
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/password/recovery')]
@@ -262,7 +262,7 @@ class UserController extends BaseController {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/passwordRecovery/{uuid}')]
@@ -353,7 +353,7 @@ class UserController extends BaseController {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+			;
 	}
 
 	#[Path('/refreshToken')]

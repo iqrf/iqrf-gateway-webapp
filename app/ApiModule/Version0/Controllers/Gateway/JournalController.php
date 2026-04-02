@@ -112,7 +112,7 @@ class JournalController extends GatewayController {
 		$this->validator->validateRequest('journal', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

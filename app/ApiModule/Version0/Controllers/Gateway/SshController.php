@@ -176,7 +176,7 @@ class SshController extends GatewayController {
 				return $response->withStatus(ApiResponse::S200_OK)
 					->writeJsonBody(['failedKeys' => $failed]);
 			}
-			return $response->withStatus(ApiResponse::S201_CREATED)->writeBody('Workaround');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (SshKeyExistsException $e) {
@@ -204,7 +204,7 @@ class SshController extends GatewayController {
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->deleteKey($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (SshKeyNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}

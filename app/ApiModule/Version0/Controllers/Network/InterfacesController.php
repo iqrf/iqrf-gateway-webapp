@@ -126,7 +126,7 @@ class InterfacesController extends NetworkController {
 		self::checkScopes($request, ['network']);
 		try {
 			$this->interfaceManager->connect($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
@@ -155,7 +155,7 @@ class InterfacesController extends NetworkController {
 		self::checkScopes($request, ['network']);
 		try {
 			$this->interfaceManager->disconnect($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
