@@ -85,6 +85,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		},
 		wsServers: {
 			api: 'ws://localhost:1338',
+			token: '',
 			monitor: 'ws://localhost:1438',
 		},
 	};
