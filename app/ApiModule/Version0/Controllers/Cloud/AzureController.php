@@ -71,7 +71,7 @@ class AzureController extends CloudsController {
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
-	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudAzure', $request);
 		try {
 			return parent::create($request, $response);

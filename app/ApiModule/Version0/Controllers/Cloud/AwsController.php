@@ -90,7 +90,7 @@ class AwsController extends CloudsController {
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
-	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['clouds']);
 		try {
 			$configuration = $this->getConfiguration($request);
