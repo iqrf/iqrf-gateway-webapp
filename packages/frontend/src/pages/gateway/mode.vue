@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,19 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.gateway.mode.title') }}</title>
 		</Head>
-		<CurrentMode class='mb-4' />
-		<StartupMode />
+		<ModeComponentControls @fetched='(e: boolean) => onFetch(e)' />
+		<div v-if='enabled'>
+			<DaemonApiUnavailable
+				v-if='!isConnected || !isUpstreamReady'
+				:title='$t("components.gateway.mode.current.title")'
+				class='mt-4'
+			/>
+			<CurrentMode
+				v-else
+				class='mt-4'
+			/>
+			<StartupMode class='mt-4' />
+		</div>
 	</div>
 </template>
 
@@ -30,14 +41,26 @@ limitations under the License.
 	"name": "GatewayMode",
 	"meta": {
 		"isServiceWhitelisted": true,
-		"requiresProxy": true,
 	},
 }
 </route>
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
+import DaemonApiUnavailable from '@/components/DaemonApiUnavailable.vue';
 import CurrentMode from '@/components/gateway/mode/CurrentMode.vue';
+import ModeComponentControls from '@/components/gateway/mode/ModeComponentControls.vue';
 import StartupMode from '@/components/gateway/mode/StartupMode.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+
+const daemonStore = useDaemonStore();
+const { isConnected, isUpstreamReady } = storeToRefs(daemonStore);
+const enabled = ref<boolean>(false);
+
+function onFetch(status: boolean): void {
+	enabled.value = status;
+}
 </script>

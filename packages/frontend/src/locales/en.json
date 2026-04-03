@@ -6,7 +6,9 @@
 			"close": "Close",
 			"delete": "Delete",
 			"deselectAll": "Deselect all",
+			"disable": "Disable",
 			"edit": "Edit",
+			"enable": "Enable",
 			"enumerate": "Enumerate",
 			"import": "Import",
 			"refresh": "Refresh",
@@ -70,6 +72,7 @@
 			"value": "Value"
 		},
 		"messages": {
+			"daemonApiNotAvailable": "IQRF Gateway Daemon JSON API is not available. Please wait a few moments or try again later.",
 			"fetchFailed": "An error has occurred while fetching data.",
 			"noDaemonMessage": "Cannot send message, no message passed.",
 			"noDevice": "No device bonded to address {address}.",
@@ -2026,6 +2029,38 @@
 						"fetchError": "Current gateway mode could not be retrieved."
 					},
 					"title": "Current mode"
+				},
+				"feature": {
+					"actions": {
+						"refresh": "Refresh status"
+					},
+					"messages": {
+						"disable": {
+							"failed": "Failed to disable service mode feature."
+						},
+						"enable": {
+							"failed": "Failed to enable service mode feature."
+						},
+						"get": {
+							"failed": "Failed to retrieve status of service mode feature."
+						},
+						"restartDisable": {
+							"failed": "Failed to restart IQRF Gateway Daemon, but service mode has been disabled.",
+							"success": "Service mode feature has been successfully disabled and IQRF Gateway Daemon restarted."
+						},
+						"restartEnable": {
+							"failed": "Failed to restart IQRF Gateway Daemon, but service mode has been enabled.",
+							"success": "Service mode feature has been successfully enabled and IQRF Gateway Daemon restarted."
+						}
+					},
+					"status": "Feature status",
+					"statuses": {
+						"disabled": "The service mode feature is disabled.",
+						"enabled": "The service mode feature is enabled.",
+						"fetching": "Retrieving service mode feature status.",
+						"unknown": "Unable to determine the service mode feature status."
+					},
+					"title": "Service mode"
 				},
 				"modes": {
 					"forwarding": "Forwarding mode",
