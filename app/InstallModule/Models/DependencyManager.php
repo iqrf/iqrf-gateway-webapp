@@ -75,10 +75,12 @@ class DependencyManager {
 			],
 			new Dependency('mender-connect', false, 'mender-connect', 'mender'),
 			new Dependency('mmcli', true, 'modemmanager', 'networkManager'),
+			new Dependency('mosquitto-plugin-iqrf', false, 'mosquitto-plugin-iqrf', 'mosquittoPlugin'),
 			new Dependency('nmcli', false, 'network-manager', 'networkManager'),
 			new Dependency('shutdown', true, 'systemd-sysv'),
 			new Dependency('ssh', false, 'openssh-client', 'ssh'),
 			new Dependency('ssh-keygen', false, 'openssh-client', 'ssh'),
+			new Dependency('tuptime', true, 'tuptime'),
 			new Dependency('uptime', true, 'procps-ng'),
 			new Dependency('wg', false, 'wireguard-tools', 'networkManager'),
 		];
