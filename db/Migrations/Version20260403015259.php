@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -29,7 +29,8 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260403015259 extends AbstractMigration
 {
-    /**
+
+	/**
 	 * Returns the migration description
 	 * @return string Migration description
 	 */
@@ -42,12 +43,12 @@ final class Version20260403015259 extends AbstractMigration
 	 * Applies the migration
 	 * @param Schema $schema Database schema
 	 */
-    public function up(Schema $schema): void
-    {
-        // Add new Role table
-        $this->addSql('CREATE TABLE roles (name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, scopes CLOB NOT NULL, system BOOLEAN DEFAULT 0 NOT NULL, system_key VARCHAR(64) DEFAULT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_B63E2EC75E237E06 ON roles (name)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_B63E2EC747280172 ON roles (system_key)');
+	public function up(Schema $schema): void
+	{
+		// Add new Role table
+		$this->addSql('CREATE TABLE roles (name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, scopes CLOB NOT NULL, system BOOLEAN DEFAULT 0 NOT NULL, system_key VARCHAR(64) DEFAULT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_B63E2EC75E237E06 ON roles (name)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_B63E2EC747280172 ON roles (system_key)');
 		// Add system roles
 		$this->addSql(
 			'INSERT INTO roles (name, description, scopes, system, system_key) VALUES (:name, :description, :scopes, :system, :systemKey)',
@@ -150,33 +151,35 @@ final class Version20260403015259 extends AbstractMigration
 			]
 		);
 
-
-        $this->addSql('CREATE TEMPORARY TABLE __temp__api_keys_v2 AS SELECT expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id FROM api_keys_v2');
-        $this->addSql('DROP TABLE api_keys_v2');
-        $this->addSql('CREATE TABLE api_keys_v2 (expiration DATETIME NOT NULL, hash VARCHAR(64) NOT NULL, salt VARCHAR(32) NOT NULL, revoked_at DATETIME DEFAULT NULL, description VARCHAR(255) NOT NULL, state INTEGER DEFAULT 0 NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created_at DATETIME NOT NULL, revoked_by_id INTEGER DEFAULT NULL, created_by_id INTEGER DEFAULT NULL, role_id INTEGER NOT NULL, CONSTRAINT FK_FAC0465EFB8FE773 FOREIGN KEY (revoked_by_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465EB03A8386 FOREIGN KEY (created_by_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465ED60322AC FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
-        $this->addSql('INSERT INTO api_keys_v2 (expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id) SELECT expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id FROM __temp__api_keys_v2');
-        $this->addSql('DROP TABLE __temp__api_keys_v2');
-        $this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
-        $this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
-        $this->addSql('CREATE INDEX IDX_FAC0465ED60322AC ON api_keys_v2 (role_id)');
+		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys_v2 AS SELECT expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id FROM api_keys_v2');
+		$this->addSql('DROP TABLE api_keys_v2');
+		$this->addSql('CREATE TABLE api_keys_v2 (expiration DATETIME NOT NULL, hash VARCHAR(64) NOT NULL, salt VARCHAR(32) NOT NULL, revoked_at DATETIME DEFAULT NULL, description VARCHAR(255) NOT NULL, state INTEGER DEFAULT 0 NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created_at DATETIME NOT NULL, revoked_by_id INTEGER DEFAULT NULL, created_by_id INTEGER DEFAULT NULL, role_id INTEGER NOT NULL, CONSTRAINT FK_FAC0465EFB8FE773 FOREIGN KEY (revoked_by_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465EB03A8386 FOREIGN KEY (created_by_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465ED60322AC FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
+		$this->addSql('INSERT INTO api_keys_v2 (expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id) SELECT expiration, hash, salt, revoked_at, description, state, id, created_at, revoked_by_id, created_by_id FROM __temp__api_keys_v2');
+		$this->addSql('DROP TABLE __temp__api_keys_v2');
+		$this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
+		$this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
+		$this->addSql('CREATE INDEX IDX_FAC0465ED60322AC ON api_keys_v2 (role_id)');
 
 		// Update user table
-        $this->addSql('CREATE TEMPORARY TABLE __temp__users AS SELECT id, username, password, role, language, email, state FROM users');
-        $this->addSql('DROP TABLE users');
-        $this->addSql('CREATE TABLE users (
-			id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-			username VARCHAR(255) NOT NULL,
-			password VARCHAR(255) DEFAULT NULL,
-			language VARCHAR(7) DEFAULT \'en\' NOT NULL,
-			email VARCHAR(255) DEFAULT NULL,
-			state INTEGER DEFAULT 0 NOT NULL,
-			role_id INTEGER NOT NULL,
-			CONSTRAINT FK_1483A5E9D60322AC FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE
-		)');
+		$this->addSql('CREATE TEMPORARY TABLE __temp__users AS SELECT id, username, password, role, language, email, state FROM users');
+		$this->addSql('DROP TABLE users');
+		$this->addSql(<<<'SQL'
+			CREATE TABLE users (
+				id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+				username VARCHAR(255) NOT NULL,
+				password VARCHAR(255) DEFAULT NULL,
+				language VARCHAR(7) DEFAULT 'en' NOT NULL,
+				email VARCHAR(255) DEFAULT NULL,
+				state INTEGER DEFAULT 0 NOT NULL,
+				role_id INTEGER NOT NULL,
+				CONSTRAINT FK_1483A5E9D60322AC FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE
+			)
+			SQL
+		);
 
-        $this->addSql(<<<'SQL'
+		$this->addSql(<<<'SQL'
 			INSERT INTO users (id, username, password, language, email, state, role_id)
 			SELECT
 			id,
@@ -198,18 +201,18 @@ final class Version20260403015259 extends AbstractMigration
 			SQL
 		);
 		$this->addSql('DROP TABLE __temp__users');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON users (username)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9E7927C74 ON users (email)');
-        $this->addSql('CREATE INDEX IDX_1483A5E9D60322AC ON users (role_id)');
-    }
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON users (username)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9E7927C74 ON users (email)');
+		$this->addSql('CREATE INDEX IDX_1483A5E9D60322AC ON users (role_id)');
+	}
 
 	/**
 	 * Reverts the migration
 	 * @param Schema $schema Database schema
 	 */
-    public function down(Schema $schema): void
-    {
-        // Revert API keys
+	public function down(Schema $schema): void
+	{
+		// Revert API keys
 		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys_v2 AS
 			SELECT
 				expiration,
@@ -225,8 +228,8 @@ final class Version20260403015259 extends AbstractMigration
 				role_id
 			FROM api_keys_v2
 		');
-        $this->addSql('DROP TABLE api_keys_v2');
-        $this->addSql('CREATE TABLE api_keys_v2 (
+		$this->addSql('DROP TABLE api_keys_v2');
+		$this->addSql('CREATE TABLE api_keys_v2 (
 			expiration DATETIME NOT NULL,
 			hash VARCHAR(64) NOT NULL,
 			salt VARCHAR(32) NOT NULL,
@@ -241,7 +244,7 @@ final class Version20260403015259 extends AbstractMigration
 			CONSTRAINT FK_FAC0465EFB8FE773 FOREIGN KEY (revoked_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
 			CONSTRAINT FK_FAC0465EB03A8386 FOREIGN KEY (created_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)
 		');
-        $this->addSql('INSERT INTO api_keys_v2 (
+		$this->addSql('INSERT INTO api_keys_v2 (
 				expiration,
 				hash,
 				salt,
@@ -269,13 +272,13 @@ final class Version20260403015259 extends AbstractMigration
 			JOIN roles r ON r.id = t.role_id
 		');
 		$this->addSql('DROP TABLE __temp__api_keys_v2');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
-        $this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
-        $this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
+		$this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
+		$this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
 
 		// Revert user role changes
-        $this->addSql('CREATE TEMPORARY TABLE __temp__users AS
+		$this->addSql('CREATE TEMPORARY TABLE __temp__users AS
 			SELECT
 				email,
 				password,
@@ -286,19 +289,20 @@ final class Version20260403015259 extends AbstractMigration
 				role_id
 			FROM users
 		');
-        $this->addSql('DROP TABLE users');
-        $this->addSql(
-			'CREATE TABLE users (
+		$this->addSql('DROP TABLE users');
+		$this->addSql(<<<'SQL'
+			CREATE TABLE users (
 				email VARCHAR(255) DEFAULT NULL,
 				password VARCHAR(255) DEFAULT NULL,
 				username VARCHAR(255) NOT NULL,
-				language VARCHAR(7) DEFAULT \'en\' NOT NULL,
+				language VARCHAR(7) DEFAULT 'en' NOT NULL,
 				state INTEGER DEFAULT 0 NOT NULL,
 				id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-				role VARCHAR(15) DEFAULT \'normal\' NOT NULL
-			)'
+				role VARCHAR(15) DEFAULT 'normal' NOT NULL
+			)
+			SQL
 		);
-        $this->addSql(<<<'SQL'
+		$this->addSql(<<<'SQL'
 			INSERT INTO users (
 				email,
 				password,
@@ -327,11 +331,12 @@ final class Version20260403015259 extends AbstractMigration
 			FROM __temp__users
 			SQL
 		);
-        $this->addSql('DROP TABLE __temp__users');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9E7927C74 ON users (email)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON users (username)');
+		$this->addSql('DROP TABLE __temp__users');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9E7927C74 ON users (email)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON users (username)');
 
 		// Remove role table
 		$this->addSql('DROP TABLE roles');
-    }
+	}
+
 }
