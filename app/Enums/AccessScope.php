@@ -187,6 +187,11 @@ enum AccessScope: string implements JsonSerializable {
 	case iqrfNetwork_trUpload_execute = 'iqrfNetwork:trUpload:execute';
 
 	/**
+	 * Used for access to OpenAPI specification endpoints
+	 */
+	case openApi_read = 'openApi:read';
+
+	/**
 	 * Used for API key management
 	 */
 	case security_apiKeys_read = 'security:apiKeys:read';

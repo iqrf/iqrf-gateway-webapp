@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
+use App\Enums\AccessScope;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -69,6 +70,7 @@ class OpenApiController extends BaseController {
 							$ref: '#/components/schemas/OpenApiSpecification'
 	EOT)]
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::openApi_read->value]);
 		return $response->writeJsonBody($this->schemaBuilder->getArray());
 	}
 
@@ -90,6 +92,7 @@ class OpenApiController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', required: true, description: 'Name of schema')]
 	public function getSchema(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, [AccessScope::openApi_read->value]);
 		$name = $request->getParameter('name');
 		$path = __DIR__ . '/../../../../api/schemas/' . $name . '.json';
 		$baseUrl = Strings::replace((string) $request->getUri(), '~' . $name . '$~');
