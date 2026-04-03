@@ -142,7 +142,7 @@
 			"title": "iqrf::RemoveBondService"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__RemoveBondService.json",
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__RestartService.json",
 			"title": "iqrf::RestartService"
 		},
 		{
