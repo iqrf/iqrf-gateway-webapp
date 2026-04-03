@@ -26,7 +26,6 @@ use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -106,12 +105,6 @@ class User implements JsonSerializable {
 	 */
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $password = null;
-
-	/**
-	 * @var UserRole|null Legacy user role
-	 */
-	#[ORM\Column(name: 'role', type: Types::STRING, length: 15, enumType: UserRole::class, nullable: true, options: ['default' => UserRole::Default])]
-	private ?UserRole $roleLegacy = null;
 
 	/**
 	 * @var bool Email changed
