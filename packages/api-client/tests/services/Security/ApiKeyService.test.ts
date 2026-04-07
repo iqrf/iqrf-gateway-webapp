@@ -40,11 +40,15 @@ describe('ApiKeyService', (): void => {
 			'id': 1,
 			'description': 'Test',
 			'expiration': '2023-07-13T12:00:00.000+02:00',
+			'legacy': false,
+			'roleId': 0,
 		},
 		{
 			'id': 2,
 			'description': 'Test #2',
 			'expiration': null,
+			'legacy': false,
+			'roleId': 0,
 		},
 	];
 
@@ -56,11 +60,15 @@ describe('ApiKeyService', (): void => {
 			id: 1,
 			description: 'Test',
 			expiration: DateTime.fromISO('2023-07-13T12:00:00.000+02:00'),
+			legacy: false,
+			roleId: 0,
 		},
 		{
 			id: 2,
 			description: 'Test #2',
 			expiration: null,
+			legacy: false,
+			roleId: 0,
 		},
 	];
 
@@ -88,6 +96,7 @@ describe('ApiKeyService', (): void => {
 		const config: ApiKeyConfig = {
 			description: 'Test',
 			expiration: expiration,
+			roleId: 0,
 		};
 		const actual: ApiKeyCreated = await service.create(config);
 		const expected: ApiKeyCreated = {
@@ -110,6 +119,7 @@ describe('ApiKeyService', (): void => {
 		const config: ApiKeyConfig = {
 			description: 'Test',
 			expiration: null,
+			roleId: 0,
 		};
 		mockedAxios.onPut('/security/apiKeys/1', config)
 			.reply(200);
