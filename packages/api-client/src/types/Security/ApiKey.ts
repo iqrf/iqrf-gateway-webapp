@@ -18,8 +18,6 @@ import { type DateTime } from 'luxon';
 
 import { type UserInfo } from '../User';
 
-import { type AccessScope } from './AccessScope';
-
 /**
  * API key configuration
  */
@@ -36,9 +34,9 @@ export interface ApiKeyConfig {
 	expiration: DateTime | null;
 
 	/**
-	 * API key access scopes
+	 * API key role ID
 	 */
-	scopes: AccessScope[];
+	roleId: number;
 
 }
 

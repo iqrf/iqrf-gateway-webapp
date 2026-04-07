@@ -14,10 +14,48 @@
  * limitations under the License.
  */
 
-export * from './AccessScope';
-export * from './ApiKey';
-export * from './Certificate';
-export * from './DaemonApiToken';
-export * from './MosquittoUser';
-export * from './Role';
-export * from './SshKey';
+import { type AccessScope } from './AccessScope';
+
+/**
+ * Role configuration
+ */
+export interface RoleConfig {
+
+	/**
+	 * Role name
+	 */
+	name: string;
+
+	/**
+	 * Role description
+	 */
+	description: string;
+
+	/**
+	 * Role access scopes
+	 */
+	scopes: AccessScope[];
+
+}
+
+/**
+ * Role information
+ */
+export interface RoleInfo extends RoleConfig {
+
+	/**
+	 * Role ID
+	 */
+	id?: number;
+
+	/**
+	 * System-managed role flag
+	 */
+	system?: boolean;
+
+	/**
+	 * Stable system role identifier
+	 */
+	systemKey?: string | null;
+
+}

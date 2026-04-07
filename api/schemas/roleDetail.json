@@ -31,6 +31,18 @@
 		},
 		"scopes": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+		},
+		"system": {
+			"$id": "#/properties/system",
+			"type": "boolean",
+			"title": "System role flag",
+			"example": false
+		},
+		"systemKey": {
+			"$id": "#/properties/systemKey",
+			"type": "string",
+			"title": "System key - system role identifier",
+			"example": "admin"
 		}
 	}
 }

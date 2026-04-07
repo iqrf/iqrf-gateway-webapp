@@ -67,9 +67,8 @@ limitations under the License.
 					:label='$t("components.accessControl.apiKeys.expiration")'
 					:min='toRaw(minDate)'
 				/>
-				<ScopeTable
-					:selected='scopes'
-					@update='updateScopes'
+				<RoleLookupTable
+					@select='selectRole'
 				/>
 				<ITextInput
 					v-if='key.revokedBy'
@@ -118,8 +117,8 @@ import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Se
 import {
 	type ApiKeyCreated,
 	type ApiKeyInfo,
-	AccessScope,
-	ApiKeyConfig
+	ApiKeyConfig,
+	RoleInfo
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
@@ -133,7 +132,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiContentSave, mdiTextShort } from '@mdi/js';
+import { mdiTextShort } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { computed, ref, type Ref, type TemplateRef, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -141,9 +140,9 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
+import RoleLookupTable from '@/components/access-control/roles/RoleLookupTable.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import ScopeTable from './ScopeTable.vue';
 import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentProps = withDefaults(
@@ -151,16 +150,10 @@ const componentProps = withDefaults(
 		action?: Action.Add | Action.Edit;
 		apiKey?: ApiKeyInfo;
 		disabled?: boolean;
+		roles: RoleInfo[];
 	}>(),
 	{
 		action: Action.Add,
-		apiKey: () => ({
-			description: '',
-			expiration: null,
-			scopes: [],
-			legacy: false,
-		}),
-		disabled: false,
 	},
 );
 const emit = defineEmits<{
@@ -176,7 +169,7 @@ const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultKey: ApiKeyInfo = {
 	description: '',
 	expiration: null,
-	scopes: [],
+	roleId: componentProps.roles.find((v: RoleInfo) => v.systemKey === 'normal')?.id ?? 0,
 	legacy: false
 };
 const expiration: Ref<DateTime | null> = ref(null);
@@ -184,7 +177,6 @@ const key: Ref<ApiKeyInfo> = ref(defaultKey);
 const generatedKey: Ref<string | null> = ref(null);
 const displayDialog: Ref<InstanceType<typeof ApiKeyDisplayDialog>|null> = useTemplateRef('displayDialog');
 const minDate: Ref<DateTime | null> = ref(null);
-const scopes: Ref<AccessScope[]> = ref([]);
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
@@ -195,6 +187,10 @@ const dialogTitle = computed(() => {
 
 watch(show, (newVal: boolean): void => {
 	if (!newVal) {
+		return;
+	}
+	if (!componentProps.roles) {
+		componentState.value = ComponentState.Error;
 		return;
 	}
 	if (componentProps.action === Action.Add) {
@@ -229,7 +225,7 @@ async function onSubmit(): Promise<void> {
 			const config: ApiKeyConfig = {
 				description: params.description,
 				expiration: params.expiration,
-				scopes: params.scopes
+				roleId: params.roleId
 			}
 			const createdKey: ApiKeyCreated = await service.create(config);
 			generatedKey.value = createdKey.key;
@@ -263,12 +259,9 @@ function close(): void {
 	key.value = { ...defaultKey };
 }
 
-function updateScopes(scope: AccessScope): void {
-	if (scopes.value.includes(scope)) {
-		const index = scopes.value.indexOf(scope);
-		scopes.value.splice(index, 1);
-	} else {
-		scopes.value.push(scope);
+function selectRole(role: RoleInfo): void {
+	if (role.id !== undefined) {
+		key.value.roleId = role.id;
 	}
 }
 </script>

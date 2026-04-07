@@ -25,7 +25,7 @@ limitations under the License.
 				<ICard>
 					<IDataTable
 						:headers="headers"
-						:items="scopes"
+						:items="disableEdit ? scopes : selected"
 						:items-per-page="scopes.length"
 						hide-pagination
 						fixed-header
@@ -35,6 +35,7 @@ limitations under the License.
 							<v-checkbox-btn
 								:model-value="item.selected"
 								@update:model-value="emit('update', item.value)"
+								:disabled='disableEdit'
 							/>
 						</template>
 					</IDataTable>
@@ -50,9 +51,15 @@ import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const componentProps = defineProps<{
-	selected: Array<AccessScope>
-}>();
+const componentProps = withDefaults(
+	defineProps<{
+		selected: Array<AccessScope>;
+		disableEdit?: boolean;
+	}>(),
+	{
+		disableEdit: false,
+	},
+);
 const emit = defineEmits<{
 	update: [scopeValue: AccessScope]
 }>();

@@ -20,6 +20,7 @@ import { ApiKeyService } from './ApiKeyService';
 import { CertificateService } from './CertificateService';
 import { DaemonApiTokenService } from './DaemonApiTokenService';
 import { MosquittoUserService } from './MosquittoUserService';
+import { RoleService } from './RoleService';
 import { SshKeyService } from './SshKeyService';
 import { UserService } from './UserService';
 
@@ -27,6 +28,7 @@ export * from './ApiKeyService';
 export * from './CertificateService';
 export * from './DaemonApiTokenService';
 export * from './MosquittoUserService';
+export * from './RoleService';
 export * from './SshKeyService';
 export * from './UserService';
 
@@ -65,6 +67,14 @@ export class SecurityServices extends BaseService {
 	 */
 	public getMosquittoUserService(): MosquittoUserService {
 		return new MosquittoUserService(this.apiClient);
+	}
+
+	/*
+	 * Returns role management service
+	 * @return {RoleService} Role management service
+	 */
+	public getRoleService(): RoleService {
+		return new RoleService(this.apiClient);
 	}
 
 	/**

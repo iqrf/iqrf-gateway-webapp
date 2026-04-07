@@ -17,6 +17,7 @@
 			"revoke": "Revoke",
 			"rotate": "Rotate",
 			"save": "Save",
+			"select": "Select",
 			"selectAll": "Select all",
 			"send": "Send",
 			"skip": "Skip",
@@ -277,6 +278,16 @@
 				"states": {
 					"active": "ACTIVE",
 					"blocked": "BLOCKED"
+				}
+			},
+			"roles": {
+				"actions": {
+					"add": "Add role",
+					"edit": "Edit role"
+				},
+				"roleName": {
+					"name": "Role name",
+					"required": "Please enter role name."
 				}
 			},
 			"scopeTable": {
@@ -4460,6 +4471,9 @@
 			"mosquittoUsers": {
 				"description": "Manage MQTT broker users.",
 				"title": "MQTT broker users"
+			},
+			"roles": {
+				"title": "Roles"
 			},
 			"sshKeys": {
 				"description": "Manage SSH keys.",

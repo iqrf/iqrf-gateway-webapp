@@ -30,8 +30,11 @@
 			"title": "API key expiration",
 			"example": null
 		},
-		"scopes": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+		"roleId": {
+			"$id": "#/properties/roleId",
+			"title": "ID of API key role",
+			"type": "integer",
+			"example": 1
 		}
 	}
 }
