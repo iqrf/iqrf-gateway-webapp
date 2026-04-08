@@ -46,8 +46,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
 import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -61,7 +61,7 @@ const componentProps = withDefaults(
 	},
 );
 const emit = defineEmits<{
-	update: [scopeValue: AccessScope]
+	update: [scopeValue: AccessScope];
 }>();
 
 const i18n = useI18n();
@@ -69,12 +69,12 @@ const headers = [
 	{ key: 'value', title: i18n.t('components.accessControl.scopeTable.columns.value') },
 	{ key: 'title', title: i18n.t('components.accessControl.scopeTable.columns.title') },
 	{ key: 'description', title: i18n.t('components.accessControl.scopeTable.columns.description') },
-	{ key: 'actions', title: i18n.t('components.accessControl.scopeTable.columns.selected'), align: 'end', sortable: false}
+	{ key: 'actions', title: i18n.t('components.accessControl.scopeTable.columns.selected'), align: 'end', sortable: false },
 ];
 const scopes = computed(
 	() => Object.values(AccessScope).map(
-		(scopeValue: AccessScope) => generateScopeObject(scopeValue, componentProps.selected)
-	)
+		(scopeValue: AccessScope) => generateScopeObject(scopeValue, componentProps.selected),
+	),
 );
 
 function generateScopeObject(scope: AccessScope, selectedScopes: Array<AccessScope>): object {

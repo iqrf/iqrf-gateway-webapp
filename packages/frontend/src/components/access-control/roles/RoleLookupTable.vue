@@ -51,12 +51,14 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { Action, ComponentState, IActionBtn, IDataTable } from '@iqrf/iqrf-vue-ui';
 import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { Action, ComponentState, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
 import { computed, onMounted, ref, Ref } from 'vue';
-import { useApiClient } from '@/services/ApiClient';
-import { toast } from 'vue3-toastify';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import { useApiClient } from '@/services/ApiClient';
+
 import ScopeTable from './ScopeTable.vue';
 
 const emit = defineEmits<{

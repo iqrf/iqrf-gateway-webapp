@@ -43,7 +43,7 @@ limitations under the License.
 					v-model='roleConfig.name'
 					:label='$t("components.accessControl.roles.roleName.name")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.roleName.required"))
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.roleName.required")),
 					]'
 					required
 				/>
@@ -80,13 +80,14 @@ limitations under the License.
 import { AccessScope, RoleConfig, RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { ref, Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
-import ScopeTable from './ScopeTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
+
+import ScopeTable from './ScopeTable.vue';
 
 const componentProps = withDefaults(defineProps<{
 	action: Action;
@@ -116,7 +117,7 @@ function getRoleConfig(role?: RoleInfo): RoleConfig {
 	return {
 		name: role?.name ?? '',
 		description: role?.description ?? '',
-		scopes: role?.scopes ?? []
+		scopes: role?.scopes ?? [],
 	};
 }
 

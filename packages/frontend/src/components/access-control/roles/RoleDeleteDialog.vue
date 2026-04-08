@@ -31,12 +31,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
-import { useApiClient } from '@/services/ApiClient';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+
+import { useApiClient } from '@/services/ApiClient';
 
 const componentProps = defineProps<{
 	role: RoleInfo;

@@ -98,7 +98,6 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { useApiClient } from '@/services/ApiClient';
 import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
@@ -114,11 +113,13 @@ import { computed, type ComputedRef, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import { useApiClient } from '@/services/ApiClient';
+
 /// Component props
 const componentProps = withDefaults(
 	defineProps<{
 		/// Key to revoke
-		apiKey: ApiKeyInfo,
+		apiKey: ApiKeyInfo;
 		/// Choose dialog appearance on the page
 		appearance?: 'tableAction' | 'button';
 	}>(), {

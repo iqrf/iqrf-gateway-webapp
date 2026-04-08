@@ -53,14 +53,16 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { Action, ComponentState, IActionBtn, IDataTable } from '@iqrf/iqrf-vue-ui';
-import RoleForm from './RoleForm.vue';
 import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { Action, ComponentState, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
 import { computed, onMounted, ref, Ref } from 'vue';
-import { useApiClient } from '@/services/ApiClient';
-import { toast } from 'vue3-toastify';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import { useApiClient } from '@/services/ApiClient';
+
 import RoleDeleteDialog from './RoleDeleteDialog.vue';
+import RoleForm from './RoleForm.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const roles: Ref<RoleInfo[]> = ref([]);
@@ -102,9 +104,9 @@ async function deleteRole(id: number): Promise<void> {
 	try {
 		await service.delete(id);
 		roles.value = roles.value.filter((v: RoleInfo): boolean => v.id !== id);
-		toast.error(i18n.t('components.accessControl.roles.actions.remove.success'))
+		toast.error(i18n.t('components.accessControl.roles.actions.remove.success'));
 	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.remove.failure'))
+		toast.error(i18n.t('components.accessControl.roles.actions.remove.failure'));
 	}
 }
 

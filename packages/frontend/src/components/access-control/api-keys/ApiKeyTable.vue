@@ -88,6 +88,7 @@ import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDelet
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
+
 import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -98,7 +99,7 @@ const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.expiration') },
-	{ key: 'state', title: i18n.t('components.accessControl.apiKeys.stateTitle')},
+	{ key: 'state', title: i18n.t('components.accessControl.apiKeys.stateTitle') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const keys: Ref<ApiKeyInfo[]> = ref([]);

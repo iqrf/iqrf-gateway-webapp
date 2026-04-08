@@ -115,10 +115,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
+	ApiKeyConfig,
 	type ApiKeyCreated,
 	type ApiKeyInfo,
-	ApiKeyConfig,
-	RoleInfo
+	RoleInfo,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
@@ -143,6 +143,7 @@ import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisp
 import RoleLookupTable from '@/components/access-control/roles/RoleLookupTable.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
+
 import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentProps = withDefaults(
@@ -170,7 +171,7 @@ const defaultKey: ApiKeyInfo = {
 	description: '',
 	expiration: null,
 	roleId: componentProps.roles.find((v: RoleInfo) => v.systemKey === 'normal')?.id ?? 0,
-	legacy: false
+	legacy: false,
 };
 const expiration: Ref<DateTime | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
@@ -225,8 +226,8 @@ async function onSubmit(): Promise<void> {
 			const config: ApiKeyConfig = {
 				description: params.description,
 				expiration: params.expiration,
-				roleId: params.roleId
-			}
+				roleId: params.roleId,
+			};
 			const createdKey: ApiKeyCreated = await service.create(config);
 			generatedKey.value = createdKey.key;
 			toast.success(
