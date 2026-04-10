@@ -4,7 +4,7 @@
  Package: iqrf-gateway-webapp
  Architecture: all
  Depends: ${misc:Depends}, apt, gawk, iproute2,
-- iqrf-gateway-daemon, iqrf-journal-reader, mosquitto-plugin-iqrf,
+- iqrf-gateway-daemon, iqrf-journal-reader,
 - net-tools, openssl, passwd,
 + iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
 + mender-client, mender-connect, modemmanager, monit,
