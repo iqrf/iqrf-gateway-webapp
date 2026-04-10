@@ -75,7 +75,7 @@ class DependencyManager {
 			],
 			new Dependency('mender-connect', false, 'mender-connect', 'mender'),
 			new Dependency('mmcli', true, 'modemmanager', 'networkManager'),
-			new Dependency('mosquitto-plugin-iqrf', false, 'mosquitto-plugin-iqrf', 'mosquittoPlugin'),
+			new Dependency('mosquitto-plugin-iqrf-manager', false, 'mosquitto-plugin-iqrf', 'mosquittoPlugin'),
 			new Dependency('nmcli', false, 'network-manager', 'networkManager'),
 			new Dependency('shutdown', true, 'systemd-sysv'),
 			new Dependency('ssh', false, 'openssh-client', 'ssh'),
