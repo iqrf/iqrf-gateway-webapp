@@ -270,6 +270,7 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.iqrfnet.upload.title'),
 						to: '/iqrfnet/upload',
+						feature: Feature.trUpload,
 					},
 					{
 						title: i18n.t('pages.iqrfnet.tr-config.title'),

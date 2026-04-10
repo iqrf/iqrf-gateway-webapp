@@ -29,6 +29,7 @@ limitations under the License.
 {
 	"name": "CoordinatorUpload",
 	"meta": {
+		"feature": "trUpload",
 		"requiresProxy": true,
 	},
 }
