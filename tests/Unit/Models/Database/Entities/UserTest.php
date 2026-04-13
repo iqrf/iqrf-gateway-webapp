@@ -224,8 +224,7 @@ final class UserTest extends TestCase {
 			'id' => null,
 			'username' => self::USERNAME,
 			'email' => self::EMAIL,
-			'role' => $this->role->getName(),
-			'roleSystemKey' => $this->role->getSystemKey(),
+			'roleId' => $this->role->getId(),
 			'language' => self::LANGUAGE->value,
 			'state' => self::STATE->toString(),
 		];

@@ -9,7 +9,7 @@
 		"username",
 		"email",
 		"language",
-		"role",
+		"roleId",
 		"state"
 	],
 	"properties": {

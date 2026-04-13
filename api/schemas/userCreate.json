@@ -7,7 +7,7 @@
 	"required": [
 		"username",
 		"language",
-		"role"
+		"roleId"
 	],
 	"anyOf": [
 		{

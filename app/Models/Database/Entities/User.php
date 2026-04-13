@@ -341,8 +341,7 @@ class User implements JsonSerializable {
 			'id' => $this->id,
 			'username' => $this->username,
 			'email' => $this->email,
-			'role' => $this->role->getName(),
-			'roleSystemKey' => $this->role->getSystemKey(),
+			'roleId' => $this->role->getId(),
 			'language' => $this->language->value,
 			'state' => $this->state->toString(),
 		];
