@@ -41,7 +41,6 @@ class Kernel {
 	 */
 	public static function boot(): Configurator {
 		$configurator = new Configurator();
-		$configurator->setDebugMode(true);
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('Europe/Prague');
 		$tempDir = __DIR__ . '/../temp';
