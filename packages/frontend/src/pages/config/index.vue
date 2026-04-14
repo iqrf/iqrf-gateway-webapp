@@ -32,6 +32,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -46,62 +47,73 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.config.controller.description'),
 		to: '/config/controller',
 		feature: Feature.iqrfGatewayController,
+		scopes: [AccessScope.config_iqrfGatewayController_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.title'),
 		description: i18n.t('pages.config.daemon.description'),
 		to: '/config/daemon',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.ws-proxy.title'),
 		description: i18n.t('pages.config.ws-proxy.description'),
 		to: '/config/ws-proxy',
+		scopes: [AccessScope.config_translator_read],
 	},
 	{
 		title: i18n.t('pages.config.influxdb-bridge.title'),
 		description: i18n.t('pages.config.influxdb-bridge.description'),
 		to: '/config/influxdb-bridge',
 		feature: Feature.iqrfGatewayInfluxdbBridge,
+		scopes: [AccessScope.config_iqrfGatewayInfluxdbBridge_read],
 	},
 	{
 		title: i18n.t('pages.config.iqrf-repository.title'),
 		description: i18n.t('pages.config.iqrf-repository.description'),
 		to: '/config/iqrf-repository',
 		feature: Feature.iqrfRepository,
+		scopes: [AccessScope.config_iqrfRepository_read],
 	},
 	{
 		title: i18n.t('pages.config.smtp.title'),
 		description: i18n.t('pages.config.smtp.description'),
 		to: '/config/smtp',
+		scopes: [AccessScope.config_mailer_read],
 	},
 	{
 		title: i18n.t('pages.config.time.title'),
 		description: i18n.t('pages.config.time.description'),
 		to: '/config/time',
+		scopes: [AccessScope.config_time_read],
 	},
 	{
 		title: i18n.t('pages.config.journal.title'),
 		description: i18n.t('pages.config.journal.description'),
 		to: '/config/journal',
 		feature: Feature.journal,
+		scopes: [AccessScope.config_journal_read],
 	},
 	{
 		title: i18n.t('pages.config.unattendedUpgrades.title'),
 		description: i18n.t('pages.config.unattendedUpgrades.description'),
 		to: '/config/unattended-upgrades',
 		feature: Feature.unattendedUpgrades,
+		scopes: [AccessScope.config_automaticUpgrades_read],
 	},
 	{
 		title: i18n.t('pages.config.mender.title'),
 		description: i18n.t('pages.config.mender.description'),
 		to: '/config/mender',
 		feature: Feature.mender,
+		scopes: [AccessScope.config_mender_read],
 	},
 	{
 		title: i18n.t('pages.config.monit.title'),
 		description: i18n.t('pages.config.monit.description'),
 		to: '/config/monit',
 		feature: Feature.monit,
+		scopes: [AccessScope.config_monit_read],
 	},
 ]);
 </script>

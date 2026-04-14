@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,48 +25,56 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
 	mdiAccount,
 	mdiAccountEye,
-	mdiHelp,
 	mdiShieldAccount,
 } from '@mdi/js';
 import { computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const componentProps = defineProps<{
-	role: UserRole;
+	role: RoleInfo;
 }>();
 const i18n = useI18n();
 
 /// Badge color for the given role
 const color: ComputedRef<string> = computed((): string => {
-	const data: Record<UserRole, string> = {
-		[UserRole.Admin]: 'deep-purple',
-		[UserRole.Normal]: 'indigo',
-		[UserRole.Basic]: 'teal',
+	const data: Partial<Record<string, string>> = {
+		admin: 'deep-purple',
+		normal: 'indigo',
+		viewer: 'teal',
 	};
-	return data[componentProps.role] ?? 'grey';
+	if (!componentProps.role.systemKey) {
+		return 'grey';
+	}
+	return data[componentProps.role.systemKey] ?? 'grey';
 });
 
 /// Badge icon for the given role
 const icon: ComputedRef<string> = computed((): string => {
-	const data: Record<UserRole, string> = {
-		[UserRole.Admin]: mdiShieldAccount,
-		[UserRole.Normal]: mdiAccount,
-		[UserRole.Basic]: mdiAccountEye,
+	const data: Partial<Record<string, string>> = {
+		admin: mdiShieldAccount,
+		normal: mdiAccount,
+		viewer: mdiAccountEye,
 	};
-	return data[componentProps.role] ?? mdiHelp;
+	if (!componentProps.role.systemKey) {
+		return mdiAccount;
+	}
+	return data[componentProps.role.systemKey] ?? mdiAccount;
 });
 
 /// Badge text for the given role
 const text: ComputedRef<string> = computed((): string => {
-	const data: Record<UserRole, string> = {
-		[UserRole.Admin]: i18n.t('components.accessControl.users.roles.admin'),
-		[UserRole.Normal]: i18n.t('components.accessControl.users.roles.normal'),
-		[UserRole.Basic]: i18n.t('components.accessControl.users.roles.basic'),
+	const data: Partial<Record<string, string>> = {
+		admin: i18n.t('components.accessControl.roles.systemRoles.name.admin'),
+		normal: i18n.t('components.accessControl.roles.systemRoles.name.normal'),
+		viewer: i18n.t('components.accessControl.roles.systemRoles.name.viewer'),
 	};
-	return data[componentProps.role] ?? '';
+	if (!componentProps.role.systemKey) {
+		return componentProps.role.name;
+	}
+	return data[componentProps.role.systemKey] ?? componentProps.role.name;
 });
 </script>

@@ -335,7 +335,7 @@ class UsersController extends BaseSecurityController {
 				description: User is already blocked
 	EOT)]
 	public function block(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		try {
 			$user = $this->getUser($request);
 			$currentUser = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -364,7 +364,7 @@ class UsersController extends BaseSecurityController {
 				description: User is not blocked
 	EOT)]
 	public function unblock(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin']);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
 		try {
 			$this->manager->unblock($this->getUser($request));
 			return $response->withStatus(ApiResponse::S200_OK);

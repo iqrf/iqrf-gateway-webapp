@@ -30,7 +30,7 @@ limitations under the License.
 	"name": "VlanConnections",
 	"meta": {
 		"feature": "networkManager",
-		"roles": ["admin"]
+		"scope": ["ipNetwork_physicalConnections_read"]
 	}
 }
 </route>

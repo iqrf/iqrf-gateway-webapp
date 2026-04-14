@@ -17,7 +17,6 @@ limitations under the License.
 
 <template>
 	<div>
-
 		<Head>
 			<title>{{ $t('pages.accessControl.roles.title') }}</title>
 		</Head>
@@ -29,7 +28,7 @@ limitations under the License.
 {
 	"name": "Roles",
 	"meta": {
-		"roles": ["admin"],
+		"scope": ["security_role_read"],
 	},
 }
 </route>

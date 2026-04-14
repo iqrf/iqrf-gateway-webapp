@@ -15,22 +15,21 @@
  * limitations under the License.
  */
 
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Language } from '@iqrf/iqrf-ui-common-types';
-import { mdiAccount, mdiAccountEye, mdiHelp, mdiShieldAccount } from '@mdi/js';
+import { mdiAccount, mdiAccountEye, mdiShieldAccount } from '@mdi/js';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import UserRoleBadge from '@/components/access-control/users/UserRoleBadge.vue';
+import RoleBadge from '@/components/access-control/roles/RoleBadge.vue';
 import i18n from '@/plugins/i18n';
 import { pluginFactory } from '@/tests/factories/pluginFactory';
 
-
-describe('UserRoleBadge', (): void => {
+describe('RoleBadge', (): void => {
 
 	interface TestCase {
-		/// User role
-		role: UserRole;
+		/// Role
+		role: RoleInfo;
 		/// Expected badge color
 		color: string;
 		/// Expected badge icon
@@ -44,22 +43,43 @@ describe('UserRoleBadge', (): void => {
 	 */
 	const cases: TestCase[] = [
 		{
-			role: UserRole.Admin,
+			role: {
+				id: 1,
+				name: 'Admin',
+				description: 'Administrator role',
+				scopes: [],
+				system: true,
+				systemKey: 'admin',
+			},
 			color: 'deep-purple',
 			icon: mdiShieldAccount,
 			text: 'Administrator',
 		},
 		{
-			role: UserRole.Normal,
+			role: {
+				id: 2,
+				name: 'Normal',
+				description: 'Normal role',
+				scopes: [],
+				system: true,
+				systemKey: 'normal',
+			},
 			color: 'indigo',
 			icon: mdiAccount,
 			text: 'Normal user',
 		},
 		{
-			role: UserRole.Basic,
+			role: {
+				id: 3,
+				name: 'Viewer',
+				description: 'Viewer role',
+				scopes: [],
+				system: true,
+				systemKey: 'viewer',
+			},
 			color: 'teal',
 			icon: mdiAccountEye,
-			text: 'Basic user',
+			text: 'Read only user',
 		},
 	];
 
@@ -70,7 +90,7 @@ describe('UserRoleBadge', (): void => {
 
 	test.each(cases)('$text', ({ role, color, icon, text }: TestCase): void => {
 		expect.assertions(3);
-		const wrapper = mount(UserRoleBadge, {
+		const wrapper = mount(RoleBadge, {
 			props: {
 				role: role,
 			},
@@ -87,12 +107,18 @@ describe('UserRoleBadge', (): void => {
 		expect(wrapper.vm.text).toStrictEqual(text);
 	});
 
-	test('Invalid user role', (): void => {
+	test('Custom role without system key', (): void => {
 		expect.assertions(3);
-		const wrapper = mount(UserRoleBadge, {
+		const wrapper = mount(RoleBadge, {
 			props: {
-				// @ts-ignore Invalid account state
-				role: 'Invalid',
+				role: {
+					id: 4,
+					name: 'Custom role',
+					description: 'Custom role description',
+					scopes: [],
+					system: false,
+					systemKey: null,
+				},
 			},
 			global: {
 				plugins: pluginFactory(i18n),
@@ -102,9 +128,9 @@ describe('UserRoleBadge', (): void => {
 		// @ts-ignore Accessing private property
 		expect(wrapper.vm.color).toStrictEqual('grey');
 		// @ts-ignore Accessing private property
-		expect(wrapper.vm.icon).toStrictEqual(mdiHelp);
+		expect(wrapper.vm.icon).toStrictEqual(mdiAccount);
 		// @ts-ignore Accessing private property
-		expect(wrapper.vm.text).toStrictEqual('');
+		expect(wrapper.vm.text).toStrictEqual('Custom role');
 	});
 
 });

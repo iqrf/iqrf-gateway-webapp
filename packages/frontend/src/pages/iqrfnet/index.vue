@@ -31,6 +31,7 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -45,11 +46,13 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.iqrfnet.send-dpa.title'),
 		description: i18n.t('pages.iqrfnet.send-dpa.description'),
 		to: '/iqrfnet/send-dpa',
+		scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 	},
 	{
 		title: i18n.t('pages.iqrfnet.send-json.title'),
 		description: i18n.t('pages.iqrfnet.send-json.description'),
 		to: '/iqrfnet/send-json',
+		scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 	},
 	// temporarily disabled, to be re-enabled in future release
 	//  {
@@ -57,21 +60,25 @@ const links: Ref<DisambiguationLink[]> = ref([
 	//	  description: i18n.t('pages.iqrfnet.upload.description'),
 	//	  to: '/iqrfnet/upload',
 	//	  feature: Feature.trUpload,
+	//    scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 	//  },
 	{
 		title: i18n.t('pages.iqrfnet.tr-config.title'),
 		description: i18n.t('pages.iqrfnet.tr-config.description'),
 		to: '/iqrfnet/tr-config',
+		scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 	},
 	{
 		title: i18n.t('pages.iqrfnet.network-manager.title'),
 		description: i18n.t('pages.iqrfnet.network-manager.description'),
 		to: '/iqrfnet/network-manager',
+		scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 	},
 	{
 		title: i18n.t('pages.iqrfnet.standard-manager.title'),
 		description: i18n.t('pages.iqrfnet.standard-manager.description'),
 		to: '/iqrfnet/standard-manager',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 ]);
 </script>

@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "SshKeys",
 	"meta": {
-		"roles": ["admin"],
+		"scope": ["security_sshkeys_read"],
 	},
 }
 </route>

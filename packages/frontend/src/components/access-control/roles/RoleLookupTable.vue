@@ -29,6 +29,8 @@ limitations under the License.
 				@click='getRoles()'
 			/>
 		</template>
+		<!-- TODO - rename the whole component to something like RoleSelectTable.vue -->
+		<!-- TODO - add some displaing of the currently selected role -->
 		<IDataTable :headers='headers' :items='roles'
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 			:no-data-text='noDataText'
@@ -61,6 +63,10 @@ import { useApiClient } from '@/services/ApiClient';
 
 import ScopeTable from './ScopeTable.vue';
 
+const componentProps = defineProps<{
+	roleList?: RoleInfo[];
+}>();
+
 const emit = defineEmits<{
 	select: [role: RoleInfo];
 }>();
@@ -70,17 +76,17 @@ const roles: Ref<RoleInfo[]> = ref([]);
 const service = useApiClient().getSecurityServices().getRoleService();
 const i18n = useI18n();
 const headers = computed(() => [
-	{ key: 'name', title: i18n.t('components.accessScopes.roles.table.name') },
-	{ key: 'description', title: i18n.t('components.accessScopes.roles.table.description') },
-	{ key: 'system', title: i18n.t('components.accessScopes.roles.table.system') },
-	{ key: 'scopes', title: i18n.t('components.accessScopes.roles.table.scopes') },
+	{ key: 'name', title: i18n.t('components.accessControl.roles.table.name') },
+	{ key: 'description', title: i18n.t('components.accessControl.roles.table.description') },
+	{ key: 'system', title: i18n.t('components.accessControl.roles.table.system') },
+	{ key: 'scopes', title: i18n.t('components.accessControl.roles.table.scopes') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return 'component.accessControl.roles.noData.fetchFailed';
+		return 'components.accessControl.roles.noData.fetchFailed';
 	}
-	return 'component.accessControl.roles.noData.empty';
+	return 'components.accessControl.roles.noData.empty';
 });
 
 /**
@@ -105,7 +111,11 @@ function selectRole(role: RoleInfo): void {
 }
 
 onMounted(() => {
-	getRoles();
+	if (componentProps.roleList) {
+		roles.value = componentProps.roleList;
+	} else {
+		getRoles();
+	}
 });
 
 </script>

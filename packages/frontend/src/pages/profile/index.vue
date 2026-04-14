@@ -29,6 +29,9 @@ limitations under the License.
 <route>
 {
 	"name": "Profile",
+	"meta": {
+		"scope": ["account_read"],
+	},
 }
 </route>
 

@@ -24,11 +24,13 @@ limitations under the License.
 			<UserForm
 				:action='Action.Invite'
 				:disabled='componentState === ComponentState.Reloading'
+				:role-list="roles"
 				@refresh='getUsers()'
 			/>
 			<UserForm
 				:action='Action.Add'
 				:disabled='componentState === ComponentState.Reloading'
+				:role-list="roles"
 				@refresh='getUsers()'
 			/>
 			<IActionBtn
@@ -36,7 +38,7 @@ limitations under the License.
 				container-type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.accessControl.users.actions.refresh")'
-				@click='getUsers()'
+				@click='getData()'
 			/>
 		</template>
 		<IDataTable
@@ -47,8 +49,8 @@ limitations under the License.
 			:hover='true'
 			:dense='true'
 		>
-			<template #item.role='{ item }'>
-				<UserRoleBadge :role='item.role' />
+			<template #item.roleId='{ item }'>
+				<RoleBadge :role='roles.find((role: RoleInfo) => role.id === item)!' />
 			</template>
 			<template #item.language='{ item }'>
 				<ILanguageFlag :language='item.language' />
@@ -70,6 +72,7 @@ limitations under the License.
 					:action='Action.Edit'
 					:user-info='toRaw(item)'
 					:disabled='componentState === ComponentState.Reloading'
+					:role-list="roles"
 					@refresh='getUsers()'
 				/>
 				<UserDeleteDialog
@@ -85,6 +88,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
 	Action,
 	ComponentState,
@@ -103,15 +107,17 @@ import AccountStateButton from '@/components/access-control/users/AccountStateBu
 import ResendEmailButton from '@/components/access-control/users/ResendEmailButton.vue';
 import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
 import UserForm from '@/components/access-control/users/UserForm.vue';
-import UserRoleBadge from '@/components/access-control/users/UserRoleBadge.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
+import RoleBadge from '../roles/RoleBadge.vue';
+
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const service = useApiClient().getSecurityServices().getUserService();
 const userStore = useUserStore();
 const { getId: userId } = storeToRefs(userStore);
+const userService = useApiClient().getSecurityServices().getUserService();
+const roleService = useApiClient().getSecurityServices().getRoleService();
 const headers = computed(() => [
 	{ key: 'username', title: i18n.t('components.common.fields.username') },
 	{ key: 'email', title: i18n.t('components.accessControl.users.email') },
@@ -121,9 +127,10 @@ const headers = computed(() => [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const users: Ref<UserInfo[]> = ref([]);
+const roles: Ref<RoleInfo[]> = ref([]);
 
 onMounted(() => {
-	getUsers();
+	getData();
 });
 
 const noDataText = computed(() => {
@@ -139,11 +146,36 @@ async function getUsers(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		users.value = await service.list();
+		users.value = await userService.list();
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
 			i18n.t('components.accessControl.users.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
+}
+
+async function getData(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		users.value = await userService.list();
+	} catch {
+		toast.error(
+			i18n.t('components.accessControl.users.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+		return;
+	}
+	try {
+		roles.value = await roleService.list();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.accessControl.roles.actions.list.failure'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}

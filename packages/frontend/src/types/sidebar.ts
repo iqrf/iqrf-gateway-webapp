@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { type RouteLocationRaw } from 'vue-router';
 
 /**
@@ -36,8 +37,8 @@ export interface SidebarLink {
 	href?: string;
 	/// Target
 	target?: string;
-	/// User roles
-	roles?: UserRole[];
+	/// Access scopes restricting user access
+	scopes?: AccessScope[];
 	/// Feature enabled
 	feature?: Feature;
 	/// Development build only?

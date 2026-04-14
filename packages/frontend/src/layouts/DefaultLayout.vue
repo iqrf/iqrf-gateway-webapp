@@ -35,7 +35,8 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -60,14 +61,13 @@ const route = useRoute();
 const userStore = useUserStore();
 const monitorStore = useMonitorStore();
 
-const { getRole: role } = storeToRefs(userStore);
 const { isLoggedIn } = storeToRefs(userStore);
 const developmentOnly: Ref<boolean> = computed((): boolean => (route.meta.developmentOnly ?? false) as boolean);
 const requiresAuth: Ref<boolean> = computed((): boolean => (route.meta.requiresAuth ?? true) as boolean);
 const requiredFeature: Ref<Feature | null> = computed((): Feature | null => (route.meta.feature ?? null) as Feature | null);
 const requiresProxy: Ref<boolean> = computed((): boolean => (route.meta.requiresProxy ?? false) as boolean);
-const requiredRoles: Ref<UserRole[]> = computed((): UserRole[] => (route.meta.roles ?? []) as UserRole[]);
 const isUnavailable = computed<boolean>((): boolean => (route.meta.unavailable ?? false) as boolean);
+const requiredScopes: Ref<AccessScope[]> = computed((): AccessScope[] => (route.meta.scope ?? []) as AccessScope[]);
 const isAllowed: Ref<boolean> = computed((): boolean => {
 	if (isUnavailable.value) {
 		return false;
@@ -81,8 +81,10 @@ const isAllowed: Ref<boolean> = computed((): boolean => {
 	) {
 		return false;
 	}
-	return !requiresAuth.value || requiredRoles.value.length === 0 ||
-		(role.value !== null && requiredRoles.value.includes(role.value));
+	if (!requiresAuth.value || requiredScopes.value.length === 0) {
+		return true;
+	}
+	return requiredScopes.value.every((scope) => userStore.hasScope(scope));
 });
 const isServiceWhitelisted: Ref<boolean> = computed((): boolean => (route.meta.isServiceWhitelisted ?? false) as boolean);
 const showProxyOverlay: Ref<boolean> = computed((): boolean => {

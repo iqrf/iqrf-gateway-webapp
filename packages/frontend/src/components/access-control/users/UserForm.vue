@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -100,7 +100,8 @@ limitations under the License.
 						</v-tooltip>
 					</template>
 				</IPasswordInput>
-				<UserRoleInput v-model='user.role' />
+				<!-- TODO - pass role to lookup table after it can show selected role -->
+				<RoleLookupTable @select="selectRole" :roleList='componentProps.roleList' />
 				<ILanguageSelect v-model='user.language' />
 				<template #actions>
 					<IActionBtn
@@ -127,8 +128,8 @@ import {
 	type UserCreate,
 	type UserEdit,
 	type UserInfo,
-	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
 	Action,
@@ -148,7 +149,7 @@ import {
 	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
-import { ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { computed, ComputedRef, ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -159,10 +160,13 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
+import RoleLookupTable from '../roles/RoleLookupTable.vue';
+
 const componentProps = defineProps<{
 	action: Action.Add | Action.Invite | Action.Edit;
 	userInfo?: UserInfo;
 	disabled?: boolean;
+	roleList: RoleInfo[];
 }>();
 const emit = defineEmits<{
 	refresh: [];
@@ -176,10 +180,13 @@ const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {
 	username: '',
 	email: '',
-	role: UserRole.Normal,
+	roleId: componentProps.roleList.find((role) => role.systemKey === 'normal')!.id!,
 	language: Language.English,
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
+const role: ComputedRef<RoleInfo> = computed(() => {
+	return componentProps.roleList.find((role) => role.id === user.value.roleId)!;
+});
 
 watch(showDialog, (newVal: boolean): void => {
 	if (!newVal) {
@@ -196,7 +203,7 @@ watch(showDialog, (newVal: boolean): void => {
 			user.value = {
 				username: componentProps.userInfo.username,
 				email: componentProps.userInfo.email,
-				role: componentProps.userInfo.role,
+				roleId: componentProps.userInfo.roleId,
 				language: componentProps.userInfo.language,
 				password: '',
 			};
@@ -208,6 +215,10 @@ watch(showDialog, (newVal: boolean): void => {
 		}
 	}
 });
+
+function selectRole(role: RoleInfo): void {
+	user.value.roleId = role.id!;
+}
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {

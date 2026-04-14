@@ -102,7 +102,6 @@ class SshKeysController extends BaseSecurityController {
 	EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, [AccessScope::security_sshkeys_read->value]);
-		$this->validators->checkScopes($request, ['sshKeys']);
 		$response = $response->writeJsonBody($this->manager->listKeys());
 		return $this->validators->validateResponse('sshKeyList', $response);
 	}

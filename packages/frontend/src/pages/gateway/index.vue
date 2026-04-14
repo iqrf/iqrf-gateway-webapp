@@ -31,6 +31,7 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,26 +45,31 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.gateway.information.title'),
 		description: i18n.t('pages.gateway.information.description'),
 		to: '/gateway/information',
+		scopes: [AccessScope.gateway_information_read],
 	},
 	{
 		title: i18n.t('pages.gateway.logs.title'),
 		description: i18n.t('pages.gateway.logs.description'),
 		to: '/gateway/logs',
+		scopes: [AccessScope.gateway_diagnostic_read],
 	},
 	{
 		title: i18n.t('pages.gateway.mode.title'),
 		description: i18n.t('pages.gateway.mode.description'),
 		to: '/gateway/mode',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.gateway.services.title'),
 		description: i18n.t('pages.gateway.services.description'),
 		to: '/gateway/services',
+		scopes: [AccessScope.gateway_service_read],
 	},
 	{
 		title: i18n.t('pages.gateway.power.title'),
 		description: i18n.t('pages.gateway.power.description'),
 		to: '/gateway/power',
+		scopes: [AccessScope.gateway_power_read],
 	},
 ]);
 </script>

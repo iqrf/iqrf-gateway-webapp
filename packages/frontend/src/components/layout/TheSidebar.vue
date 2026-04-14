@@ -35,7 +35,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
 	mdiAccountKey,
 	mdiBook,
@@ -81,7 +82,6 @@ const sidebarToggleIcon = computed(() => {
  * @return {boolean} True if the item should be displayed
  */
 function filter(item: SidebarLink): boolean {
-	const role: UserRole | null = userStore.getRole;
 	if (item.children !== undefined) {
 		item.children = item.children.filter((child: SidebarLink) => filter(child));
 		if (item.children.length === 0) {
@@ -94,7 +94,10 @@ function filter(item: SidebarLink): boolean {
 	) {
 		return false;
 	}
-	return !(item.roles !== undefined && role !== null && (Array.isArray(item.roles) && !item.roles.includes(role)));
+	if (item.scopes === undefined) {
+		return true;
+	}
+	return item.scopes.every((scope) => userStore.hasScope(scope));
 }
 
 function items(): SidebarLink[] {
@@ -108,22 +111,27 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.gateway.information.title'),
 						to: '/gateway/information',
+						scopes: [AccessScope.gateway_information_read],
 					},
 					{
 						title: i18n.t('pages.gateway.logs.title'),
 						to: '/gateway/logs',
+						scopes: [AccessScope.gateway_diagnostic_read],
 					},
 					{
 						title: i18n.t('pages.gateway.mode.title'),
 						to: '/gateway/mode',
+						scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 					},
 					{
 						title: i18n.t('pages.gateway.services.title'),
 						to: '/gateway/services',
+						scopes: [AccessScope.gateway_service_read],
 					},
 					{
 						title: i18n.t('pages.gateway.power.title'),
 						to: '/gateway/power',
+						scopes: [AccessScope.gateway_power_read],
 					},
 				],
 			},
@@ -135,10 +143,12 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.config.controller.title'),
 						to: '/config/controller',
 						feature: Feature.iqrfGatewayController,
+						scopes: [AccessScope.config_iqrfGatewayController_read],
 					},
 					{
 						title: i18n.t('pages.config.daemon.title'),
 						to: '/config/daemon',
+						scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 						children: [
 							{
 								title: i18n.t('pages.config.daemon.interfaces.title'),
@@ -213,45 +223,53 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.config.ws-proxy.title'),
 						to: '/config/ws-proxy',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.config_translator_read],
 					},
 					{
 						title: i18n.t('pages.config.influxdb-bridge.title'),
 						to: '/config/influxdb-bridge',
 						feature: Feature.iqrfGatewayInfluxdbBridge,
+						scopes: [AccessScope.config_iqrfGatewayInfluxdbBridge_read],
 					},
 					{
 						title: i18n.t('pages.config.iqrf-repository.title'),
 						to: '/config/iqrf-repository',
 						feature: Feature.iqrfRepository,
+						scopes: [AccessScope.config_iqrfRepository_read],
 					},
 					{
 						title: i18n.t('pages.config.smtp.title'),
 						to: '/config/smtp',
+						scopes: [AccessScope.config_mailer_read],
 					},
 					{
 						title: i18n.t('pages.config.time.title'),
 						to: '/config/time',
+						scopes: [AccessScope.config_time_read],
 					},
 					{
 						title: i18n.t('pages.config.journal.title'),
 						to: '/config/journal',
 						feature: Feature.journal,
+						scopes: [AccessScope.config_journal_read],
 					},
 					{
 						title: i18n.t('pages.config.unattendedUpgrades.title'),
 						to: '/config/unattended-upgrades',
 						feature: Feature.unattendedUpgrades,
+						scopes: [AccessScope.config_automaticUpgrades_read],
 					},
 					{
 						title: i18n.t('pages.config.mender.title'),
 						to: '/config/mender',
 						feature: Feature.mender,
+						scopes: [AccessScope.config_mender_read],
 					},
 					{
 						title: i18n.t('pages.config.monit.title'),
 						to: '/config/monit',
 						feature: Feature.monit,
+						scopes: [AccessScope.config_monit_read],
 					},
 				],
 			},
@@ -262,28 +280,34 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.iqrfnet.send-dpa.title'),
 						to: '/iqrfnet/send-dpa',
+						scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 					},
 					{
 						title: i18n.t('pages.iqrfnet.send-json.title'),
 						to: '/iqrfnet/send-json',
+						scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 					},
 					// temporarily disabled, to be re-enabled in future release
 					//  {
 					//	  title: i18n.t('pages.iqrfnet.upload.title'),
 					//	  to: '/iqrfnet/upload',
 					//	  feature: Feature.trUpload,
+					//    scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 					//  },
 					{
 						title: i18n.t('pages.iqrfnet.tr-config.title'),
 						to: '/iqrfnet/tr-config',
+						scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 					},
 					{
 						title: i18n.t('pages.iqrfnet.network-manager.title'),
 						to: '/iqrfnet/network-manager',
+						scopes: [AccessScope.iqrfNetwork_trUpload_execute],
 					},
 					{
 						title: i18n.t('pages.iqrfnet.standard-manager.title'),
 						to: '/iqrfnet/standard-manager',
+						scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 					},
 				],
 			},
@@ -294,25 +318,29 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.ipNetwork.ethernet.title'),
 						to: '/ip-network/ethernet',
+						scopes: [AccessScope.ipNetwork_physicalConnections_read],
 					},
 					{
 						title: i18n.t('pages.ipNetwork.wireless.title'),
 						to: '/ip-network/wireless',
+						scopes: [AccessScope.ipNetwork_physicalConnections_read],
 					},
 					{
 						title: i18n.t('pages.ipNetwork.mobile.title'),
 						to: '/ip-network/mobile',
+						scopes: [AccessScope.ipNetwork_physicalConnections_read],
 					},
 					{
 						title: i18n.t('pages.ipNetwork.vlan.title'),
 						to: '/ip-network/vlan',
+						scopes: [AccessScope.ipNetwork_physicalConnections_read],
 					},
 					{
 						title: i18n.t('pages.ipNetwork.wireGuard.title'),
 						to: '/ip-network/wireguard',
+						scopes: [AccessScope.ipNetwork_vpns_read],
 					},
 				],
-				roles: [UserRole.Admin],
 				feature: Feature.networkManager,
 			},
 			{
@@ -322,11 +350,13 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.maintenance.backup.title'),
 						to: '/maintenance/backup',
+						scopes: [AccessScope.gateway_backup_execute],
 					},
 					{
 						title: i18n.t('pages.maintenance.mender.title'),
 						to: '/maintenance/mender-update',
 						feature: Feature.mender,
+						scopes: [AccessScope.gateway_mender_execute],
 					},
 				],
 			},
@@ -337,27 +367,32 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.accessControl.users.title'),
 						to: '/access-control/users',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.security_users_read],
+					},
+					{
+						title: i18n.t('pages.accessControl.roles.title'),
+						to: '/access-control/roles',
+						scopes: [AccessScope.security_role_read],
 					},
 					{
 						title: i18n.t('pages.accessControl.apiKeys.title'),
 						to: '/access-control/api-keys',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.security_apiKeys_read],
 					},
 					{
 						title: i18n.t('pages.accessControl.sshKeys.title'),
 						to: '/access-control/ssh-keys',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.security_sshkeys_read],
 					},
 					{
 						title: i18n.t('pages.accessControl.daemonAccessTokens.title'),
 						to: '/access-control/daemon-access-tokens',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.security_daemonAccessTokens_read],
 					},
 					{
 						title: i18n.t('pages.accessControl.mosquittoUsers.title'),
 						to: '/access-control/mosquitto-users',
-						roles: [UserRole.Admin],
+						scopes: [AccessScope.security_mosquittoUsers_read],
 						feature: Feature.mosquittoPlugin,
 					},
 				],
@@ -366,7 +401,8 @@ function items(): SidebarLink[] {
 				title: i18n.t('pages.install.title'),
 				icon: mdiWizardHat,
 				to: '/install',
-				roles: [UserRole.Admin],
+				// TODO - add access scope?
+				// roles: [UserRole.Admin],
 				developmentOnly: true,
 			},
 		];

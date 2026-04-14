@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "DaemonAccessTokens",
 	"meta": {
-		"roles": ["admin"],
+		"scope": ["security:daemonAccessTokens:read"],
 	},
 }
 </route>

@@ -198,10 +198,22 @@ enum AccessScope: string implements JsonSerializable {
 	case security_apiKeys_write = 'security:apiKeys:write';
 
 	/**
+	 * Used for daemon access token management endpoints
+	 */
+	case security_daemonAccessTokens_read = 'security:daemonAccessTokens:read';
+	case security_daemonAccessTokens_write = 'security:daemonAccessTokens:write';
+
+	/**
 	 * Used for TLS Certificate endpoints
 	 */
 	case security_certificates_read = 'security:certificates:read';
 	case security_certificates_write = 'security:certificates:write';
+
+	/**
+	 * Used for Mosquitto user management endpoints
+	 */
+	case security_mosquittoUsers_read = 'security:mosquittoUsers:read';
+	case security_mosquittoUsers_write = 'security:mosquittoUsers:write';
 
 	/**
 	 * Used to control access to roles (user and access token roles)

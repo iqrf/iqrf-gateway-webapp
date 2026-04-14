@@ -52,7 +52,7 @@ const filteredLinks: ComputedRef<DisambiguationLink[]> = computed(() => {
 	return componentProps.links.filter((link: DisambiguationLink) => {
 		if (
 			((link.developmentOnly ?? false) && import.meta.env.PROD) ||
-			(link.roles !== undefined && !link.roles.includes(userStore.getRole!))
+			(link.scopes !== undefined && !link.scopes.every((scope) => userStore.hasScope(scope)))
 		) {
 			return false;
 		}

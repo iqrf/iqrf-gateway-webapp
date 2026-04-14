@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "WebSocketProxyConfiguration",
 	"meta": {
-		"roles": ["admin"],
+		"scope": ["config:translator:read"],
 	},
 }
 </route>

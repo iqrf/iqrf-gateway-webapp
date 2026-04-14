@@ -30,7 +30,7 @@ limitations under the License.
 	"name": "MobileConnections",
 	"meta": {
 		"feature": "networkManager",
-		"roles": ["admin"]
+		"scope": ["ipNetwork_physicalConnections_read"]
 	}
 }
 </route>

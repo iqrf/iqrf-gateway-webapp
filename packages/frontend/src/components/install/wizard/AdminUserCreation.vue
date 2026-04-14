@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -104,8 +104,8 @@ import {
 	type EmailSentResponse,
 	type UserCreate,
 	type UserCredentials,
-	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
 	ComponentState,
@@ -116,7 +116,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
-import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
+import { onMounted, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -139,7 +139,7 @@ const user: Ref<UserCreate> = ref({
 	password: '',
 	email: '',
 	language: Language.English,
-	role: UserRole.Admin,
+	roleId: -1,
 });
 const passwordConfirmation: Ref<string> = ref('');
 const form: TemplateRef<VForm> = useTemplateRef('form');
@@ -152,6 +152,10 @@ const i18n = useI18n();
  */
 async function onSubmit(onClickNext: Function): Promise<void> {
 	if (!await validateForm(form.value)) {
+		return;
+	}
+	if (user.value.roleId < 0) {
+		toast.error(i18n.t('components.accessControl.roles.actions.list.failure'));
 		return;
 	}
 	componentState.value = ComponentState.Action;
@@ -185,4 +189,18 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	}
 }
 
+async function getAdminRoleId(): Promise<void> {
+	const roles: RoleInfo[] = await useApiClient()
+		.getSecurityServices()
+		.getRoleService()
+		.list();
+	const adminRole = roles.filter((role) => role.systemKey === 'admin');
+	if (adminRole.length !== 1) {
+		toast.error(i18n.t('components.accessControl.roles.actions.list.failure'));
+		return;
+	}
+	user.value.roleId = adminRole[0].id!;
+}
+
+onMounted(async () => getAdminRoleId());
 </script>

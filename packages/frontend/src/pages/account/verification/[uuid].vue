@@ -111,7 +111,7 @@ onMounted(async () => {
 	componentState.value = ComponentState.Loading;
 	try {
 		userData.value = await useApiClient().getAccountService().verifyEmail(componentProps.uuid);
-		userStore.processSignInResponse(userData.value, true);
+		await userStore.processSignInResponse(userData.value, true);
 		await userStore.refreshUserPreferences();
 		componentState.value = ComponentState.Success;
 	} catch (error) {

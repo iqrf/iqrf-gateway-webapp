@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 
 /**
  * Link target enum
@@ -39,8 +40,8 @@ export interface DisambiguationLink {
 	href?: string;
 	/// Feature
 	feature?: Feature;
-	/// Roles
-	roles?: UserRole[];
+	/// Access scopes
+	scopes?: AccessScope[];
 	/// Link target
 	target?: LinkTarget;
 	/// Development build only

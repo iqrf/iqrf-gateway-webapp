@@ -27,14 +27,12 @@ limitations under the License.
 <route>
 {
 	"name": "AccessControl",
-	"meta": {
-		"roles": ["admin"],
-	},
 }
 </route>
 
 <script lang='ts' setup>
-import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -48,31 +46,31 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.accessControl.users.title'),
 		description: i18n.t('pages.accessControl.users.description'),
 		to: '/access-control/users',
-		roles: [UserRole.Admin],
+		scopes: [AccessScope.security_users_read],
 	},
 	{
 		title: i18n.t('pages.accessControl.apiKeys.title'),
 		description: i18n.t('pages.accessControl.apiKeys.description'),
 		to: '/access-control/api-keys',
-		roles: [UserRole.Admin],
+		scopes: [AccessScope.security_apiKeys_read],
 	},
 	{
 		title: i18n.t('pages.accessControl.sshKeys.title'),
 		description: i18n.t('pages.accessControl.sshKeys.description'),
 		to: '/access-control/ssh-keys',
-		roles: [UserRole.Admin],
+		scopes: [AccessScope.security_sshkeys_read],
 	},
 	{
 		title: i18n.t('pages.accessControl.daemonAccessTokens.title'),
 		description: i18n.t('pages.accessControl.daemonAccessTokens.description'),
 		to: '/access-control/daemon-access-tokens',
-		roles: [UserRole.Admin],
+		scopes: [AccessScope.security_daemonAccessTokens_read],
 	},
 	{
 		title: i18n.t('pages.accessControl.mosquittoUsers.title'),
 		description: i18n.t('pages.accessControl.mosquittoUsers.description'),
 		to: '/access-control/mosquitto-users',
-		roles: [UserRole.Admin],
+		scopes: [AccessScope.security_mosquittoUsers_read],
 		feature: Feature.mosquittoPlugin,
 	},
 ]);

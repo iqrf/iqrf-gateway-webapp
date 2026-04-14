@@ -26,7 +26,7 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
-import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -56,7 +56,6 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.ipNetwork.title'),
 		description: i18n.t('pages.ipNetwork.description'),
 		to: '/ip-network',
-		roles: [UserRole.Admin],
 		feature: Feature.networkManager,
 	},
 	{

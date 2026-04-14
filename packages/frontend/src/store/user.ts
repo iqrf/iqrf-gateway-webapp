@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ import {
 	type UserCredentials,
 	type UserInfo,
 	type UserPreferences,
-	type UserRole,
 	type UserSignedIn,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type AccessScope, type RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { type Language } from '@iqrf/iqrf-ui-common-types';
 import { type User as SentryUser, setUser } from '@sentry/vue';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
@@ -44,6 +44,8 @@ import { DateTimeFormat } from '@/types/time';
 interface UserState {
 	/// User information
 	user: UserSignedIn | null;
+	/// User role
+	role: RoleInfo | null;
 	/// User session expiration timestamp
 	expiration: number;
 	/// User preferences
@@ -53,10 +55,24 @@ interface UserState {
 export const useUserStore = defineStore('user', {
 	state: (): UserState => ({
 		user: null,
+		role: null,
 		expiration: 0,
 		preferences: null,
 	}),
 	actions: {
+		/**
+		 * Fetches the role associated with the current user.
+		 */
+		async refreshUserRole(): Promise<void> {
+			if (this.user === null) {
+				this.role = null;
+				return;
+			}
+			this.role = await useApiClient()
+				.getSecurityServices()
+				.getRoleService()
+				.get(this.user.roleId);
+		},
 		/**
 		 * Refreshes the user information
 		 */
@@ -73,8 +89,12 @@ export const useUserStore = defineStore('user', {
 				this.user.language = user.language;
 				localeStore.setLocale(user.language);
 			}
-			this.user.role = user.role;
+			const roleChanged = this.user.roleId !== user.roleId;
+			this.user.roleId = user.roleId;
 			this.user.state = user.state;
+			if (roleChanged || this.role?.id !== user.roleId) {
+				await this.refreshUserRole();
+			}
 		},
 		/**
 		 * Sets the user information
@@ -91,6 +111,13 @@ export const useUserStore = defineStore('user', {
 				sentryUser.email = user.email;
 			}
 			setUser(sentryUser);
+		},
+		/**
+		 * Sets the user role information.
+		 * @param {RoleInfo|null} role User role
+		 */
+		setUserRole(role: RoleInfo | null): void {
+			this.role = role;
 		},
 		/**
 		 * Processes JWT token
@@ -118,7 +145,7 @@ export const useUserStore = defineStore('user', {
 			}
 			try {
 				const response: UserSignedIn = await useApiClient().getAccountService().refreshToken();
-				this.processSignInResponse(response, false);
+				await this.processSignInResponse(response, false);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -144,7 +171,7 @@ export const useUserStore = defineStore('user', {
 		async signIn(credentials: UserCredentials): Promise<void> {
 			try {
 				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
-				this.processSignInResponse(user, true);
+				await this.processSignInResponse(user, true);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -155,9 +182,10 @@ export const useUserStore = defineStore('user', {
 		 * @param {UserSignedIn} response Sign in response
 		 * @param {boolean} setLocale Set locale based on user language
 		 */
-		processSignInResponse(response: UserSignedIn, setLocale: boolean): void {
+		async processSignInResponse(response: UserSignedIn, setLocale: boolean): Promise<void> {
 			this.processJwt(response.token);
 			this.setUserInfo(response);
+			await this.refreshUserRole();
 			if (setLocale) {
 				const localeStore = useLocaleStore();
 				localeStore.setLocale(response.language);
@@ -166,6 +194,7 @@ export const useUserStore = defineStore('user', {
 		clearUserData(): void {
 			this.expiration = 0;
 			this.user = null;
+			this.role = null;
 			setUser(null);
 		},
 		/**
@@ -262,10 +291,59 @@ export const useUserStore = defineStore('user', {
 		/**
 		 * Returns the user role
 		 * @param {UserState} state User state
-		 * @return {UserRole|null} User role
+		 * @return {RoleInfo|null} User role
 		 */
-		getRole(state: UserState): UserRole | null {
-			return state.user?.role ?? null;
+		getRole(state: UserState): RoleInfo | null {
+			return state.role;
+		},
+		/**
+		 * Returns the user role ID
+		 * @param {UserState} state User state
+		 * @return {number|null} User role ID
+		 */
+		getRoleId(state: UserState): number | null {
+			return state.role?.id ?? null;
+		},
+		/**
+		 * Returns the user role system key
+		 * @param {UserState} state User state
+		 * @return {string|null} User role system key
+		 */
+		getRoleSystemKey(state: UserState): string | null {
+			return state.role?.systemKey ?? null;
+		},
+		/**
+		 * Checks whether the current user has the specified role.
+		 * @return {(role: number | string | RoleInfo) => boolean} Role check callback
+		 */
+		hasRole(): (role: number | string | RoleInfo) => boolean {
+			return (role: number | string | RoleInfo): boolean => {
+				if (this.getRole === null) {
+					return false;
+				}
+				if (typeof role === 'number') {
+					return this.getRoleId === role;
+				}
+				if (typeof role === 'string') {
+					return this.getRoleSystemKey === role;
+				}
+				if (role.id !== undefined && this.getRoleId === role.id) {
+					return true;
+				}
+				return role.systemKey !== undefined && role.systemKey !== null && this.getRoleSystemKey === role.systemKey;
+			};
+		},
+		/**
+		 * Checks whether the current user has the specified scope.
+		 * @return {(scope: AccessScope) => boolean} Scope check callback
+		 */
+		hasScope(): (scope: AccessScope) => boolean {
+			return (scope: AccessScope): boolean => {
+				if (this.getRole === null) {
+					return false;
+				}
+				return this.getRole.scopes.includes(scope);
+			};
 		},
 		/**
 		 * Returns the user JWT token

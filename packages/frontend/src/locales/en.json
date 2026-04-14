@@ -282,13 +282,46 @@
 			},
 			"roles": {
 				"actions": {
-					"add": "Add role",
-					"edit": "Edit role"
+					"add": {
+						"failure": "Failed to create role.",
+						"success": "Role has been successfully created.",
+						"title": "Add role"
+					},
+					"delete": {
+						"failure": "Failed to delete role.",
+						"prompt": "Are you sure you want to delete role {role}?",
+						"success": "Role has been successfully deleted.",
+						"title": "Role delete confirmation",
+						"tooltip": "Delete role"
+					},
+					"edit": {
+						"failure": "Failed to update role.",
+						"success": "Role has been successfully updated.",
+						"title": "Edit role"
+					},
+					"list": {
+						"failure": "Failed to retrieve list of roles."
+					},
+					"refresh": "Reload roles"
 				},
 				"roleName": {
 					"name": "Role name",
 					"required": "Please enter role name."
-				}
+				},
+				"select": "Role",
+				"systemRoles": {
+					"description": {
+						"admin": "Full administrative access.",
+						"normal": "Standard access for regular users.",
+						"viewer": "Read-only access."
+					},
+					"name": {
+						"admin": "Administrator",
+						"normal": "Normal user",
+						"viewer": "Viewer"
+					}
+				},
+				"title": "Roles"
 			},
 			"scopeTable": {
 				"columns": {

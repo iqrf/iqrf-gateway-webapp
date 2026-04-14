@@ -29,7 +29,7 @@ limitations under the License.
 	"name": "WireGuardConnections",
 	"meta": {
 		"feature": "networkManager",
-		"roles": ["admin"]
+		"scope": ["ipNetwork_vpns_read"]
 	}
 }
 </route>

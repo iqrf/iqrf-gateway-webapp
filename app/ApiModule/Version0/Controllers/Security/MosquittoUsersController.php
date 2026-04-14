@@ -30,6 +30,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\Enums\AccessScope;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerException;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerInvalidParamsException;
 use App\SecurityModule\Exceptions\MosquittoPluginUserExistsException;
@@ -73,7 +74,7 @@ class MosquittoUsersController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listUsers(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['security:mosquitto-users']);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read->value]);
 		try {
 			$response = $response->withHeader('Content-Type', 'application/json')
 				->writeBody($this->manager->listUsers());
@@ -103,7 +104,7 @@ class MosquittoUsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mosquitto user ID')]
 	public function getUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['security:mosquitto-users']);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read->value]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$response = $response->withHeader('Content-Type', 'application/json')
@@ -152,7 +153,7 @@ class MosquittoUsersController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function createUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['security:mosquitto-users']);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write->value]);
 		$this->validators->validateRequest('mosquittoUserCreate', $request);
 		$data = $request->getJsonBodyCopy(false);
 		try {
@@ -186,7 +187,7 @@ class MosquittoUsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mosquitto user ID')]
 	public function blockUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['security:mosquitto-users']);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write->value]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->blockUser($id);

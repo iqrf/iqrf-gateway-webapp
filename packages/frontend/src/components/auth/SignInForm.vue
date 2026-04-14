@@ -71,6 +71,7 @@ limitations under the License.
 import {
 	type UserCredentials,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
 	ComponentState,
 	IActionBtn,
@@ -133,13 +134,13 @@ async function onSubmit(): Promise<void> {
 		if (destination.startsWith('/sign/in')) {
 			destination = '/';
 		}
-		if (destination !== '/' && userStore.getRole !== null) {
+		if (destination !== '/') {
 			const resolveRoute = router.resolve(destination);
 			if (resolveRoute.name === 'NotFound') {
 				destination = '/';
 			} else {
-				const roles = (resolveRoute.meta.roles as string[]) ?? [];
-				if (roles.length > 0 && !roles.includes(userStore.getRole)) {
+				const scopes = (resolveRoute.meta.scopes as AccessScope[]) ?? [];
+				if (scopes.length > 0 && !scopes.every((scope) => userStore.hasScope(scope))) {
 					destination = '/';
 				}
 			}

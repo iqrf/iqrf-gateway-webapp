@@ -69,17 +69,17 @@ const roles: Ref<RoleInfo[]> = ref([]);
 const service = useApiClient().getSecurityServices().getRoleService();
 const i18n = useI18n();
 const headers = computed(() => [
-	{ key: 'name', title: i18n.t('components.accessScopes.roles.table.name') },
-	{ key: 'description', title: i18n.t('components.accessScopes.roles.table.description') },
-	{ key: 'system', title: i18n.t('components.accessScopes.roles.table.system') },
-	{ key: 'scopes', title: i18n.t('components.accessScopes.roles.table.scopes') },
+	{ key: 'name', title: i18n.t('components.accessControl.roles.table.name') },
+	{ key: 'description', title: i18n.t('components.accessControl.roles.table.description') },
+	{ key: 'system', title: i18n.t('components.accessControl.roles.table.system') },
+	{ key: 'scopes', title: i18n.t('components.accessControl.roles.table.scopes') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return 'component.accessControl.roles.noData.fetchFailed';
+		return 'components.accessControl.roles.noData.fetchFailed';
 	}
-	return 'component.accessControl.roles.noData.empty';
+	return 'components.accessControl.roles.noData.empty';
 });
 
 /**
@@ -104,9 +104,9 @@ async function deleteRole(id: number): Promise<void> {
 	try {
 		await service.delete(id);
 		roles.value = roles.value.filter((v: RoleInfo): boolean => v.id !== id);
-		toast.error(i18n.t('components.accessControl.roles.actions.remove.success'));
+		toast.success(i18n.t('components.accessControl.roles.actions.delete.success'));
 	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.remove.failure'));
+		toast.error(i18n.t('components.accessControl.roles.actions.delete.failure'));
 	}
 }
 

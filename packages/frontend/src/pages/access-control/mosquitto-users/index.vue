@@ -29,7 +29,7 @@ limitations under the License.
 	"name": "MosquittoUsers",
 	"meta": {
 		"feature": "mosquittoPlugin",
-		"roles": ["admin"],
+		"scope": ["security:mosquittoUsers:read"],
 	},
 }
 </route>
