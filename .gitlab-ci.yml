@@ -21,10 +21,9 @@ stages:
   - coding-style
   - dependency-check
   - sentry-release
-  - build-package
-  - deploy-package
+  - jsonnet
   - build-docker
-  - deploy-docs
+  - deploy
 
 # Templates
 .base_template: &base_template
@@ -36,6 +35,7 @@ stages:
   before_script:
     - composer install --no-progress
   cache:
+    key: ${CI_COMMIT_REF_SLUG}-php
     paths:
       - temp/composer/cache
   variables:
@@ -47,17 +47,11 @@ stages:
     - pnpm config set registry https://verdaccio.microrisc.site/
     - pnpm install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: ${CI_COMMIT_REF_SLUG}-js
     paths:
       - .pnpm-store
   variables:
     NODE_EXTRA_CA_CERTS: '/etc/ssl/certs/ca-certificates.crt'
-
-.test_template: &test_template
-  stage: test
-  needs: []
-  retry: 2
-  <<: *base_template
 
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
@@ -85,43 +79,9 @@ stages:
     - chmod 644 ~/.ssh/known_hosts
   <<: *base_template
 
-.docker_template:
-  image: docker:stable
-  services:
-    - docker:dind
-  stage: build-docker
-  before_script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  script:
-    - docker build -f $DOCKER_FILE -t $DOCKER_IMAGE:$DOCKER_TAG .
-    - docker push $DOCKER_IMAGE:$DOCKER_TAG
-  tags:
-    - linux, docker
-  variables:
-    DOCKER_IMAGE: iqrftech/iqrf-gateway-webapp
-
-.docker_template_testing:
-  extends: .docker_template
-  allow_failure: true
-  stage: build-docker-testing
-  only:
-    refs:
-      - master
-      - schedules
-  tags:
-    - linux, docker, amd64
-
-build-docker:tests:
-  extends: .docker_template_testing
-  only:
-    - schedules
-  variables:
-    DOCKER_FILE: docker/tests/bullseye.Dockerfile
-    DOCKER_TAG: tests-bullseye
-
 newman:
-  <<: *test_template
   image: docker:latest
+  stage: test
   needs: []
   services:
     - docker:dind
@@ -129,6 +89,9 @@ newman:
     - apk add  --no-cache docker-compose
   script:
     - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
+  variables:
+    DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
+    DOCKER_TLS_CERTDIR: "/certs"
   tags:
     - linux, docker, amd64
 
@@ -229,21 +192,47 @@ sentry-version_release:
   only:
     - tags
 
-deploy-apidocs:
-  stage: deploy-docs
+# Package builds
+jsonnet-build:
+  image: alpine:latest
+  stage: jsonnet
+  script:
+    - apk add -U jsonnet
+    - jsonnet -o .gitlab/packages.yml .gitlab/packages.jsonnet
+  artifacts:
+    paths:
+      - .gitlab/packages.yml
+
+jsonnet-trigger-packages:
+  stage: jsonnet
+  needs:
+    - jsonnet-build
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - artifact: .gitlab/packages.yml
+        job: jsonnet-build
+    strategy: depend
+
+# Documentation deployment
+deploy:docs:openapi:
+  <<: *ssh_template
+  <<: *composer_template
+  stage: deploy
   environment:
     name: apidocs
-    url: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/
+    url: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/
   only:
     - master
+  before_script:
+    - !reference [.ssh_template, before_script]
+    - !reference [.composer_template, before_script]
   script:
-    - composer install --no-progress
     - bin/manager open-api:specification > api.json
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
-    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
-    - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
-    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
-  <<: *ssh_template
+    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json /data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/"
+    - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json
+    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/
 
 include:
   # Tests - Backend
@@ -269,7 +258,6 @@ include:
     inputs:
       job_name: frontend:coverage
       project_dir: '.'
-
   # Coding style - backend
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-codesniffer@master
     inputs:
