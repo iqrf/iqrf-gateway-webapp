@@ -46,18 +46,6 @@ export interface UserPreferences {
 }
 
 /**
- * User role enum
- */
-export enum UserRole {
-	/// Administrator
-	Admin = 'admin',
-	/// Basic user
-	Basic = 'basic',
-	/// Normal user
-	Normal = 'normal',
-}
-
-/**
  * User base interface
  */
 export interface UserBase {
@@ -65,8 +53,8 @@ export interface UserBase {
 	email: string|null;
 	/// User language
 	language: Language;
-	/// User role
-	role: UserRole;
+	/// User role id
+	roleId: number;
 	/// User name
 	username: string;
 }

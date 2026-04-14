@@ -30,7 +30,6 @@ import {
 	type UserPasswordReset,
 	type UserPasswordSet,
 	type UserPreferences,
-	UserRole,
 	type UserSignedIn,
 	UserThemePreference,
 	UserTimeFormatPreference,
@@ -75,7 +74,7 @@ describe('AccountService', (): void => {
 		id: 1,
 		username: 'admin',
 		email: 'admin@example.com',
-		role: UserRole.Admin,
+		roleId: 0,
 		language: Language.English,
 		state: AccountState.Verified,
 	};

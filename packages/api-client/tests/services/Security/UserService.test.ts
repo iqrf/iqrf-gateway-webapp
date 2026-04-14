@@ -22,7 +22,6 @@ import {
 	AccountState,
 	type EmailSentResponse,
 	type UserInfo,
-	UserRole,
 } from '../../../src/types';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
@@ -41,7 +40,7 @@ describe('UserService', (): void => {
 			'id': 2,
 			'username': 'roman',
 			'email': 'roman@xn--ondrek-sta66a.eu',
-			'role': 'admin',
+			'roleId': 0,
 			'language': 'en',
 			'state': 'unverified',
 		},
@@ -55,7 +54,7 @@ describe('UserService', (): void => {
 			'id': 2,
 			'username': 'roman',
 			'email': 'roman@ondráček.eu',
-			'role': UserRole.Admin,
+			'roleId': 0,
 			'language': Language.English,
 			'state': AccountState.Unverified,
 		},
@@ -97,7 +96,7 @@ describe('UserService', (): void => {
 			email: null,
 			password: 'password',
 			language: 'en',
-			role: 'admin',
+			roleId: 0,
 		})
 			.reply(200, response);
 		const actual: EmailSentResponse = await service.create({
@@ -105,7 +104,7 @@ describe('UserService', (): void => {
 			email: null,
 			password: 'password',
 			language: Language.English,
-			role: UserRole.Admin,
+			roleId: 0,
 		});
 		expect(actual).toStrictEqual(response);
 	});
@@ -127,14 +126,14 @@ describe('UserService', (): void => {
 			username: 'roman',
 			email: 'roman@xn--ondrek-sta66a.eu',
 			language: 'en',
-			role: 'admin',
+			roleId: 0,
 		})
 			.reply(200, response);
 		const actual: EmailSentResponse = await service.update(2, {
 			username: 'roman',
 			email: 'roman@ondráček.eu',
 			language: Language.English,
-			role: UserRole.Admin,
+			roleId: 0,
 		});
 		expect(actual).toStrictEqual(response);
 	});

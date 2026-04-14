@@ -22,7 +22,6 @@ import {
 	type UserBase,
 	type UserEdit,
 	type UserInfo,
-	UserRole,
 } from '../../src/types';
 import { UserUtils } from '../../src/utils';
 
@@ -34,7 +33,7 @@ describe('UserUtils', (): void => {
 	const user: UserBase = {
 		username: 'admin',
 		email: null,
-		role: UserRole.Admin,
+		roleId: 0,
 		language: Language.English,
 	};
 
