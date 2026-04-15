@@ -3554,6 +3554,49 @@
 							"success": "JSON response has been successfully copied to clipboard."
 						}
 					}
+				},
+				"validation": {
+					"properties": {
+						"data": {
+							"required": "Data (data) is missing.",
+							"type": "Data (data) should be an object."
+						},
+						"deviceAddr": {
+							"type": "Device address (deviceAddr) should be an integer.",
+							"value": "Device address (deviceAddr) should be between 0 and 239, or 255."
+						},
+						"hwpId": {
+							"type": "Hardware profile ID (hwpId) should be an integer.",
+							"value": "Hardware profile ID (hwpId) should be between 0 and 65535."
+						},
+						"mType": {
+							"required": "Message type (mType) is missing.",
+							"type": "Message type should be a string."
+						},
+						"msgId": {
+							"type": "Message ID (msgId) should be a string."
+						},
+						"nAdr": {
+							"type": "Network address (nAdr) should be an integer.",
+							"value": "Network address (nAdr) should be between 0 and 239 or between 252 and 255."
+						},
+						"repeat": {
+							"type": "Repeat (repeat) should be an integer.",
+							"value": "Repeat (repeat) should be greater or equal to 1."
+						},
+						"returnVerbose": {
+							"type": "Return verbose (returnVerbose) should be a boolean."
+						},
+						"timeout": {
+							"type": "Timeout (timeout) should be an integer.",
+							"value": "Timeout (timeout) should be greater or equal to 500."
+						}
+					},
+					"request": {
+						"json": "Value is not a valid JSON object.",
+						"required": "Please enter JSON request."
+					},
+					"title": "The specified JSON request contains invalid properties. Please fix the below listed errors."
 				}
 			},
 			"standard-manager": {
