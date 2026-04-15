@@ -16,35 +16,46 @@ limitations under the License.
 -->
 
 <template>
-	<v-input :disabled='disabled'>
-		<v-field
-			:active='isFocused || !!modelValue'
-			:clearable='clearable'
-			:label='label'
-			class='i-code-editor__field'
-			@click='onFieldClick'
-		>
-			<div class='i-code-editor__wrapper'>
-				<PrismEditor
-					ref='editor'
-					v-model='modelValue'
-					language='json'
-					:line-numbers='isFocused || !!modelValue'
-					:highlight='highlighter'
-					@focusin='isFocused = true'
-					@focusout='isFocused = false'
-				/>
-			</div>
-			<template #append-inner>
-				<div class='v-field__clearable'>
-					<v-icon
-						v-if='componentProps.clearable && modelValue'
-						:icon='mdiCloseCircle'
-						@click='modelValue = ""'
+	<v-input
+		:model-value='modelValue'
+		:required='required'
+		:rules='rules'
+		:disabled='disabled'
+		:style='{
+			whiteSpace: "pre-line",
+		}'
+	>
+		<template #default='{ isValid, isDirty }'>
+			<v-field
+				:active='isFocused || !!modelValue'
+				:clearable='clearable'
+				:label='label'
+				:error='!isValid.value && isDirty.value'
+				class='i-code-editor__field'
+				@click='onFieldClick'
+			>
+				<div class='i-code-editor__wrapper'>
+					<PrismEditor
+						ref='editor'
+						v-model='modelValue'
+						language='json'
+						:line-numbers='isFocused || !!modelValue'
+						:highlight='highlighter'
+						@focusin='isFocused = true'
+						@focusout='isFocused = false'
 					/>
 				</div>
-			</template>
-		</v-field>
+				<template #append-inner>
+					<div class='v-field__clearable'>
+						<v-icon
+							v-if='componentProps.clearable && modelValue'
+							:icon='mdiCloseCircle'
+							@click='modelValue = ""'
+						/>
+					</div>
+				</template>
+			</v-field>
+		</template>
 	</v-input>
 </template>
 
@@ -66,6 +77,7 @@ import {
 	watchEffect,
 } from 'vue';
 import { PrismEditor } from 'vue-prism-editor';
+import { ValidationRule } from 'vuetify';
 
 import { useThemeStore } from '@/store/theme';
 
@@ -88,12 +100,18 @@ const componentProps = withDefaults(
 		label?: string|undefined;
 		/// Language for syntax highlighting
 		language?: string;
+		/// Whether the field is required
+		required?: boolean;
+		/// Validation rules
+		rules?: ValidationRule[];
 	}>(),
 	{
 		clearable: false,
 		disabled: false,
 		label: undefined,
 		language: 'json',
+		required: false,
+		rules: () => [],
 	},
 );
 defineSlots();
