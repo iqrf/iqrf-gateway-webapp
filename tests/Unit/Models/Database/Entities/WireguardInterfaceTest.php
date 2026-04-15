@@ -218,7 +218,6 @@ class WireguardInterfaceTest extends TestCase {
 		$expected = [
 			'id' => null,
 			'name' => self::NAME,
-			'privateKey' => self::PRIVATE_KEY,
 			'port' => null,
 		];
 		$this->entity->setPort();

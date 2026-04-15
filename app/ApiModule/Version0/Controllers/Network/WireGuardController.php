@@ -111,7 +111,6 @@ class WireGuardController extends BaseNetworkController {
 			$id = (int) $request->getParameter('id');
 			$iface = $this->manager->getInterface($id);
 			$jsonBody = $this->serializeTunnel($iface);
-			unset($jsonBody['privateKey']);
 			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
@@ -150,7 +149,6 @@ class WireGuardController extends BaseNetworkController {
 		try {
 			$interface = $this->manager->createInterface($request->getJsonBody(false));
 			$jsonBody = $this->serializeTunnel($interface);
-			unset($jsonBody['privateKey']);
 			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (InterfaceExistsException $e) {
@@ -193,7 +191,6 @@ class WireGuardController extends BaseNetworkController {
 			$id = (int) $request->getParameter('id');
 			$interface = $this->manager->editInterface($id, $request->getJsonBody(false));
 			$jsonBody = $this->serializeTunnel($interface);
-			unset($jsonBody['privateKey']);
 			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
