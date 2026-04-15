@@ -29,6 +29,7 @@ namespace Tests\Integration\SecurityModule\Models;
 use App\SecurityModule\Enums\MosquittoPluginManagerStatusCodes;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerException;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerInvalidParamsException;
+use App\SecurityModule\Exceptions\MosquittoPluginUserExistsException;
 use App\SecurityModule\Exceptions\MosquittoPluginUserNotFoundException;
 use App\SecurityModule\Models\MosquittoPluginManager;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
@@ -131,7 +132,7 @@ final class MosquittoPluginManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::LIST_COMMAND,
 			needSudo: true,
-			exitCode: 1,
+			exitCode: MosquittoPluginManagerStatusCodes::GENERAL_ERROR->value,
 		);
 		Assert::throws(function (): void {
 			$this->manager->listUsers();
@@ -188,7 +189,7 @@ final class MosquittoPluginManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::GET_COMMAND,
 			needSudo: true,
-			exitCode: 1,
+			exitCode: MosquittoPluginManagerStatusCodes::GENERAL_ERROR->value,
 		);
 		Assert::throws(function (): void {
 			$this->manager->getUser(1);
@@ -238,7 +239,7 @@ final class MosquittoPluginManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::CREATE_COMMAND_INVALID_PASSWORD,
 			needSudo: true,
-			exitCode: 3,
+			exitCode: MosquittoPluginManagerStatusCodes::INVALID_PARAMS->value,
 		);
 		Assert::throws(function (): void {
 			$this->manager->createUser(
@@ -248,6 +249,29 @@ final class MosquittoPluginManagerTest extends TestCase {
 				],
 			);
 		}, MosquittoPluginManagerInvalidParamsException::class);
+	}
+
+	/**
+	 * Tests the function to create user with username conflict
+	 */
+	public function testCreateUserAlreadyExists(): void {
+		$this->receiveCommandExist(
+			command: MosquittoPluginManager::COMMAND,
+			output: true,
+		);
+		$this->receiveCommand(
+			command: self::CREATE_COMMAND,
+			needSudo: true,
+			exitCode: MosquittoPluginManagerStatusCodes::USER_EXISTS->value,
+		);
+		Assert::throws(function (): void {
+			$this->manager->createUser(
+				(object) [
+					'username' => 'usertest',
+					'password' => 'testpass123456789',
+				],
+			);
+		}, MosquittoPluginUserExistsException::class);
 	}
 
 	/**
@@ -261,7 +285,7 @@ final class MosquittoPluginManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::CREATE_COMMAND,
 			needSudo: true,
-			exitCode: 1,
+			exitCode: MosquittoPluginManagerStatusCodes::GENERAL_ERROR->value,
 		);
 		Assert::throws(function (): void {
 			$this->manager->createUser(
@@ -338,7 +362,7 @@ final class MosquittoPluginManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::BLOCK_COMMAND,
 			needSudo: true,
-			exitCode: 1,
+			exitCode: MosquittoPluginManagerStatusCodes::GENERAL_ERROR->value,
 		);
 		Assert::throws(function (): void {
 			$this->manager->blockUser(1);

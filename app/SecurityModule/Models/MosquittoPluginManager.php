@@ -23,6 +23,7 @@ namespace App\SecurityModule\Models;
 use App\SecurityModule\Enums\MosquittoPluginManagerStatusCodes;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerException;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerInvalidParamsException;
+use App\SecurityModule\Exceptions\MosquittoPluginUserExistsException;
 use App\SecurityModule\Exceptions\MosquittoPluginUserNotFoundException;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
@@ -117,6 +118,9 @@ class MosquittoPluginManager {
 		}
 		if ($exitCode === MosquittoPluginManagerStatusCodes::INVALID_PARAMS->value) {
 			throw new MosquittoPluginManagerInvalidParamsException($result->getStderr());
+		}
+		if ($exitCode === MosquittoPluginManagerStatusCodes::USER_EXISTS->value) {
+			throw new MosquittoPluginUserExistsException($result->getStderr());
 		}
 		throw new MosquittoPluginManagerException($result->getStderr());
 	}

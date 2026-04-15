@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerException;
 use App\SecurityModule\Exceptions\MosquittoPluginManagerInvalidParamsException;
+use App\SecurityModule\Exceptions\MosquittoPluginUserExistsException;
 use App\SecurityModule\Exceptions\MosquittoPluginUserNotFoundException;
 use App\SecurityModule\Models\MosquittoPluginManager;
 use Nette\Utils\JsonException;
@@ -141,6 +142,12 @@ class MosquittoUsersController extends BaseSecurityController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
+			'409':
+				description: Username is already used
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -156,6 +163,8 @@ class MosquittoUsersController extends BaseSecurityController {
 				->withStatus(ApiResponse::S201_CREATED);
 		} catch (MosquittoPluginManagerInvalidParamsException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MosquittoPluginUserExistsException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
 		} catch (MosquittoPluginManagerException | JsonException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
