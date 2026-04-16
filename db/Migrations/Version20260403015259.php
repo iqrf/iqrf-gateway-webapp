@@ -100,7 +100,7 @@ final class Version20260403015259 extends AbstractMigration
 					'ipNetwork:vpns:write',
 					'iqrfNetwork:macros:read',
 					'iqrfNetwork:trUpload:execute',
-					'openapi:read',
+					'openApi:read',
 					'security:apiKeys:read',
 					'security:apiKeys:write',
 					'security:certificates:read',
