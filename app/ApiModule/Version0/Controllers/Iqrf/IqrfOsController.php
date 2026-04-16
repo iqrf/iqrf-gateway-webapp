@@ -70,6 +70,8 @@ class IqrfOsController extends BaseIqrfController {
 								$ref: '#/components/schemas/IqrfOsPatchDetail'
 			'403':
 				$ref: '#/components/responses/Forbidden'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
@@ -97,6 +99,8 @@ class IqrfOsController extends BaseIqrfController {
 							$ref: '#/components/schemas/IqrfOsUpgradeList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
@@ -128,6 +132,8 @@ class IqrfOsController extends BaseIqrfController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);

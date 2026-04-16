@@ -1900,6 +1900,11 @@
 				"header": "Error 404",
 				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists.",
 				"title": "Page not found"
+			},
+			"503": {
+				"header": "Error 503",
+				"text": "The service you requested is not available at this time.",
+				"title": "Service unavailable"
 			}
 		},
 		"gateway": {

@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,27 +18,18 @@ limitations under the License.
 <template>
 	<div>
 		<Head>
-			<title>{{ $t('pages.iqrfnet.upload.title') }}</title>
+			<title>{{ $t('components.errors.503.title') }}</title>
 		</Head>
-		<HandlerUploader />
-		<DpaUpdater />
+		<ICard>
+			<template #title>
+				{{ `${$t('components.errors.503.header')} - ${$t('components.errors.503.title')}` }}
+			</template>
+			<p>{{ $t('components.errors.503.text') }}</p>
+		</ICard>
 	</div>
 </template>
 
-<route>
-{
-	"name": "CoordinatorUpload",
-	"meta": {
-		"unavailable": true,
-		"feature": "trUpload",
-		"requiresProxy": true,
-	},
-}
-</route>
-
-<script lang='ts' setup>
+<script setup lang='ts'>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
-
-import DpaUpdater from '@/components/iqrfnet/upload/DpaUpdater.vue';
-import HandlerUploader from '@/components/iqrfnet/upload/HandlerUploader.vue';
 </script>

@@ -25,6 +25,7 @@ limitations under the License.
 			<ServiceModeOverlay v-if='showServiceOverlay' />
 			<v-container fluid>
 				<router-view v-if='isAllowed' />
+				<Unavailable v-else-if='isUnavailable' />
 				<Forbidden v-else />
 			</v-container>
 		</v-main>
@@ -40,6 +41,7 @@ import { computed, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Forbidden from '@/components/errors/Forbidden.vue';
+import Unavailable from '@/components/errors/Unavailable.vue';
 import ProxyServerOverlay from '@/components/layout/ProxyServerOverlay.vue';
 import ServiceModeOverlay from '@/components/layout/ServiceModeOverlay.vue';
 import TheFooter from '@/components/layout/TheFooter.vue';
@@ -65,7 +67,11 @@ const requiresAuth: Ref<boolean> = computed((): boolean => (route.meta.requiresA
 const requiredFeature: Ref<Feature | null> = computed((): Feature | null => (route.meta.feature ?? null) as Feature | null);
 const requiresProxy: Ref<boolean> = computed((): boolean => (route.meta.requiresProxy ?? false) as boolean);
 const requiredRoles: Ref<UserRole[]> = computed((): UserRole[] => (route.meta.roles ?? []) as UserRole[]);
+const isUnavailable = computed<boolean>((): boolean => (route.meta.unavailable ?? false) as boolean);
 const isAllowed: Ref<boolean> = computed((): boolean => {
+	if (isUnavailable.value) {
+		return false;
+	}
 	if (developmentOnly.value && import.meta.env.PROD) {
 		return false;
 	}

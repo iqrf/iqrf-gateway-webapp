@@ -2906,6 +2906,372 @@
           ]
         }
       ]
+    },
+    {
+      "name": "UnavailableMiddleware",
+      "item": [
+        {
+          "name": "Get DPA file (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"osBuild\": \"08C8\",\n  \"dpa\": \"0414\",\n  \"trSeries\": 36,\n  \"interfaceType\": \"SPI\",\n  \"rfMode\": \"STD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/dpaFile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "dpaFile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get OS patches (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/osPatches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "osPatches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get OS upgrdes (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"build\": \"08C8\",\n  \"version\": \"403\",\n  \"mcuType\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/osUpgrades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "osUpgrades"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upgrade OS and DPA (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dpa\": \"0415\",\n  \"interface\": \"SPI\",\n  \"fromBuild\": \"08C8\",\n  \"toBuild\": \"08D5\",\n  \"trMcuType\": 36,\n  \"rfMode\": \"STD\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/upgradeOs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "upgradeOs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload IQRF file (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "format",
+                  "value": "hex",
+                  "type": "text",
+                  "uuid": "23a16b9b-1659-4817-8a36-b14f2608e61a"
+                },
+                {
+                  "key": "file",
+                  "value": "test.hex",
+                  "type": "text",
+                  "uuid": "bae22eab-d173-44fe-b37f-d291c1bc5c33"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Run uploader (unavailable)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 503', function () {",
+                  "    pm.response.to.have.status(503);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error is \\'The requested service is unavailable at this time.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('The requested service is unavailable at this time.');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"type\": \"OS\"\n}\n"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/iqrf/uploader",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "iqrf",
+                "uploader"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "auth": {

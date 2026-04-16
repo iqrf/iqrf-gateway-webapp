@@ -37,6 +37,7 @@ import { useI18n } from 'vue-i18n';
 
 import Disambiguation from '@/components/Disambiguation.vue';
 import { type DisambiguationLink } from '@/types/disambiguation';
+// import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
@@ -50,11 +51,13 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.iqrfnet.send-json.description'),
 		to: '/iqrfnet/send-json',
 	},
-	{
-		title: i18n.t('pages.iqrfnet.upload.title'),
-		description: i18n.t('pages.iqrfnet.upload.description'),
-		to: '/iqrfnet/upload',
-	},
+	// temporarily disabled, to be re-enabled in future release
+	//  {
+	//	  title: i18n.t('pages.iqrfnet.upload.title'),
+	//	  description: i18n.t('pages.iqrfnet.upload.description'),
+	//	  to: '/iqrfnet/upload',
+	//	  feature: Feature.trUpload,
+	//  },
 	{
 		title: i18n.t('pages.iqrfnet.tr-config.title'),
 		description: i18n.t('pages.iqrfnet.tr-config.description'),

@@ -267,11 +267,12 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.iqrfnet.send-json.title'),
 						to: '/iqrfnet/send-json',
 					},
-					{
-						title: i18n.t('pages.iqrfnet.upload.title'),
-						to: '/iqrfnet/upload',
-						feature: Feature.trUpload,
-					},
+					// temporarily disabled, to be re-enabled in future release
+					//  {
+					//	  title: i18n.t('pages.iqrfnet.upload.title'),
+					//	  to: '/iqrfnet/upload',
+					//	  feature: Feature.trUpload,
+					//  },
 					{
 						title: i18n.t('pages.iqrfnet.tr-config.title'),
 						to: '/iqrfnet/tr-config',

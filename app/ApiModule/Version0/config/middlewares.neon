@@ -17,6 +17,9 @@ services:
 	middleware.auth:
 		factory: App\ApiModule\Version0\Middlewares\AuthenticationMiddleware
 		tags: [middleware: [priority: 250]]
+	middleware.unavailable:
+		factory: App\ApiModule\Version0\Middlewares\UnavailableMiddleware
+		tags: [middleware: [priority: 220]]
 	midlleware.cors:
 		factory: App\ApiModule\Version0\Middlewares\CorsMiddleware
 		tags: [middleware: [priority: 200]]

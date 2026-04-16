@@ -95,6 +95,8 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/InvalidContentType'
 			'500':
 				$ref: '#/components/responses/ServerError'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
@@ -139,6 +141,8 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
@@ -186,6 +190,8 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
+			'503':
+				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);

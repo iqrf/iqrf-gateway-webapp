@@ -77,6 +77,12 @@ components:
 				'application/json':
 					schema:
 						$ref: '#/components/schemas/Error'
+		ServiceUnavailable:
+			description: Service is currently not available
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
 		UnauthorizedError:
 			description: API key or user token is missing or invalid
 			headers:
