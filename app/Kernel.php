@@ -76,6 +76,7 @@ class Kernel {
 	 * @param Configurator $configurator Nette DI initial configurator
 	 */
 	private static function setVersionParameters(Configurator $configurator): void {
+		$version = null;
 		try {
 			$versionInfo = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
 			$version = $versionInfo->version . ($versionInfo->pipeline !== '' ? '~' . $versionInfo->pipeline : '');
