@@ -39,8 +39,7 @@ class MailerConfigurationTestMailSender extends BaseMailSender {
 			$this->configuration = new ConfigurationManager('', $config);
 			$this->mailerFactory = new MailerFactory($this->configuration);
 		}
-		$mail = $this->createMessage('mailerConfigurationTest.latte', [], $user);
-		$this->createMailer()->send($mail);
+		$this->sendMessage('mailerConfigurationTest.latte', [], $user);
 	}
 
 }

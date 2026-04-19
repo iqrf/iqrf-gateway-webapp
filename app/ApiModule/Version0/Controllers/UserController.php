@@ -39,7 +39,7 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
-use App\Models\Mail\Senders\PasswordRecoveryMailSender;
+use App\Models\Mail\Senders\UserMailSender;
 use Nette\Mail\SendException;
 
 /**
@@ -54,15 +54,15 @@ class UserController extends BaseController {
 	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $manager User manager
+	 * @param UserMailSender $mailSender User e-mail sender
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
 	public function __construct(
 		private readonly JwtAuthenticator $jwtAuthenticator,
 		private readonly EntityManager $entityManager,
 		private readonly UserManager $manager,
+		private readonly UserMailSender $mailSender,
 		RestApiSchemaValidator $validator,
-		private readonly PasswordRecoveryMailSender $passwordRecoverySender
 	) {
 		parent::__construct($validator);
 	}
@@ -153,7 +153,7 @@ class UserController extends BaseController {
 		$this->entityManager->persist($user);
 		if ($sendVerification) {
 			try {
-				$this->manager->sendVerificationEmail($request, $user);
+				$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
 			} catch (SendException) {
 				// Ignore failure
 			}
@@ -196,7 +196,7 @@ class UserController extends BaseController {
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
+			$this->mailSender->sendPasswordChanged($user);
 		} catch (SendException) {
 			// ignore
 		}
@@ -256,7 +256,7 @@ class UserController extends BaseController {
 			$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
 		}
 		try {
-			$this->passwordRecoverySender->send($recovery, $baseUrl);
+			$this->mailSender->sendPasswordRecovery($recovery, $baseUrl);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -315,7 +315,7 @@ class UserController extends BaseController {
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
+			$this->mailSender->sendPasswordChanged($user);
 		} catch (SendException) {
 			// ignore
 		}
@@ -346,8 +346,11 @@ class UserController extends BaseController {
 		if ($user->getState() === User::STATE_VERIFIED) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
+		if ($user->getEmail() === null) {
+			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
+		}
 		try {
-			$this->manager->sendVerificationEmail($request, $user);
+			$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
