@@ -18,19 +18,19 @@
 import { createHead } from '@unhead/vue/client';
 import {
 	AliasSortingPlugin,
-	DeprecationsPlugin,
 	FlatMetaPlugin,
 	SafeInputPlugin,
 	TemplateParamsPlugin,
+	ValidatePlugin,
 } from 'unhead/plugins';
 
 const head = createHead({
 	plugins: [
 		AliasSortingPlugin,
-		DeprecationsPlugin,
 		FlatMetaPlugin,
 		TemplateParamsPlugin,
 		SafeInputPlugin,
+		ValidatePlugin(),
 	],
 });
 

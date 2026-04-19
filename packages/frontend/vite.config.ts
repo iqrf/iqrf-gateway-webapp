@@ -20,14 +20,13 @@ import path from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
-import UnheadVite from '@unhead/addons/vite';
+import { Unhead } from '@unhead/vue/vite';
 import vue from '@vitejs/plugin-vue';
 import { type ConfigEnv, defineConfig, loadEnv, type UserConfig } from 'vite';
 import VueDevTools from 'vite-plugin-vue-devtools';
 import Layouts from 'vite-plugin-vue-layouts-next';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import VueRouter from 'vue-router/vite';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
@@ -40,7 +39,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			outDir: path.resolve(import.meta.dirname, 'dist'),
 		},
 		plugins: [
-			tsconfigPaths(),
 			VueRouter({
 				routesFolder: 'src/pages',
 				dts: 'src/types/vue-router.d.ts',
@@ -62,7 +60,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 					configFile: 'src/styles/vuetify-settings.scss',
 				},
 			}),
-			UnheadVite(),
+			Unhead(),
 			VueI18nPlugin({
 				include: [path.resolve(import.meta.dirname, './src/locales/**')],
 				escapeHtml: true,
@@ -97,6 +95,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				'.tsx',
 				'.vue',
 			],
+			tsconfigPaths: true,
 		},
 	};
 });

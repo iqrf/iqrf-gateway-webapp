@@ -38,12 +38,12 @@
 	],
 	"devDependencies": {
 		"@cyclonedx/cyclonedx-npm": "^4.2.1",
-		"@types/node": "^25.5.0",
-		"@vitest/coverage-istanbul": "^4.1.2",
+		"@types/node": "^25.6.0",
+		"@vitest/coverage-istanbul": "^4.1.4",
 		"pnpm": "^10.33.0",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.9.3",
+		"typescript": "^6.0.3",
 		"vite-tsconfig-paths": "^6.1.1",
-		"vitest": "^4.1.2"
+		"vitest": "^4.1.4"
 	}
 }
