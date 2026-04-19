@@ -56,6 +56,11 @@ stages:
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
   needs: []
+  only:
+    refs:
+      - master
+      - tags
+      - release/*
   <<: *base_template
 
 .sentry-version_template: &sentry-version_template
@@ -108,23 +113,8 @@ build-docker:tests:
   only:
     - schedules
   variables:
-    DOCKER_FILE: docker/tests/bookworm.Dockerfile
-    DOCKER_TAG: tests-bookworm
-
-# Tests
-build:js:
-  <<: *base_template
-  <<: *npm_template
-  stage: test
-  needs: []
-  script:
-    - 'if [[ "${PACKAGE}" == "frontend" ]]; then pnpm --dir packages/api-client build; fi'
-    - pnpm --dir packages/${PACKAGE} run build
-  parallel:
-    matrix:
-      - PACKAGE:
-          - api-client
-          - frontend
+    DOCKER_FILE: docker/tests/trixie.Dockerfile
+    DOCKER_TAG: tests-trixie
 
 newman:
   image: docker:latest
@@ -328,6 +318,7 @@ dependency-check:npm:
     - dependency-check:parent
   variables:
     CDXGEN_IN_CONTAINER: "true"
+    NODE_EXTRA_CA_CERTS: '/etc/ssl/certs/ca-certificates.crt'
   parallel:
     matrix:
       - PACKAGE: api-client
