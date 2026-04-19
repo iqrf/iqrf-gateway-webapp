@@ -44,7 +44,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\ThemePreference;
 use App\Models\Database\Enums\TimeFormat;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Mail\Senders\PasswordRecoveryMailSender;
+use App\Models\Mail\Senders\UserMailSender;
 use DomainException;
 use Nette\Mail\SendException;
 use ValueError;
@@ -61,14 +61,14 @@ class AccountController extends BaseController {
 	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $manager User manager
-	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
+	 * @param UserMailSender $mailSender User e-mail sender
 	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly JwtAuthenticator $jwtAuthenticator,
 		private readonly EntityManager $entityManager,
 		private readonly UserManager $manager,
-		private readonly PasswordRecoveryMailSender $passwordRecoverySender,
+		private readonly UserMailSender $mailSender,
 		ControllerValidators $validators,
 	) {
 		parent::__construct($validators);
@@ -157,7 +157,10 @@ class AccountController extends BaseController {
 		$this->entityManager->persist($user);
 		if ($sendVerification) {
 			try {
-				$this->manager->sendVerificationEmail($request, $user);
+				$this->mailSender->sendVerification(
+					verification: $user->verification,
+					baseUrl: $this->getBaseUrl($request),
+				);
 			} catch (SendException) {
 				// Ignore failure
 			}
@@ -265,8 +268,11 @@ class AccountController extends BaseController {
 		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
+		if ($user->getEmail() === null) {
+			return $response;
+		}
 		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
+			$this->mailSender->sendPasswordChanged($user);
 		} catch (SendException) {
 			// ignore
 		}
@@ -315,18 +321,19 @@ class AccountController extends BaseController {
 		if (!$user instanceof User) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if ($user->getEmail() === null) {
+			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
+		}
 		if (!$user->getState()->isVerified()) {
 			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
 		}
 		$recovery = new PasswordRecovery($user);
 		$this->entityManager->persist($recovery);
-		if (array_key_exists('baseUrl', $body)) {
-			$baseUrl = trim($body['baseUrl'], '/');
-		} else {
-			$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
-		}
 		try {
-			$this->passwordRecoverySender->send($recovery, $baseUrl);
+			$this->mailSender->sendPasswordRecovery(
+				recovery: $recovery,
+				baseUrl: $this->getBaseUrl($request),
+			);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -384,10 +391,12 @@ class AccountController extends BaseController {
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->jwtAuthenticator->createToken($user);
-		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
-		} catch (SendException) {
-			// ignore
+		if ($user->getEmail() !== null) {
+			try {
+				$this->mailSender->sendPasswordChanged($user);
+			} catch (SendException) {
+				// ignore
+			}
 		}
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
@@ -478,8 +487,14 @@ class AccountController extends BaseController {
 		if ($user->getState()->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
+		if ($user->getEmail() === null) {
+			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
+		}
 		try {
-			$this->manager->sendVerificationEmail($request, $user);
+			$this->mailSender->sendVerification(
+				verification: $user->verification,
+				baseUrl: $this->getBaseUrl($request),
+			);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

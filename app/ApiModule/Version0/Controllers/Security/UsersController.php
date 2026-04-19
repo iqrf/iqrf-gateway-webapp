@@ -143,7 +143,7 @@ class UsersController extends BaseSecurityController {
 		$responseBody = ['emailSent' => false];
 		if ($user->getEmail() !== null) {
 			try {
-				$this->manager->sendVerificationEmail($request, $user);
+				$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
 				$responseBody['emailSent'] = true;
 			} catch (SendException) {
 				// Ignore failure
@@ -287,9 +287,9 @@ class UsersController extends BaseSecurityController {
 			}
 		}
 		$this->entityManager->persist($user);
-		if ($user->hasChangedEmail()) {
+		if ($user->hasChangedEmail() && $user->getEmail() !== null) {
 			try {
-				$this->manager->sendVerificationEmail($request, $user);
+				$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
 			} catch (SendException) {
 				// Ignore failure
 			}
@@ -324,11 +324,14 @@ class UsersController extends BaseSecurityController {
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if ($user->getEmail() === null) {
+			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
+		}
 		if ($user->getState()->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
-			$this->manager->sendVerificationEmail($request, $user);
+			$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

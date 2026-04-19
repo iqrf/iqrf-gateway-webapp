@@ -20,14 +20,12 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Apitte\Core\Http\ApiRequest;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
-use App\Models\Mail\Senders\EmailVerificationMailSender;
-use App\Models\Mail\Senders\PasswordChangeConfirmationMailSender;
+use App\Models\Mail\Senders\UserMailSender;
 use Nette\Mail\SendException;
 
 /**
@@ -43,13 +41,11 @@ class UserManager {
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param EmailVerificationMailSender $emailVerificationSender Email verification sender
-	 * @param PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender Password change confirmation sender
+	 * @param UserMailSender $mailSender User e-mail sender
 	 */
 	public function __construct(
 		private readonly EntityManager $entityManager,
-		private readonly EmailVerificationMailSender $emailVerificationSender,
-		private readonly PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender,
+		private readonly UserMailSender $mailSender,
 	) {
 		$this->repository = $entityManager->getUserRepository();
 	}
@@ -88,17 +84,11 @@ class UserManager {
 
 	/**
 	 * Sends user verification e-mail
-	 * @param ApiRequest $request API request
 	 * @param User $user User
+	 * @param string $baseUrl REAT API base URL
 	 * @throws SendException
 	 */
-	public function sendVerificationEmail(ApiRequest $request, User $user): void {
-		$body = $request->getJsonBodyCopy();
-		if (array_key_exists('baseUrl', $body)) {
-			$baseUrl = trim($body['baseUrl'], '/');
-		} else {
-			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
-		}
+	public function sendVerificationEmail(User $user, string $baseUrl): void {
 		if ($user->verification instanceof UserVerification) {
 			$this->entityManager->remove($user->verification);
 			$this->entityManager->flush();
@@ -106,23 +96,7 @@ class UserManager {
 		$user->verification = new UserVerification($user);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
-		$this->emailVerificationSender->send($user->verification, $baseUrl);
-	}
-
-	/**
-	 * Send password change confirmation e-mail
-	 * @param ApiRequest $request API request
-	 * @param User $user User
-	 * @throws SendException
-	 */
-	public function sendPasswordChangeConfirmationEmail(ApiRequest $request, User $user): void {
-		$body = $request->getJsonBodyCopy();
-		if (array_key_exists('baseUrl', $body)) {
-			$baseUrl = trim($body['baseUrl'], '/');
-		} else {
-			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
-		}
-		$this->passwordChangeConfirmationSender->send($user, $baseUrl);
+		$this->mailSender->sendVerification($user->verification, $baseUrl);
 	}
 
 }

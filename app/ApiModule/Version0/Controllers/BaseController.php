@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\UI\Controller\IController;
 use App\ApiModule\Version0\Models\ControllerValidators;
 
@@ -37,6 +38,19 @@ abstract class BaseController implements IController {
 	public function __construct(
 		protected readonly ControllerValidators $validators,
 	) {
+	}
+
+	/**
+	 * Returns REST API base URL
+	 * @param ApiRequest $request API request
+	 * @return string REST API base URL
+	 */
+	protected function getBaseUrl(ApiRequest $request): string {
+		$body = $request->getJsonBodyCopy();
+		if (array_key_exists('baseUrl', $body)) {
+			return trim($body['baseUrl'], '/');
+		}
+		return explode('/api/v0/', (string) $request->getUri(), 2)[0];
 	}
 
 }

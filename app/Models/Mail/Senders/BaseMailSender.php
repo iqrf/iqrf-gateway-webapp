@@ -8,9 +8,10 @@ use App\GatewayModule\Models\InfoManager;
 use App\Models\Database\Entities\User;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\MailerFactory;
+use App\Models\Mail\Senders\TemplateParameters\LayoutParameters;
+use Contributte\Translation\Translator;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use Nette\Localization\Translator;
 use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 
@@ -48,22 +49,45 @@ abstract class BaseMailSender {
 	 * Creates a new e-mail message from the Latte template
 	 * @param string $fileName Template filename
 	 * @param array<string, mixed> $params Template params
-	 * @param User|null $user Recipient
+	 * @param string|null $locale Locale
 	 * @return Message E-mail message
 	 */
-	protected function createMessage(string $fileName, array $params = [], ?User $user = null): Message {
-		$defaultParams = [
-			'gatewayInfo' => $this->gatewayInfo,
-			'userInfo' => $user,
-		];
-		$html = $this->renderTemplate($fileName, array_merge($defaultParams, $params));
+	protected function createMessage(string $fileName, array $params = [], ?string $locale = null): Message {
+		if ($locale !== null) {
+			$this->translator->setLocale($locale);
+		}
+
+		$html = $this->renderTemplate($fileName, array_merge([
+			'locale' => $locale,
+		], $params));
 		$mail = new Message();
-		$mail->setFrom($this->configuration->getFrom(), (string) $this->translator->translate('mail_' . $this->configuration->getTheme() . '.title'));
-		if ($user instanceof User && $user->getEmail() !== null) {
+		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('mail_' . $this->configuration->getTheme() . '.title'));
+		$mail->setHtmlBody($html, $this->getTemplateDir());
+
+		return $mail;
+	}
+
+	/**
+	 * Creates a new e-mail message from the Latte template
+	 * @param string $fileName Template filename
+	 * @param array<string, mixed> $params Template params
+	 * @param User|null $user Recipient
+	 */
+	protected function sendMessage(string $fileName, array $params = [], ?User $user = null): void {
+		$defaultParams = new LayoutParameters(
+			gatewayInfo: $this->gatewayInfo,
+			locale: $user?->getLanguage()->value ?? 'en',
+			userInfo: $user,
+		);
+		$mail = $this->createMessage(
+			fileName: $fileName,
+			params: array_merge($defaultParams->toArray(), $params),
+			locale: $defaultParams->locale,
+		);
+		if ($user?->getEmail() !== null) {
 			$mail->addTo($user->getEmail(), $user->getUserName());
 		}
-		$mail->setHtmlBody($html, $this->getTemplateDir());
-		return $mail;
+		$this->createMailer()->send($mail);
 	}
 
 	/**
