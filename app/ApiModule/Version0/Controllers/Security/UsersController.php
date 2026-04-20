@@ -30,10 +30,12 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserRoleException;
+use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
@@ -132,7 +134,16 @@ class UsersController extends BaseSecurityController {
 			if ($email !== null && $this->manager->checkEmailUniqueness($email)) {
 				throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
 			}
-			$user = new User($json['username'], $email, $json['password'], UserRole::fromString($json['role']), UserLanguage::from($json['language']));
+			if ($email === null && $json['password'] === null) {
+				throw new ClientErrorException('Password is required if e-mail address is not provided', ApiResponse::S400_BAD_REQUEST);
+			}
+			$user = new User(
+				username: $json['username'],
+				email: $email,
+				password: $json['password'] ?? null,
+				role: UserRole::fromString($json['role']),
+				language: UserLanguage::from($json['language']),
+			);
 			$this->entityManager->persist($user);
 			$this->entityManager->flush();
 		} catch (InvalidEmailAddressException $e) {
@@ -173,11 +184,7 @@ class UsersController extends BaseSecurityController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin']);
-		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
+		$user = $this->getUser($request);
 		$response = $response->writeJsonObject($user);
 		return $this->validators->validateResponse('userDetail', $response);
 	}
@@ -197,11 +204,7 @@ class UsersController extends BaseSecurityController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin']);
-		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
+		$user = $this->getUser($request);
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK);
@@ -236,15 +239,11 @@ class UsersController extends BaseSecurityController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin']);
-		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
+		$user = $this->getUser($request);
 		$this->validators->validateRequest('userEdit', $request);
 		$json = $request->getJsonBodyCopy();
 		if (array_key_exists('username', $json)) {
-			if ($this->manager->checkUsernameUniqueness($json['username'], $id)) {
+			if ($this->manager->checkUsernameUniqueness($json['username'], $user->getId())) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user->setUserName($json['username']);
@@ -277,7 +276,7 @@ class UsersController extends BaseSecurityController {
 		}
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
-			if ($email !== null && $email !== '' && $this->manager->checkEmailUniqueness($email, $id)) {
+			if ($email !== null && $email !== '' && $this->manager->checkEmailUniqueness($email, $user->getId())) {
 				throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
 			}
 			try {
@@ -296,6 +295,59 @@ class UsersController extends BaseSecurityController {
 		}
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK);
+	}
+
+	#[Path('/{id}/block')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Blocks a user
+		responses:
+			"200":
+				description: Success
+			"403":
+				$ref: "#/components/responses/Forbidden"
+			"404":
+				description: Not found
+			"409":
+				description: User is already blocked
+	EOT)]
+	public function block(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['users:admin']);
+		try {
+			$user = $this->getUser($request);
+			$currentUser = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+			if ($currentUser instanceof User && $currentUser->getId() === $user->getId()) {
+				throw new ClientErrorException('User cannot block itself', ApiResponse::S400_BAD_REQUEST);
+			}
+			$this->manager->block($user);
+			return $response->withStatus(ApiResponse::S200_OK);
+		} catch (InvalidUserStateException $e) {
+			throw new ClientErrorException('User is already blocked', ApiResponse::S409_CONFLICT, $e);
+		}
+	}
+
+	#[Path('/{id}/unblock')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Unblocks a user
+		responses:
+			"200":
+				description: Success
+			"403":
+				$ref: "#/components/responses/Forbidden"
+			"404":
+				description: Not found
+			"409":
+				description: User is not blocked
+	EOT)]
+	public function unblock(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['users:admin']);
+		try {
+			$this->manager->unblock($this->getUser($request));
+			return $response->withStatus(ApiResponse::S200_OK);
+		} catch (InvalidUserStateException $e) {
+			throw new ClientErrorException('User is not blocked', ApiResponse::S409_CONFLICT, $e);
+		}
 	}
 
 	#[Path('/{id}/resendVerification')]
@@ -319,11 +371,7 @@ class UsersController extends BaseSecurityController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin']);
-		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
+		$user = $this->getUser($request);
 		if ($user->getEmail() === null) {
 			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -331,11 +379,32 @@ class UsersController extends BaseSecurityController {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
-			$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
+			if ($user->getState()->isInvited()) {
+				$this->manager->sendInvitationEmail($user, $this->getBaseUrl($request));
+			} elseif ($user->getState()->isUnverified()) {
+				$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
+			} else {
+				throw new ClientErrorException('User is not in invited or unverified state', ApiResponse::S400_BAD_REQUEST);
+			}
+			return $response->withStatus(ApiResponse::S200_OK);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->withStatus(ApiResponse::S200_OK);
+	}
+
+	/**
+	 * Returns the user from User ID request parameter
+	 * @param ApiRequest $request API request
+	 * @return User User
+	 * @throws ClientErrorException User not found
+	 */
+	private function getUser(ApiRequest $request): User {
+		$id = (int) $request->getParameter('id');
+		$user = $this->repository->find($id);
+		if (!$user instanceof User) {
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		}
+		return $user;
 	}
 
 }

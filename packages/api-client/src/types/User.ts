@@ -73,7 +73,7 @@ export interface UserCreate extends UserBase {
 	/// Base URL
 	baseUrl?: string;
 	/// User password
-	password: string;
+	password?: string;
 }
 
 /**

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Enums;
 
+use App\Exceptions\InvalidUserStateException;
 use JsonSerializable;
 
 /**
@@ -27,53 +28,128 @@ use JsonSerializable;
  */
 enum UserState: int implements JsonSerializable {
 
-	/// Unverified user
+	/// Unverified account
 	case Unverified = 0;
 
-	/// Verified user
+	/// Verified account
 	case Verified = 1;
 
-	/// Default user state
+	/// Blocked unverified account
+	case BlockedUnverified = 2;
+
+	/// Blocked verified account
+	case BlockedVerified = 3;
+
+	/// Invited account
+	case Invited = 4;
+
+	/// Blocked invited account
+	case BlockedInvited = 5;
+
+	/// Default account state
 	final public const Default = self::Unverified;
 
 	/**
-	 * Is the user state verified?
-	 * @return bool Is the user state verified?
-	 */
-	public function isVerified(): bool {
-		return $this === self::Verified;
-	}
-
-	/**
-	 * Verify the user
-	 * @return UserState Verified user state
-	 */
-	public function verify(): self {
-		return match ($this) {
-			self::Unverified => self::Verified,
-			self::Verified => $this,
-		};
-	}
-
-	/**
-	 * Unverify the user
-	 * @return UserState Unverified user state
-	 */
-	public function unverify(): self {
-		return match ($this) {
-			self::Verified => self::Unverified,
-			self::Unverified => $this,
-		};
-	}
-
-	/**
-	 * Returns the user state as a string
-	 * @return string User state as a string
+	 * Returns account state as string
+	 * @return string Account state as string
 	 */
 	public function toString(): string {
 		return match ($this) {
 			self::Unverified => 'unverified',
 			self::Verified => 'verified',
+			self::Invited => 'invited',
+			self::BlockedUnverified,
+			self::BlockedVerified,
+			self::BlockedInvited => 'blocked',
+		};
+	}
+
+	/**
+	 * Checks if the account is blocked
+	 * @return bool In the account blocked?
+	 */
+	public function isBlocked(): bool {
+		$blockedStates = [
+			self::BlockedUnverified,
+			self::BlockedVerified,
+			self::BlockedInvited,
+		];
+		return in_array($this, $blockedStates, true);
+	}
+
+	/**
+	 * Checks if the account is invited
+	 * @return bool Is the account invited?
+	 */
+	public function isInvited(): bool {
+		return $this === self::Invited || $this === self::BlockedInvited;
+	}
+
+	/**
+	 * Checks if the account is verified
+	 * @return bool Is the account verified?
+	 */
+	public function isVerified(): bool {
+		return $this === self::Verified || $this === self::BlockedVerified;
+	}
+
+	/**
+	 * Checks if the account is unverified
+	 * @return bool Is the account unverified?
+	 */
+	public function isUnverified(): bool {
+		return $this === self::Unverified || $this === self::BlockedUnverified;
+	}
+
+	/**
+	 * Returns blocked account state based on the current state
+	 * @return self Blocked account state
+	 * @throws InvalidUserStateException User is already blocked
+	 */
+	public function block(): self {
+		return match ($this) {
+			self::Unverified => self::BlockedUnverified,
+			self::Verified => self::BlockedVerified,
+			self::Invited => self::BlockedInvited,
+			default => throw new InvalidUserStateException(),
+		};
+	}
+
+	/**
+	 * Returns unblocked account state based on the current blocked state
+	 * @return self Unblocked account state
+	 * @throws InvalidUserStateException User is already unblocked
+	 */
+	public function unblock(): self {
+		return match ($this) {
+			self::BlockedUnverified => self::Unverified,
+			self::BlockedVerified => self::Verified,
+			self::BlockedInvited => self::Invited,
+			default => throw new InvalidUserStateException('User is already unblocked'),
+		};
+	}
+
+	/**
+	 * Returns verified account state based on the current state
+	 * @return self Verified account state
+	 */
+	public function verify(): self {
+		return match ($this) {
+			self::Unverified, self::Invited => self::Verified,
+			self::BlockedUnverified, self::BlockedInvited => self::BlockedVerified,
+			default => throw new InvalidUserStateException('User is already verified'),
+		};
+	}
+
+	/**
+	 * Returns unverified account state based on the current state
+	 * @return self Unverified account state
+	 */
+	public function unverify(): self {
+		return match ($this) {
+			self::Verified => self::Unverified,
+			self::BlockedVerified => self::BlockedUnverified,
+			default => throw new InvalidUserStateException('User is already unverified'),
 		};
 	}
 

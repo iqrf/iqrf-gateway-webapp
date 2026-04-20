@@ -180,7 +180,7 @@
 				"messages": {
 					"create": {
 						"failed": "Failed to create a new Daemon API access token.",
-						"success": "A new Daemon API access token has been sucessfully created."
+						"success": "A new Daemon API access token has been successfully created."
 					},
 					"list": {
 						"failed": "Failed to retrieve Daemon API access token list."
@@ -244,7 +244,7 @@
 					},
 					"create": {
 						"failed": "Failed to create a new MQTT broker user.",
-						"success": "A new MQTT broker user has been sucessfully created."
+						"success": "A new MQTT broker user has been successfully created."
 					},
 					"list": {
 						"failed": "Failed to retrieve MQTT broker user list."
@@ -316,6 +316,7 @@
 					"add": "Add user",
 					"delete": "Delete user",
 					"edit": "Edit user",
+					"invite": "Invite user",
 					"refresh": "Refresh users"
 				},
 				"delete": {
@@ -329,6 +330,10 @@
 						"failed": "Failed to create new user {user}.",
 						"success": "User {user} has been successfully created."
 					},
+					"block": {
+						"failed": "Failed to block user {user}.",
+						"success": "User {user} has been successfully blocked."
+					},
 					"delete": {
 						"failed": "Failed to delete user {user}.",
 						"success": "User {user} has been successfully deleted."
@@ -337,8 +342,16 @@
 						"failed": "Failed to update user {user}.",
 						"success": "User {user} has been successfully updated."
 					},
+					"invite": {
+						"failed": "Failed to invite user {user}.",
+						"success": "User {user} has been successfully invited."
+					},
 					"list": {
 						"failed": "Failed to retrieve list of users."
+					},
+					"unblock": {
+						"failed": "Failed to unblock user {user}.",
+						"success": "User {user} has been successfully unblocked."
 					}
 				},
 				"noData": {
@@ -482,6 +495,7 @@
 						"signIn": "Sign in"
 					},
 					"messages": {
+						"blocked": "Your account is blocked. Please contact the administrator.",
 						"failure": "An error has occurred during sign in.",
 						"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
 						"success": "You have been signed in successfully."
@@ -1103,7 +1117,7 @@
 					"spi": {
 						"devices": {
 							"actions": {
-								"apply": "Apply SPI inteface",
+								"apply": "Apply SPI interface",
 								"reload": "Reload SPI interfaces"
 							},
 							"title": "SPI interfaces"
@@ -1124,7 +1138,7 @@
 						"baudRate": "Baud rate",
 						"devices": {
 							"actions": {
-								"apply": "Apply UART inteface",
+								"apply": "Apply UART interface",
 								"reload": "Reload UART interfaces"
 							},
 							"title": "UART interfaces"
@@ -2908,7 +2922,7 @@
 						}
 					},
 					"notes": {
-						"addressSpace": "If enabled, only specified adresses will be assigned to found nodes. If MID list is used, addresses specified in MID list but not in address space will not assigned.",
+						"addressSpace": "If enabled, only specified addresses will be assigned to found nodes. If MID list is used, addresses specified in MID list but not in address space will not assigned.",
 						"addressSpaceFormat": "The valid format is an enumeration of device addresses (1 - 239) separated by comma or as an interval: {range}.",
 						"hwpidFilter": "If enabled, only devices with specified HWPIDs will be added to the network.",
 						"hwpidFilterFormat": "The format is an enumeration of HWPIDs (0-65535) separated by comma. E.g. 4117,4099.",
@@ -3967,7 +3981,7 @@
 						},
 						"uploadTr": {
 							"action": "Uploading custom DPA handler to TR.",
-							"failed": "Failed to uplod custom DPA handler into the TR."
+							"failed": "Failed to upload custom DPA handler into the TR."
 						}
 					},
 					"title": "Custom DPA handler",

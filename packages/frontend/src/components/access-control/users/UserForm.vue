@@ -29,6 +29,14 @@ limitations under the License.
 				:tooltip='$t("components.accessControl.users.actions.add")'
 				:disabled='disabled'
 			/>
+			<IActionBtn
+				v-else-if='action === Action.Invite'
+				v-bind='props'
+				:action='action'
+				container-type='card-title'
+				:tooltip='$t("components.accessControl.users.actions.invite")'
+				:disabled='disabled'
+			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
@@ -150,7 +158,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
 const componentProps = defineProps<{
-	action: Action;
+	action: Action.Add | Action.Invite | Action.Edit;
 	userInfo?: UserInfo;
 	disabled?: boolean;
 }>();
@@ -200,29 +208,61 @@ async function onSubmit(): Promise<void> {
 	const params = { ...user.value };
 	const translationParams = { user: user.value.username };
 	try {
-		if (componentProps.action === Action.Add) {
-			await service.create(params as UserCreate);
-		} else {
-			if (componentProps.userInfo?.id === undefined) {
-				return;
-			}
-			if (params.password?.length === 0) {
-				delete params.password;
-			}
-			await service.update(componentProps.userInfo.id, params as UserEdit);
-			if (componentProps.userInfo.id === userStore.getId) {
-				await userStore.refreshUserInfo();
-			}
+		switch (componentProps.action) {
+			case Action.Add:
+				await service.create(params as UserCreate);
+				toast.success(i18n.t(
+					'components.accessControl.users.messages.add.success',
+					translationParams,
+				));
+				break;
+			case Action.Invite:
+				await service.create(params as UserCreate);
+				toast.success(i18n.t(
+					'components.accessControl.users.messages.invite.success',
+					translationParams,
+				));
+				break;
+			case Action.Edit:
+				if (componentProps.userInfo?.id === undefined) {
+					return;
+				}
+				if (params.password?.length === 0) {
+					delete params.password;
+				}
+				await service.update(componentProps.userInfo.id, params as UserEdit);
+				if (componentProps.userInfo.id === userStore.getId) {
+					await userStore.refreshUserInfo();
+				}
+				toast.success(i18n.t(
+					'components.accessControl.users.messages.edit.success',
+					translationParams,
+				));
+				break;
 		}
-		toast.success(
-			i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, translationParams),
-		);
 		close();
 		emit('refresh');
 	} catch {
-		toast.error(
-			i18n.t(`components.accessControl.users.messages.${componentProps.action}.failed`, translationParams),
-		);
+		switch (componentProps.action) {
+			case Action.Add:
+				toast.error(i18n.t(
+					'components.accessControl.users.messages.add.failed',
+					translationParams,
+				));
+				break;
+			case Action.Invite:
+				toast.error(i18n.t(
+					'components.accessControl.users.messages.invite.failed',
+					translationParams,
+				));
+				break;
+			case Action.Edit:
+				toast.error(i18n.t(
+					'components.accessControl.users.messages.edit.failed',
+					translationParams,
+				));
+				break;
+		}
 	}
 	componentState.value = ComponentState.Ready;
 }

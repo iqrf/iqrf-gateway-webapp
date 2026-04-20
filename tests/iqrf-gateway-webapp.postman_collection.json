@@ -605,7 +605,7 @@
                       "});",
                       "pm.test('Error message is \\'JSON does not validate. ', function () {",
                       "    var jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] The property password is required');",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] The property password is required\\n[email] The property email is required\\n[] Failed to match at least one schema');",
                       "});"
                     ],
                     "type": "text/javascript"

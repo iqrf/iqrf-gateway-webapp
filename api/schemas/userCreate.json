@@ -6,9 +6,16 @@
 	"additionalProperties": false,
 	"required": [
 		"username",
-		"password",
 		"language",
 		"role"
+	],
+	"anyOf": [
+		{
+			"required": ["password"]
+		},
+		{
+			"required": ["email"]
+		}
 	],
 	"properties": {
 		"baseUrl": {

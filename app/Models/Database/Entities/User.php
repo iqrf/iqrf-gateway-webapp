@@ -51,15 +51,47 @@ class User implements JsonSerializable {
 	use TId;
 
 	/**
+	 * @var PasswordRecovery|null Password recovery
+	 */
+	#[ORM\OneToOne(
+		targetEntity: PasswordRecovery::class,
+		mappedBy: 'user',
+		cascade: ['persist', 'refresh', 'remove'],
+		orphanRemoval: true,
+	)]
+	public ?PasswordRecovery $passwordRecovery = null;
+
+	/**
+	 * @var UserInvitation|null User invitation
+	 */
+	#[ORM\OneToOne(
+		targetEntity: UserInvitation::class,
+		mappedBy: 'user',
+		cascade: ['persist', 'refresh', 'remove'],
+		orphanRemoval: true,
+	)]
+	public ?UserInvitation $invitation = null;
+
+	/**
 	 * @var UserVerification|null User verification
 	 */
-	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+	#[ORM\OneToOne(
+		targetEntity: UserVerification::class,
+		mappedBy: 'user',
+		cascade: ['persist', 'refresh', 'remove'],
+		orphanRemoval: true,
+	)]
 	public ?UserVerification $verification = null;
 
 	/**
 	 * @var UserPreferences|null User preferences
 	 */
-	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserPreferences::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+	#[ORM\OneToOne(
+		targetEntity: UserPreferences::class,
+		mappedBy: 'user',
+		cascade: ['persist', 'refresh', 'remove'],
+		orphanRemoval: true,
+	)]
 	public ?UserPreferences $preferences = null;
 
 	/**

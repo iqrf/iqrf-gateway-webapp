@@ -36,8 +36,24 @@ export class UserService extends BaseService {
 	 */
 	public async list(): Promise<UserInfo[]> {
 		const response: AxiosResponse<UserInfo[]> =
-			await this.axiosInstance.get('/users');
+			await this.axiosInstance.get('/security/users');
 		return response.data.map((user: UserInfo) => UserUtils.deserialize(user));
+	}
+
+	/**
+	 * Blocks the user
+	 * @param {number} id ID of user to block
+	 */
+	public async block(id: number): Promise<void> {
+		await this.axiosInstance.post(`/security/users/${id.toString()}/block`);
+	}
+
+	/**
+	 * Unblocks the user
+	 * @param {number} id ID of user to unblock
+	 */
+	public async unblock(id: number): Promise<void> {
+		await this.axiosInstance.post(`/security/users/${id.toString()}/unblock`);
 	}
 
 	/**
@@ -47,7 +63,7 @@ export class UserService extends BaseService {
 	 */
 	public async create(user: UserCreate): Promise<EmailSentResponse> {
 		const response: AxiosResponse<EmailSentResponse> =
-			await this.axiosInstance.post('/users', UserUtils.serialize(user));
+			await this.axiosInstance.post('/security/users', UserUtils.serialize(user));
 		return response.data;
 	}
 
@@ -58,7 +74,7 @@ export class UserService extends BaseService {
 	 */
 	public async get(id: number): Promise<UserInfo> {
 		const response: AxiosResponse<UserInfo> =
-			await this.axiosInstance.get(`/users/${id.toString()}`);
+			await this.axiosInstance.get(`/security/users/${id.toString()}`);
 		return UserUtils.deserialize(response.data);
 	}
 
@@ -70,7 +86,7 @@ export class UserService extends BaseService {
 	 */
 	public async update(id: number, user: UserEdit): Promise<EmailSentResponse> {
 		const response: AxiosResponse<EmailSentResponse> =
-			await this.axiosInstance.put(`/users/${id.toString()}`, UserUtils.serialize(user));
+			await this.axiosInstance.put(`/security/users/${id.toString()}`, UserUtils.serialize(user));
 		return response.data;
 	}
 
@@ -79,7 +95,7 @@ export class UserService extends BaseService {
 	 * @param {number} id User ID
 	 */
 	public async delete(id: number): Promise<void> {
-		await this.axiosInstance.delete(`/users/${id.toString()}`);
+		await this.axiosInstance.delete(`/security/users/${id.toString()}`);
 	}
 
 	/**
@@ -87,7 +103,7 @@ export class UserService extends BaseService {
 	 * @param {number} id User ID
 	 */
 	public async resendVerificationEmail(id: number): Promise<void> {
-		await this.axiosInstance.post(`/users/${id.toString()}/resendVerification`);
+		await this.axiosInstance.post(`/security/users/${id.toString()}/resendVerification`);
 	}
 
 }

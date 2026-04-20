@@ -22,6 +22,7 @@ namespace App\Models\Mail\Senders;
 
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
 use InvalidArgumentException;
 use Nette\Mail\SendException;
@@ -72,6 +73,23 @@ class UserMailSender extends BaseMailSender {
 			'url' => $baseUrl . '/auth/password/reset/' . $uuid->toString(),
 		];
 		$this->sendMessage('passwordRecovery.latte', $params, $recovery->getUser());
+	}
+
+	/**
+	 * Sends initial password set e-mail
+	 * @param UserInvitation $invitation User invitation
+	 * @param string $baseUrl Base URL
+	 * @throws SendException
+	 */
+	public function sendPasswordSet(UserInvitation $invitation, string $baseUrl = ''): void {
+		$uuid = $invitation->getUuid();
+		if ($uuid === null) {
+			throw new InvalidArgumentException('Invitation UUID cannot be null');
+		}
+		$params = [
+			'url' => $baseUrl . '/auth/password/set/' . $uuid->toString(),
+		];
+		$this->sendMessage('passwordSet.latte', $params, $invitation->user);
 	}
 
 }

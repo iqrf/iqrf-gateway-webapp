@@ -22,18 +22,18 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
-use App\Models\Database\Repositories\PasswordRecoveryRepository;
+use App\Models\Database\Repositories\UserInvitationRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Password recovery
+ * User verification
  */
-#[ORM\Entity(repositoryClass: PasswordRecoveryRepository::class)]
-#[ORM\Table(name: 'password_recovery')]
+#[ORM\Entity(repositoryClass: UserInvitationRepository::class)]
+#[ORM\Table(name: 'user_invitations')]
 #[ORM\HasLifecycleCallbacks]
-class PasswordRecovery {
+class UserInvitation {
 
 	use TUuid;
 	use TCreatedAt;
@@ -43,26 +43,25 @@ class PasswordRecovery {
 	 * @param User $user User
 	 */
 	public function __construct(
-		#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'passwordRecovery')]
-		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
-		private User $user,
+		#[ORM\OneToOne(
+			targetEntity: User::class,
+			inversedBy: 'invitation',
+		)]
+		#[ORM\JoinColumn(
+			name: 'user',
+			nullable: false,
+			onDelete: 'CASCADE',
+		)]
+		public readonly User $user,
 	) {
 	}
 
 	/**
-	 * Returns the user
-	 * @return User User
-	 */
-	public function getUser(): User {
-		return $this->user;
-	}
-
-	/**
-	 * Checks if the password recovery request is expired
-	 * @return bool Is the password recovery request expired?
+	 * Checks if the user invitation is expired
+	 * @return bool Is the user invitation expired?
 	 */
 	public function isExpired(): bool {
-		$expirationInterval = new DateInterval('P1D');
+		$expirationInterval = new DateInterval('P7D');
 		$expiration = DateTimeImmutable::createFromMutable($this->createdAt)
 			->add($expirationInterval);
 		$now = new DateTimeImmutable();

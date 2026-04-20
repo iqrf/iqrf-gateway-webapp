@@ -22,6 +22,11 @@ limitations under the License.
 		</template>
 		<template #titleActions>
 			<UserForm
+				:action='Action.Invite'
+				:disabled='componentState === ComponentState.Reloading'
+				@refresh='getUsers()'
+			/>
+			<UserForm
 				:action='Action.Add'
 				:disabled='componentState === ComponentState.Reloading'
 				@refresh='getUsers()'
@@ -52,6 +57,15 @@ limitations under the License.
 				<AccountStateBadge :state='item.state' />
 			</template>
 			<template #item.actions='{ item }'>
+				<ResendEmailButton
+					:user='item'
+					@changed='getUsers()'
+				/>
+				<AccountStateButton
+					v-if='userId !== item.id'
+					:user='item'
+					@changed='getUsers()'
+				/>
 				<UserForm
 					:action='Action.Edit'
 					:user-info='toRaw(item)'
@@ -79,19 +93,25 @@ import {
 	IDataTable,
 	ILanguageFlag,
 } from '@iqrf/iqrf-vue-ui';
+import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import AccountStateBadge from '@/components/access-control/users/AccountStateBadge.vue';
+import AccountStateButton from '@/components/access-control/users/AccountStateButton.vue';
+import ResendEmailButton from '@/components/access-control/users/ResendEmailButton.vue';
 import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
 import UserForm from '@/components/access-control/users/UserForm.vue';
 import UserRoleBadge from '@/components/access-control/users/UserRoleBadge.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service = useApiClient().getSecurityServices().getUserService();
+const userStore = useUserStore();
+const { getId: userId } = storeToRefs(userStore);
 const headers = computed(() => [
 	{ key: 'username', title: i18n.t('components.common.fields.username') },
 	{ key: 'email', title: i18n.t('components.accessControl.users.email') },

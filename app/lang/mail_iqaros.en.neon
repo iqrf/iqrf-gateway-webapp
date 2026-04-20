@@ -23,6 +23,10 @@ passwordRecovery:
 	title: Password recovery
 	body: 'a password reset was requested for your account at IQAROS system %id%. To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'
 
+passwordSet:
+	title: Account created
+	body: 'an account was created for you at IQRF Gateway %id%. To set your password, click the link below. Please note that this link will expire in 7 days. If you did not issue an account creation request, you may ignore this email.'
+
 passwordChangeConfirmation:
 	title: Password changed
 	body: 'the password for your account at IQAROS system %id% has been successfully changed. If you made this change, you can safely ignore this email. If you did not make this change, please'

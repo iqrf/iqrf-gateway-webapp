@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserRole;
@@ -48,6 +50,28 @@ class UserManager {
 		private readonly UserMailSender $mailSender,
 	) {
 		$this->repository = $entityManager->getUserRepository();
+	}
+
+	/**
+	 * Blocks user
+	 * @param User $user User to block
+	 * @throws InvalidUserStateException User is already blocked
+	 */
+	public function block(User $user): void {
+		$user->setState($user->getState()->block());
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+	}
+
+	/**
+	 * Unblocks user
+	 * @param User $user User to unblock
+	 * @throws InvalidUserStateException User is already unblocked
+	 */
+	public function unblock(User $user): void {
+		$user->setState($user->getState()->unblock());
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -80,6 +104,24 @@ class UserManager {
 	public function list(array $roles = []): array {
 		$criteria = $roles === [] ? [] : ['role' => array_map(static fn (UserRole $role): string => $role->value, $roles)];
 		return $this->repository->findBy($criteria);
+	}
+
+	/**
+	 * Sends user invitation e-mail
+	 * @param User $user User
+	 * @param string $baseUrl Frontend base URL
+	 * @throws SendException
+	 */
+	public function sendInvitationEmail(User $user, string $baseUrl): void {
+		if ($user->invitation !== null) {
+			$this->entityManager->remove($user->invitation);
+			$this->entityManager->flush();
+		}
+		$user->invitation = new UserInvitation($user);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		assert($user->invitation !== null);
+		$this->mailSender->sendPasswordSet($user->invitation, $baseUrl);
 	}
 
 	/**

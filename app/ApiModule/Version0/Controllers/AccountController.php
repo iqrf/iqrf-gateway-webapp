@@ -358,6 +358,12 @@ class AccountController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/UserToken'
+			'403':
+				description: Account is blocked
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
 			'404':
 				$ref: '#/components/responses/NotFound'
 			'410':
@@ -389,8 +395,6 @@ class AccountController extends BaseController {
 		$this->entityManager->persist($user);
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		if ($user->getEmail() !== null) {
 			try {
 				$this->mailSender->sendPasswordChanged($user);
@@ -398,8 +402,7 @@ class AccountController extends BaseController {
 				// ignore
 			}
 		}
-		$response = $response->writeJsonBody($json);
-		return $this->validators->validateResponse('userToken', $response);
+		return $this->createSignedInResponse($response, $user);
 	}
 
 	#[Path('/tokenRefresh')]
@@ -419,10 +422,7 @@ class AccountController extends BaseController {
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->jwtAuthenticator->createToken($user);
-		$response = $response->writeJsonBody($json);
-		return $this->validators->validateResponse('userToken', $response);
+		return $this->createSignedInResponse($response, $user);
 	}
 
 	#[Path('/signIn')]
@@ -446,6 +446,12 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/UserToken'
 			'400':
 				$ref: '#/components/responses/BadRequest'
+			'403':
+				description: Account is blocked
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -459,10 +465,7 @@ class AccountController extends BaseController {
 		if (!$user->verifyPassword($credentials['password'])) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->jwtAuthenticator->createToken($user);
-		$response = $response->writeJsonBody($json);
-		return $this->validators->validateResponse('userToken', $response);
+		return $this->createSignedInResponse($response, $user);
 	}
 
 	#[Path('/emailVerification/resend')]
@@ -512,6 +515,12 @@ class AccountController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/UserToken'
+			'403':
+				description: Account is blocked
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
 			'404':
 				$ref: '#/components/responses/NotFound'
 	EOT)]
@@ -533,6 +542,20 @@ class AccountController extends BaseController {
 		$user->setState($state->verify());
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
+		return $this->createSignedInResponse($response, $user);
+	}
+
+	/**
+	 * Creates signed-in user response
+	 * @param ApiResponse $response API response
+	 * @param User $user User to sign in
+	 * @return ApiResponse Signed-in user response
+	 */
+	private function createSignedInResponse(ApiResponse $response, User $user): ApiResponse {
+		if ($user->getState()->isBlocked()) {
+			throw new ClientErrorException('User is blocked', ApiResponse::S403_FORBIDDEN);
+		}
+
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		$response = $response->writeJsonBody($json);

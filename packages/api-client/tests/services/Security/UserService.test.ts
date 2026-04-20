@@ -67,10 +67,24 @@ describe('UserService', (): void => {
 
 	test('fetch the list of users', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onGet('/users')
+		mockedAxios.onGet('/security/users')
 			.reply(200, rawUsers);
 		const actual: UserInfo[] = await service.list();
 		expect(actual).toStrictEqual(users);
+	});
+
+	test('block the user with ID `2`', async (): Promise<void> => {
+		expect.assertions(0);
+		mockedAxios.onPost('/security/users/2/block')
+			.reply(200);
+		await service.block(2);
+	});
+
+	test('unblock the user with ID `2`', async (): Promise<void> => {
+		expect.assertions(0);
+		mockedAxios.onPost('/security/users/2/unblock')
+			.reply(200);
+		await service.unblock(2);
 	});
 
 	test('create a new user', async (): Promise<void> => {
@@ -78,7 +92,7 @@ describe('UserService', (): void => {
 		const response: EmailSentResponse = {
 			emailSent: false,
 		};
-		mockedAxios.onPost('/users', {
+		mockedAxios.onPost('/security/users', {
 			username: 'roman',
 			email: null,
 			password: 'password',
@@ -98,7 +112,7 @@ describe('UserService', (): void => {
 
 	test('fetch the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onGet('/users/2')
+		mockedAxios.onGet('/security/users/2')
 			.reply(200, rawUsers[0]);
 		const actual: UserInfo = await service.get(2);
 		expect(actual).toStrictEqual(users[0]);
@@ -109,7 +123,7 @@ describe('UserService', (): void => {
 		const response: EmailSentResponse = {
 			emailSent: true,
 		};
-		mockedAxios.onPut('/users/2', {
+		mockedAxios.onPut('/security/users/2', {
 			username: 'roman',
 			email: 'roman@xn--ondrek-sta66a.eu',
 			language: 'en',
@@ -127,14 +141,14 @@ describe('UserService', (): void => {
 
 	test('delete the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(0);
-		mockedAxios.onDelete('/users/2')
+		mockedAxios.onDelete('/security/users/2')
 			.reply(200);
 		await service.delete(2);
 	});
 
 	test('resend the verification email to the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(0);
-		mockedAxios.onPost('/users/2/resendVerification')
+		mockedAxios.onPost('/security/users/2/resendVerification')
 			.reply(200);
 		await service.resendVerificationEmail(2);
 	});

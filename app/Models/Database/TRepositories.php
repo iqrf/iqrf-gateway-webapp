@@ -28,6 +28,7 @@ use App\Models\Database\Entities\NetworkOperator;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\Entities\WireguardInterface;
 use App\Models\Database\Entities\WireguardInterfaceIpv4;
@@ -41,6 +42,7 @@ use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\NetworkOperatorRepository;
 use App\Models\Database\Repositories\PasswordRecoveryRepository;
 use App\Models\Database\Repositories\SshKeyRepository;
+use App\Models\Database\Repositories\UserInvitationRepository;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Database\Repositories\UserVerificationRepository;
 use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
@@ -108,6 +110,14 @@ trait TRepositories {
 	 */
 	public function getSshKeyRepository(): SshKeyRepository {
 		return $this->getRepository(SshKey::class);
+	}
+
+	/**
+	 * Returns the user invitation repository
+	 * @return UserInvitationRepository User invitation repository
+	 */
+	public function getUserInvitationRepository(): UserInvitationRepository {
+		return $this->getRepository(UserInvitation::class);
 	}
 
 	/**

@@ -151,8 +151,18 @@ async function onSubmit(): Promise<void> {
 		await gatewayStore.fetchInfo();
 		await repositoryStore.fetch();
 	} catch (error) {
-		if (error instanceof AxiosError && error.response?.status === 400) {
-			toast.error(i18n.t('components.auth.sign.in.messages.incorrectUsernameOrPassword'));
+		if (error instanceof AxiosError) {
+			switch (error.response?.status) {
+				case 400:
+					toast.error(i18n.t('components.auth.sign.in.messages.incorrectUsernameOrPassword'));
+					break;
+				case 403:
+					toast.error(i18n.t('components.auth.sign.in.messages.blocked'));
+					break;
+				default:
+					toast.error(i18n.t('components.auth.sign.in.messages.failure'));
+					break;
+			}
 		} else {
 			toast.error(i18n.t('components.auth.sign.in.messages.failure'));
 		}
