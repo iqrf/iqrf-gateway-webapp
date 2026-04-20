@@ -129,7 +129,7 @@ export const useInstallStore = defineStore('install', {
 				missingPhpExtensions: !this.checks.phpModules.allExtensionsLoaded,
 				missingMigrations: !this.checks.allMigrationsExecuted,
 				misconfiguredSudo: this.checks.sudo !== undefined && (!this.checks.sudo.exists || !this.checks.sudo.userSudo),
-			} as InstallationErrors;
+			};
 		},
 		/**
 		 * Checks if the installation has any errors

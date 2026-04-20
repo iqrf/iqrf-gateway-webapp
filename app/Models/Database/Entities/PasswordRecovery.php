@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,17 @@ class PasswordRecovery {
 	 * @param User $user User
 	 */
 	public function __construct(
-		#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'passwordRecovery')]
-		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
-		private User $user,
+		#[ORM\OneToOne(
+			targetEntity: User::class,
+			inversedBy: 'passwordRecovery',
+			cascade: ['persist'],
+		)]
+		#[ORM\JoinColumn(
+			name: 'user',
+			nullable: false,
+			onDelete: 'CASCADE',
+		)]
+		private readonly User $user,
 	) {
 	}
 
