@@ -21,25 +21,31 @@ limitations under the License.
 		:items='roles'
 		:label='$t("components.accessControl.roles.select")'
 		:prepend-inner-icon='mdiAccountBadge'
-	/>
+	>
+		<template #item='{ props, item }'>
+			<v-list-item
+				v-bind='props'
+				:title='item.raw.title'
+				:subtitle='item.raw.description'
+			/>
+		</template>
+	</ISelectInput>
 </template>
 
 <script setup lang='ts'>
 import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiAccountBadge } from '@mdi/js';
-import { computed } from 'vue';
+import { computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const modelValue = defineModel<RoleInfo>({
-	required: true,
-});
+const modelValue = defineModel<RoleInfo>({});
 const componentProps = defineProps<{
 	roleList: RoleInfo[];
 }>();
 
 const i18n = useI18n();
-const roles = computed(() => {
+const roles: ComputedRef<{ title: string; description: string; value: RoleInfo }[]> = computed(() => {
 	const r = [];
 	for (const role of componentProps.roleList) {
 		let name: string = role.name;
@@ -49,9 +55,9 @@ const roles = computed(() => {
 			description = i18n.t(`components.accessControl.roles.systemRoles.description.${role.systemKey}`);
 		}
 		r.push({
-			'name': name,
+			'title': name,
 			'description': description,
-			'role': role,
+			'value': role,
 		});
 	}
 	return r;

@@ -343,6 +343,8 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userCreate.json
 		UserDetail:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json
+		UserAndRoleDetail:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userAndRoleDetail.json
 		UserEdit:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userEdit.json
 		UserList:

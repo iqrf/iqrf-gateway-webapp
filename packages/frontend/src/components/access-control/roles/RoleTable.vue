@@ -22,8 +22,8 @@ limitations under the License.
 		</template>
 		<template #titleActions>
 			<RoleForm
-				:action="Action.Add"
-				@update="updateRole"
+				:action='Action.Add'
+				@update='updateRole'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
@@ -41,11 +41,8 @@ limitations under the License.
 			:hover='true'
 			:dense='true'
 		>
-			<template #item.scopes='{ item }'>
-				<RoleForm :action="Action.Edit" :role="item" @update="updateRole" />
-			</template>
 			<template #item.actions='{ item }'>
-				<RoleForm :action="Action.Edit" :role="item" @update="updateRole" />
+				<RoleForm :action='Action.Edit' :role='item' @update='updateRole' />
 				<RoleDeleteDialog :role='item' @delete='deleteRole' />
 			</template>
 		</IDataTable>
@@ -69,10 +66,9 @@ const roles: Ref<RoleInfo[]> = ref([]);
 const service = useApiClient().getSecurityServices().getRoleService();
 const i18n = useI18n();
 const headers = computed(() => [
-	{ key: 'name', title: i18n.t('components.accessControl.roles.table.name') },
-	{ key: 'description', title: i18n.t('components.accessControl.roles.table.description') },
-	{ key: 'system', title: i18n.t('components.accessControl.roles.table.system') },
-	{ key: 'scopes', title: i18n.t('components.accessControl.roles.table.scopes') },
+	{ key: 'name', title: i18n.t('components.accessControl.roles.columns.name') },
+	{ key: 'description', title: i18n.t('components.accessControl.roles.columns.description') },
+	{ key: 'system', title: i18n.t('components.accessControl.roles.columns.system') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const noDataText = computed(() => {

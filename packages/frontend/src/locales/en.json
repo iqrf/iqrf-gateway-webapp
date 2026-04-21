@@ -304,6 +304,15 @@
 					},
 					"refresh": "Reload roles"
 				},
+				"columns": {
+					"description": "Description",
+					"name": "Name",
+					"system": "System"
+				},
+				"noData": {
+					"empty": "No role records found.",
+					"fetchFailed": "Role records could not be retrieved."
+				},
 				"roleName": {
 					"name": "Role name",
 					"required": "Please enter role name."
@@ -330,6 +339,8 @@
 					"title": "Title",
 					"value": "Value"
 				},
+				"label": "Scopes",
+				"noneSelected": "No scopes selected",
 				"scopes": {
 					"account:read": {
 						"description": "Allows viewing user's own account details.",
@@ -427,6 +438,14 @@
 						"description": "Allows updating time configuration.",
 						"title": "Manage time configuration"
 					},
+					"config:translator:read": {
+						"description": "Allows viewing translator configuration.",
+						"title": "View translator configuration"
+					},
+					"config:translator:write": {
+						"description": "Allows updating translator configuration.",
+						"title": "Manage translator configuration"
+					},
 					"gateway:backup:execute": {
 						"description": "Allows creating gateway backups.",
 						"title": "Run gateway backup"
@@ -479,6 +498,10 @@
 						"description": "Allows updating IP network physical connection configurations.",
 						"title": "Manage physical connections"
 					},
+					"ipNetwork:vpns:execute": {
+						"description": "Allows executing actions on IP network VPN configuration.",
+						"title": "Run VPN actions"
+					},
 					"ipNetwork:vpns:read": {
 						"description": "Allows viewing IP network VPN configuration.",
 						"title": "View VPN configuration"
@@ -495,6 +518,10 @@
 						"description": "Allows executing IQRF TR upload operations.",
 						"title": "Run TR upload"
 					},
+					"openApi:read": {
+						"description": "Allows viewing the OpenAPI specification.",
+						"title": "View OpenAPI specification"
+					},
 					"security:apiKeys:read": {
 						"description": "Allows viewing API keys.",
 						"title": "View API keys"
@@ -510,6 +537,14 @@
 					"security:certificates:write": {
 						"description": "Allows updating certificates.",
 						"title": "Manage certificates"
+					},
+					"security:role:read": {
+						"description": "Allows viewing roles.",
+						"title": "View roles"
+					},
+					"security:role:write": {
+						"description": "Allows creating, updating and deleting roles.",
+						"title": "Manage roles"
 					},
 					"security:shellUser:write": {
 						"description": "Allows updating shell user settings (shell user is used for SSH connections).",
@@ -532,6 +567,7 @@
 						"title": "Manage users"
 					}
 				},
+				"selectedCount": "{count} scopes selected",
 				"title": "Scopes"
 			},
 			"sshKeys": {
@@ -584,7 +620,9 @@
 					"key": {
 						"required": "Please enter SSH key."
 					}
-				}
+				},
+				"selectedCount": "{count} scopes selected",
+				"title": "Select scopes"
 			},
 			"users": {
 				"actions": {

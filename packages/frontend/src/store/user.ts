@@ -18,6 +18,7 @@
 import {
 	AccountState,
 	TimeFormat,
+	type UserAndRoleDetail,
 	type UserCredentials,
 	type UserInfo,
 	type UserPreferences,
@@ -43,9 +44,11 @@ import { DateTimeFormat } from '@/types/time';
  */
 interface UserState {
 	/// User information
-	user: UserSignedIn | null;
+	user: UserInfo | null;
 	/// User role
 	role: RoleInfo | null;
+	/// Token
+	token: string | null;
 	/// User session expiration timestamp
 	expiration: number;
 	/// User preferences
@@ -56,6 +59,7 @@ export const useUserStore = defineStore('user', {
 	state: (): UserState => ({
 		user: null,
 		role: null,
+		token: null,
 		expiration: 0,
 		preferences: null,
 	}),
@@ -77,30 +81,23 @@ export const useUserStore = defineStore('user', {
 		 * Refreshes the user information
 		 */
 		async refreshUserInfo(): Promise<void> {
-			const user: UserInfo = await useApiClient().getAccountService().getInfo();
+			const info: UserAndRoleDetail = await useApiClient().getAccountService().getInfo();
 			if (this.user === null) {
 				return;
 			}
-			this.user.id = user.id;
-			this.user.username = user.username;
-			this.user.email = user.email;
-			if (this.user.language !== user.language) {
+			if (this.user.language !== info.user.language) {
 				const localeStore = useLocaleStore();
-				this.user.language = user.language;
-				localeStore.setLocale(user.language);
+				this.user.language = info.user.language;
+				localeStore.setLocale(info.user.language);
 			}
-			const roleChanged = this.user.roleId !== user.roleId;
-			this.user.roleId = user.roleId;
-			this.user.state = user.state;
-			if (roleChanged || this.role?.id !== user.roleId) {
-				await this.refreshUserRole();
-			}
+			this.user = info.user;
+			this.role = info.role;
 		},
 		/**
 		 * Sets the user information
-		 * @param {UserSignedIn} user User information
+		 * @param {UserInfo} user User information
 		 */
-		setUserInfo(user: UserSignedIn): void {
+		setUserInfo(user: UserInfo): void {
 			this.user = user;
 			const sentryUser: SentryUser = {
 				id: user.id.toString(),
@@ -134,6 +131,7 @@ export const useUserStore = defineStore('user', {
 			const now: Date = new Date();
 			const epoch: number = Math.round(now.getTime() / 1_000);
 			const diff: number = epoch - jwt.iat;
+			this.token = token;
 			this.expiration = jwt.exp + diff;
 		},
 		/**
@@ -145,7 +143,7 @@ export const useUserStore = defineStore('user', {
 			}
 			try {
 				const response: UserSignedIn = await useApiClient().getAccountService().refreshToken();
-				await this.processSignInResponse(response, false);
+				this.processSignInResponse(response, false);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -170,8 +168,8 @@ export const useUserStore = defineStore('user', {
 		 */
 		async signIn(credentials: UserCredentials): Promise<void> {
 			try {
-				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
-				await this.processSignInResponse(user, true);
+				const response: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
+				this.processSignInResponse(response, true);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -182,19 +180,23 @@ export const useUserStore = defineStore('user', {
 		 * @param {UserSignedIn} response Sign in response
 		 * @param {boolean} setLocale Set locale based on user language
 		 */
-		async processSignInResponse(response: UserSignedIn, setLocale: boolean): Promise<void> {
+		processSignInResponse(response: UserSignedIn, setLocale: boolean): void {
 			this.processJwt(response.token);
-			this.setUserInfo(response);
-			await this.refreshUserRole();
+			this.setUserInfo(response.user);
+			this.setUserRole(response.role);
 			if (setLocale) {
 				const localeStore = useLocaleStore();
-				localeStore.setLocale(response.language);
+				localeStore.setLocale(response.user.language);
 			}
 		},
+		/**
+		 * Clears out current user data
+		 */
 		clearUserData(): void {
 			this.expiration = 0;
 			this.user = null;
 			this.role = null;
+			this.token = null;
 			setUser(null);
 		},
 		/**
@@ -351,7 +353,7 @@ export const useUserStore = defineStore('user', {
 		 * @return {string|null} JWT token
 		 */
 		getToken(state: UserState): string | null {
-			return state.user?.token ?? null;
+			return state.token ?? null;
 		},
 		/**
 		 * Returns the session expiration

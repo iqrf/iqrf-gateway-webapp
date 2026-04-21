@@ -24,6 +24,7 @@ limitations under the License.
 			<ApiKeyForm
 				:action='Action.Add'
 				:disabled='componentState === ComponentState.Reloading'
+				:role-list='roles'
 				@refresh='getKeys()'
 			/>
 			<IActionBtn
@@ -32,7 +33,7 @@ limitations under the License.
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.accessControl.apiKeys.actions.reload")'
-				@click='getKeys()'
+				@click='getAllData()'
 			/>
 		</template>
 		<IDataTable
@@ -57,6 +58,7 @@ limitations under the License.
 					:action='Action.Edit'
 					:api-key='toRaw(item)'
 					:disabled='componentState === ComponentState.Reloading'
+					:role-list='roles'
 					@refresh='getKeys()'
 				/>
 				<ApiKeyDeleteDialog
@@ -70,8 +72,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { type ApiKeyService, RoleService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type ApiKeyInfo, RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {
 	Action,
 	ComponentState,
@@ -94,7 +96,8 @@ import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const localeStore = useLocaleStore();
-const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
+const keyService: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
+const roleService: RoleService = useApiClient().getSecurityServices().getRoleService();
 const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
@@ -103,6 +106,7 @@ const headers = computed(() => [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const keys: Ref<ApiKeyInfo[]> = ref([]);
+const roles: Ref<RoleInfo[]> = ref([]);
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
@@ -111,13 +115,29 @@ const noDataText = computed(() => {
 	return 'components.accessControl.apiKeys.noData.empty';
 });
 
+async function getRoles(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		roles.value = await roleService.list();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.accessControl.roles.actions.list.failure'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
+}
+
 async function getKeys(): Promise<void> {
 	componentState.value = [
 		ComponentState.Created,
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		keys.value = await service.list();
+		keys.value = await keyService.list();
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
@@ -125,6 +145,14 @@ async function getKeys(): Promise<void> {
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
+}
+
+async function getAllData(): Promise<void> {
+	await getRoles();
+	if (componentState.value === ComponentState.Error) {
+		return;
+	}
+	await getKeys();
 }
 
 function formatTime(time: DateTime | null): string|null {
@@ -144,6 +172,6 @@ function getState(state: string | null): string {
 }
 
 onMounted(() => {
-	getKeys();
+	getAllData();
 });
 </script>

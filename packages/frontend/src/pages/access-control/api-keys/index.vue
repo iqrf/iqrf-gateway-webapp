@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "ApiKeys",
 	"meta": {
-		"scope": ["security_apiKeys_read"],
+		"scope": ["security:apiKeys:read"],
 	},
 }
 </route>

@@ -28,7 +28,7 @@ limitations under the License.
 	"name": "WireGuardConnectionForm",
 	"meta": {
 		"feature": "networkManager",
-		"scope": ["ipNetwork_vpns_read"]
+		"scope": ["ipNetwork:vpns:read"]
 	}
 }
 </route>

@@ -100,8 +100,8 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Loading);
 const userStore = useUserStore();
 /// Router instance
 const router = useRouter();
-/// User data
-const userData: Ref<UserSignedIn | null> = ref(null);
+/// User sign in data
+const signInResponse: Ref<UserSignedIn | null> = ref(null);
 /// Error message
 const errorMsg: Ref<string> = ref('');
 /// Internationalization instance
@@ -110,8 +110,8 @@ const i18n = useI18n();
 onMounted(async () => {
 	componentState.value = ComponentState.Loading;
 	try {
-		userData.value = await useApiClient().getAccountService().verifyEmail(componentProps.uuid);
-		await userStore.processSignInResponse(userData.value, true);
+		signInResponse.value = await useApiClient().getAccountService().verifyEmail(componentProps.uuid);
+		userStore.processSignInResponse(signInResponse.value, true);
 		await userStore.refreshUserPreferences();
 		componentState.value = ComponentState.Success;
 	} catch (error) {
@@ -142,7 +142,7 @@ onMounted(async () => {
  * Redirects the user to the home page
  */
 async function signIn(): Promise<void> {
-	if (userData.value === null) {
+	if (signInResponse.value === null) {
 		return;
 	}
 	await router.push('/');

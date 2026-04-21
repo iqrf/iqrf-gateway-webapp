@@ -1,0 +1,23 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userAndRoleDetail.json",
+	"type": "object",
+	"title": "User and Role Detail",
+	"additionalProperties": false,
+	"required": [
+		"user",
+		"role"
+	],
+	"properties": {
+		"user": {
+			"$id": "#/properties/user",
+			"title": "User detail",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json"
+		},
+		"role": {
+			"$id": "#/properties/role",
+			"title": "Role detail",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleDetail.json"
+		}
+	}
+}

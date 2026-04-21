@@ -24,6 +24,7 @@ import {
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
 	type UserAccountRecovery,
+	type UserAndRoleDetail,
 	type UserCredentials,
 	type UserInfo,
 	type UserPasswordChange,
@@ -34,6 +35,7 @@ import {
 	UserThemePreference,
 	UserTimeFormatPreference,
 } from '../../src/types';
+import { type RoleInfo } from '../../src/types/Security';
 import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('AccountService', (): void => {
@@ -80,11 +82,32 @@ describe('AccountService', (): void => {
 	};
 
 	/**
+	 * @var {RoleInfo} roleInfo Role information
+	 */
+	const roleInfo: RoleInfo = {
+		id: 1,
+		name: 'admin',
+		description: 'Gateway administrator role',
+		scopes: [],
+		system: true,
+		systemKey: 'admin',
+	};
+
+	/**
 	 * @var {UserSignedIn} userSignedIn User signed in
 	 */
 	const userSignedIn: UserSignedIn = {
-		...userInfo,
+		user: userInfo,
+		role: roleInfo,
 		token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJpYXQiOjE3MTA4Nzc3NjAsIm5iZiI6MTcxMDg3Nzc2MCwiZXhwIjoxNzEwODgzMTYwLCJ1aWQiOjEsImlzcyI6Ikxlbm92by1CNTEtODAiLCJqdGkiOiJMZW5vdm8tQjUxLTgwIn0._EguTP1nPp9N56tB40TrtXnuqKPZ3wlXERmvxiDtkHBzthJpQcwU7GkKgsIwL4f4I0LEPrmykZDmHlUSYG-BZiNPtGtFaiw_T5pC4FDYzUVLgitWg2rdKdKa5I7lmGuN',
+	};
+
+	/**
+	 * @var {UserAndRoleDetail} UserAndRoleDetail User and role data response
+	 */
+	const userAndRoleDetail: UserAndRoleDetail = {
+		user: userInfo,
+		role: roleInfo,
 	};
 
 	beforeEach((): void => {
@@ -94,9 +117,9 @@ describe('AccountService', (): void => {
 	test('fetch information about the logged-in user', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/account')
-			.reply(200, userInfo);
-		const actual: UserInfo = await service.getInfo();
-		expect(actual).toStrictEqual(userInfo);
+			.reply(200, userAndRoleDetail);
+		const actual: UserAndRoleDetail = await service.getInfo();
+		expect(actual).toStrictEqual(userAndRoleDetail);
 	});
 
 	test('edit the user', async (): Promise<void> => {

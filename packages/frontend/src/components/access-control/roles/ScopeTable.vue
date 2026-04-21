@@ -16,39 +16,69 @@ limitations under the License.
 -->
 
 <template>
-	<v-expansion-panels>
-		<v-expansion-panel>
-			<v-expansion-panel-title>
-				{{ $t('components.accessControl.scopeTable.title') }}
-			</v-expansion-panel-title>
-			<v-expansion-panel-text>
-				<ICard>
-					<IDataTable
-						:headers="headers"
-						:items="disableEdit ? scopes : selected"
-						:items-per-page="scopes.length"
-						hide-pagination
-						fixed-header
-						height="400"
-					>
-						<template #item.actions='{ item }'>
-							<v-checkbox-btn
-								:model-value="item.selected"
-								@update:model-value="emit('update', item.value)"
-								:disabled='disableEdit'
-							/>
-						</template>
-					</IDataTable>
-				</ICard>
-			</v-expansion-panel-text>
-		</v-expansion-panel>
-	</v-expansion-panels>
+	<IModalWindow
+		v-model='showDialog'
+		persistent
+	>
+		<template #activator='{ props }'>
+			<v-btn
+				v-bind='props'
+				block
+				variant='outlined'
+				height='56'
+				class='scope-table-activator text-none rounded-t-lg rounded-b-0'
+			>
+				<div class='scope-table-activator__content'>
+					<span class='scope-table-activator__label'>
+						{{ $t('components.accessControl.scopeTable.label') }}
+					</span>
+					<span class='scope-table-activator__value'>
+						{{ selectedScopesText }}
+					</span>
+				</div>
+				<v-icon :icon='mdiChevronDown' />
+			</v-btn>
+		</template>
+		<v-form>
+			<ICard>
+				<template #title>
+					{{ $t('components.accessControl.scopeTable.title') }}
+				</template>
+				<IDataTable
+					:headers='headers'
+					:items='tableItems'
+					:items-per-page='scopes.length'
+					hide-pagination
+					fixed-header
+					height='400'
+				>
+					<template #item.actions='{ item }'>
+						<v-checkbox-btn
+							:model-value='item.selected'
+							:disabled='disableEdit'
+							@update:model-value='update(item.value)'
+						/>
+					</template>
+				</IDataTable>
+				<template #actions>
+					<v-spacer />
+					<IActionBtn
+						:action='Action.Close'
+						container-type='card'
+						:disabled='componentState === ComponentState.Action'
+						@click='close()'
+					/>
+				</template>
+			</ICard>
+		</v-form>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
-import { computed } from 'vue';
+import { Action, ComponentState, IActionBtn, ICard, IDataTable, IModalWindow } from '@iqrf/iqrf-vue-ui';
+import { mdiChevronDown } from '@mdi/js';
+import { computed, type ComputedRef, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const componentProps = withDefaults(
@@ -64,6 +94,8 @@ const emit = defineEmits<{
 	update: [scopeValue: AccessScope];
 }>();
 
+const showDialog: Ref<boolean> = ref(false);
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
 	{ key: 'value', title: i18n.t('components.accessControl.scopeTable.columns.value') },
@@ -76,7 +108,44 @@ const scopes = computed(
 		(scopeValue: AccessScope) => generateScopeObject(scopeValue, componentProps.selected),
 	),
 );
+const tableItems = computed(() => {
+	if (!componentProps.disableEdit) {
+		return scopes.value;
+	}
+	return scopes.value.filter((scope: any) => scope.selected);
+});
+const selectedScopesText: ComputedRef<string> = computed((): string => {
+	const count = componentProps.selected.length;
+	if (count === 0) {
+		return i18n.t('components.accessControl.scopeTable.noneSelected');
+	}
+	return i18n.t('components.accessControl.scopeTable.selectedCount', { count });
+});
 
+/**
+ * Closes the dilog window
+ */
+function close(): void {
+	showDialog.value = false;
+}
+
+/**
+ * Emits the update when scope is selected
+ * @param {AccessScope} scope Selected access scope
+ */
+function update(scope: AccessScope): void {
+	if (componentProps.disableEdit) {
+		return;
+	}
+	emit('update', scope);
+}
+
+/**
+ * Genertes object that is then rendered in the scope array
+ * @param {AccessScope} scope Scope to generate scope object for
+ * @param {Array<AccessScope>} selectedScopes Array of selected scopes - used to mark scopes selected in the object
+ * @return {object} Scope object for rendering in the array
+ */
 function generateScopeObject(scope: AccessScope, selectedScopes: Array<AccessScope>): object {
 	return {
 		value: scope,
@@ -87,3 +156,33 @@ function generateScopeObject(scope: AccessScope, selectedScopes: Array<AccessSco
 }
 
 </script>
+
+<style scoped>
+.scope-table-activator {
+	justify-content: space-between;
+	padding-inline: 16px;
+}
+
+.scope-table-activator__content {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: flex-start;
+	overflow: hidden;
+}
+
+.scope-table-activator__label {
+	font-size: 0.75rem;
+	line-height: 1;
+	color: rgb(var(--v-theme-on-surface), 0.6);
+	margin-bottom: 0.25rem;
+}
+
+.scope-table-activator__value {
+	font-size: 1rem;
+	line-height: 1.25rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+</style>

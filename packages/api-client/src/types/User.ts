@@ -16,6 +16,8 @@
 
 import { type Language } from '@iqrf/iqrf-ui-common-types';
 
+import { type RoleInfo } from './Security';
+
 /**
  * Account state enum
  */
@@ -86,9 +88,19 @@ export interface UserInfo extends UserBase {
 }
 
 /**
- * User signed in interface
+ * Response with User data and role
  */
-export interface UserSignedIn extends UserInfo {
+export interface UserAndRoleDetail {
+	/// User data
+	user: UserInfo;
+	/// User role data
+	role: RoleInfo;
+}
+
+/**
+ * Sign in response
+ */
+export interface UserSignedIn extends UserAndRoleDetail {
 	/// User JWT token
 	token: string;
 }

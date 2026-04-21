@@ -28,6 +28,12 @@ limitations under the License.
 				container-type='card-title'
 				:tooltip='$t(`components.accessControl.roles.actions.${action}.title`)'
 			/>
+			<IDataTableAction
+				v-else
+				v-bind='props'
+				:action='action'
+				:tooltip='$t(`components.accessControl.roles.actions.${action}.title`)'
+			/>
 		</template>
 		<v-form
 			ref='form'
@@ -53,6 +59,8 @@ limitations under the License.
 				/>
 				<ScopeTable
 					:selected='roleConfig.scopes'
+					:disable-edit='isSystemRole'
+					:disabled='componentState === ComponentState.Action'
 					@update='updateScopes'
 				/>
 				<template #actions>
@@ -60,7 +68,7 @@ limitations under the License.
 						:action='action'
 						container-type='card'
 						:loading='componentState === ComponentState.Action'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:disabled='!isValid.value || isSystemRole || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
@@ -78,8 +86,8 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { AccessScope, RoleConfig, RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { ref, Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { computed, ComputedRef, ref, Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -106,6 +114,10 @@ const form: TemplateRef<VForm> = useTemplateRef('form');
 const roleConfig: Ref<RoleConfig> = ref(getRoleConfig(componentProps.role));
 const service = useApiClient().getSecurityServices().getRoleService();
 const i18n = useI18n();
+
+const isSystemRole: ComputedRef<boolean> = computed(() => {
+	return componentProps.role?.system ?? false;
+});
 
 /**
  * Creates role configuration object from role info object,

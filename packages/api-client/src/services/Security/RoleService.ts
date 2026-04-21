@@ -33,7 +33,7 @@ export class RoleService extends BaseService {
 	 */
 	public async list(): Promise<RoleInfo[]> {
 		const response: AxiosResponse<RoleInfo[]> =
-			await this.axiosInstance.get('/roles');
+			await this.axiosInstance.get('/security/roles');
 		return response.data;
 	}
 
@@ -44,7 +44,7 @@ export class RoleService extends BaseService {
 	 */
 	public async create(role: RoleConfig): Promise<RoleInfo> {
 		const response: AxiosResponse<RoleInfo> =
-			await this.axiosInstance.post('/roles', role);
+			await this.axiosInstance.post('/security/roles', role);
 		return response.data;
 	}
 
@@ -55,7 +55,7 @@ export class RoleService extends BaseService {
 	 */
 	public async get(id: number): Promise<RoleInfo> {
 		const response: AxiosResponse<RoleInfo> =
-			await this.axiosInstance.get(`/roles/${id.toString()}`);
+			await this.axiosInstance.get(`/security/roles/${id.toString()}`);
 		return response.data;
 	}
 
@@ -67,7 +67,7 @@ export class RoleService extends BaseService {
 	 */
 	public async update(id: number, role: RoleConfig): Promise<RoleInfo> {
 		const response: AxiosResponse<RoleInfo> =
-			await this.axiosInstance.put(`/roles/${id.toString()}`, role);
+			await this.axiosInstance.put(`/security/roles/${id.toString()}`, role);
 		return response.data;
 	}
 
@@ -76,7 +76,7 @@ export class RoleService extends BaseService {
 	 * @param {number} id Role ID
 	 */
 	public async delete(id: number): Promise<void> {
-		await this.axiosInstance.delete(`/roles/${id.toString()}`);
+		await this.axiosInstance.delete(`/security/roles/${id.toString()}`);
 	}
 
 }

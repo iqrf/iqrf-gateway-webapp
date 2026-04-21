@@ -2,41 +2,23 @@
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/jwt.json",
 	"type": "object",
-	"title": "JWT + user info",
+	"title": "JWT + user and role info",
 	"additionalProperties": false,
 	"required": [
-		"id",
-		"username",
-		"email",
-		"language",
-		"roleId",
-		"state",
+		"user",
+		"role",
 		"token"
 	],
 	"properties": {
-		"id": {
-			"$id": "#/properties/id",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/id"
+		"user": {
+			"$id": "#/properties/user",
+			"title": "User detail",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json"
 		},
-		"username": {
-			"$id": "#/properties/username",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
-		},
-		"email": {
-			"$id": "#/properties/email",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/email"
-		},
-		"language": {
-			"$id": "#/properties/language",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
-		},
-		"roleId": {
-			"$id": "#/properties/roleId",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/roleId"
-		},
-		"state": {
-			"$id": "#/properties/state",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/state"
+		"role": {
+			"$id": "#/properties/role",
+			"title": "Role detail",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleDetail.json"
 		},
 		"token": {
 			"$id": "#/properties/token",

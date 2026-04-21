@@ -18,6 +18,7 @@ import * as punycode from 'punycode/punycode.js';
 
 import {
 	type AccountEdit,
+	type UserAndRoleDetail,
 	type UserCreate,
 	type UserEdit,
 	type UserInfo,
@@ -43,13 +44,24 @@ export class UserUtils {
 
 	/**
 	 * Deserializes the user
-	 * @template {UserInfo|UserSignedIn} T Type of the user
+	 * @template {UserInfo} T Type of the user
 	 * @param {T} user User to deserialize
 	 * @return {T} Deserialized user
 	 */
-	public static deserialize<T extends UserInfo|UserSignedIn>(user: T): T {
+	public static deserialize<T extends UserInfo>(user: T): T {
 		user.email = (user.email === null || user.email.length === 0) ? null : punycode.toUnicode(user.email);
 		return user;
+	}
+
+	/**
+	 * Deserializes the response containing user and role
+	 * @template {UserAndRoleDetail|UserSignedIn} T type of data containing user and role info
+	 * @param {T} data User and role data
+	 * @return {T} response with deserialized data
+	 */
+	public static deserializeUserRoleToken<T extends UserAndRoleDetail|UserSignedIn>(data: T): T {
+		data.user = this.deserialize(data.user);
+		return data;
 	}
 
 }

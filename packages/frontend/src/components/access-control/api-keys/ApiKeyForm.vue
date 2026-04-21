@@ -67,8 +67,9 @@ limitations under the License.
 					:label='$t("components.accessControl.apiKeys.expiration")'
 					:min='toRaw(minDate)'
 				/>
-				<RoleLookupTable
-					@select='selectRole'
+				<RoleSelect
+					v-model='role'
+					:role-list='componentProps.roleList'
 				/>
 				<ITextInput
 					v-if='key.revokedBy'
@@ -91,8 +92,8 @@ limitations under the License.
 					/>
 					<ApiKeyRevokeDialog
 						v-if='action === Action.Edit'
-						:api-key="key"
-						appearance="button"
+						:api-key='key'
+						appearance='button'
 						@revoke='emit("refresh")'
 					/>
 					<v-spacer />
@@ -140,21 +141,24 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
-import RoleLookupTable from '@/components/access-control/roles/RoleLookupTable.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+import RoleSelect from '../roles/RoleSelect.vue';
+
 import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
+
 
 const componentProps = withDefaults(
 	defineProps<{
 		action?: Action.Add | Action.Edit;
 		apiKey?: ApiKeyInfo;
 		disabled?: boolean;
-		roles: RoleInfo[];
+		roleList: RoleInfo[];
 	}>(),
 	{
 		action: Action.Add,
+		apiKey: undefined,
 	},
 );
 const emit = defineEmits<{
@@ -170,7 +174,7 @@ const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultKey: ApiKeyInfo = {
 	description: '',
 	expiration: null,
-	roleId: componentProps.roles.find((v: RoleInfo) => v.systemKey === 'normal')?.id ?? 0,
+	roleId: -1,
 	legacy: false,
 };
 const expiration: Ref<DateTime | null> = ref(null);
@@ -178,6 +182,7 @@ const key: Ref<ApiKeyInfo> = ref(defaultKey);
 const generatedKey: Ref<string | null> = ref(null);
 const displayDialog: Ref<InstanceType<typeof ApiKeyDisplayDialog>|null> = useTemplateRef('displayDialog');
 const minDate: Ref<DateTime | null> = ref(null);
+const role: Ref<RoleInfo | undefined> = ref(undefined);
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
@@ -186,12 +191,23 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.accessControl.apiKeys.actions.edit');
 });
 
+watch(role, () => {
+	if (!role.value) {
+		return;
+	}
+	key.value.roleId = role.value.id!;
+});
+
+/**
+ * Set form default values
+ */
 watch(show, (newVal: boolean): void => {
 	if (!newVal) {
 		return;
 	}
-	if (!componentProps.roles) {
+	if (!componentProps.roleList) {
 		componentState.value = ComponentState.Error;
+		// TODO - add error message about failing to retreive role list
 		return;
 	}
 	if (componentProps.action === Action.Add) {
@@ -209,7 +225,28 @@ watch(show, (newVal: boolean): void => {
 		expiration.value = null;
 	}
 	minDate.value = DateTime.now();
+	let defaultRole: RoleInfo | undefined = undefined;
+	if (key.value.roleId === -1) {
+		defaultRole = componentProps.roleList.find((role) => role.systemKey === 'normal');
+	} else {
+		defaultRole = componentProps.roleList.find((role) => role.id === key.value.roleId);
+	}
+	if (!defaultRole) {
+		componentState.value = ComponentState.Error;
+		// TODO - add error message about failing to retreive role list
+	} else {
+		selectRole(defaultRole);
+	}
 });
+
+/**
+ * Selects new key role
+ * @param {RoleInfo} newRole New key role
+ */
+function selectRole(newRole: RoleInfo | undefined): void {
+	key.value.roleId = newRole?.id!;
+	role.value = newRole;
+}
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
@@ -221,13 +258,17 @@ async function onSubmit(): Promise<void> {
 	if (expiration.value !== null) {
 		params.expiration = DateTimeUtils.deserialize(expiration.value.toJSDate().toISOString());
 	}
+	if (role.value === undefined) {
+		// TODO - add error message that the role is required
+		return;
+	}
+	const config: ApiKeyConfig = {
+		description: params.description,
+		expiration: params.expiration,
+		roleId: params.roleId,
+	};
 	try {
 		if (componentProps.action === Action.Add) {
-			const config: ApiKeyConfig = {
-				description: params.description,
-				expiration: params.expiration,
-				roleId: params.roleId,
-			};
 			const createdKey: ApiKeyCreated = await service.create(config);
 			generatedKey.value = createdKey.key;
 			toast.success(
@@ -237,9 +278,7 @@ async function onSubmit(): Promise<void> {
 			emit('refresh');
 			displayDialog.value?.open();
 		} else if (componentProps.action === Action.Edit) {
-			const id = params.id!;
-			delete params.id;
-			await service.update(id, params);
+			await service.update(params.id!, config);
 			close();
 			emit('refresh');
 		}
@@ -258,11 +297,5 @@ function clear(): void {
 function close(): void {
 	show.value = false;
 	key.value = { ...defaultKey };
-}
-
-function selectRole(role: RoleInfo): void {
-	if (role.id !== undefined) {
-		key.value.roleId = role.id;
-	}
 }
 </script>

@@ -30,7 +30,7 @@ limitations under the License.
 			<UserForm
 				:action='Action.Add'
 				:disabled='componentState === ComponentState.Reloading'
-				:role-list="roles"
+				:role-list='roles'
 				@refresh='getUsers()'
 			/>
 			<IActionBtn
@@ -49,8 +49,11 @@ limitations under the License.
 			:hover='true'
 			:dense='true'
 		>
-			<template #item.roleId='{ item }'>
-				<RoleBadge :role='roles.find((role: RoleInfo) => role.id === item)!' />
+			<template #item.role='{ item }'>
+				<RoleBadge
+					v-if='getRoleById(item.roleId)'
+					:role='getRoleById(item.roleId)!'
+				/>
 			</template>
 			<template #item.language='{ item }'>
 				<ILanguageFlag :language='item.language' />
@@ -72,7 +75,7 @@ limitations under the License.
 					:action='Action.Edit'
 					:user-info='toRaw(item)'
 					:disabled='componentState === ComponentState.Reloading'
-					:role-list="roles"
+					:role-list='roles'
 					@refresh='getUsers()'
 				/>
 				<UserDeleteDialog
@@ -139,6 +142,10 @@ const noDataText = computed(() => {
 	}
 	return 'components.accessControl.users.noData.empty';
 });
+
+function getRoleById(roleId: number): RoleInfo | undefined {
+	return roles.value.find((role: RoleInfo) => role.id === roleId);
+}
 
 async function getUsers(): Promise<void> {
 	componentState.value = [

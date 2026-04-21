@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "Users",
 	"meta": {
-		"scope": ["security_users_read"],
+		"scope": ["security:users:read"],
 	},
 }
 </route>

@@ -136,6 +136,8 @@
 					"title": "Název",
 					"value": "Hodnota"
 				},
+				"label": "Rozsahy oprávnění",
+				"noneSelected": "Nejsou vybrána žádná oprávnění",
 				"scopes": {
 					"account:read": {
 						"description": "Umožňuje zobrazit detail vlastního uživatelského účtu.",
@@ -391,7 +393,9 @@
 					"key": {
 						"required": "Zadejte prosím SSH klíč."
 					}
-				}
+				},
+				"selectedCount": "Vybráno oprávnění: {count}",
+				"title": "Výběr oprávnění"
 			},
 			"users": {
 				"actions": {

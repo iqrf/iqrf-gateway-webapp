@@ -68,7 +68,9 @@ limitations under the License.
 					v-model='user.email'
 					:label='$t("components.accessControl.users.email")'
 					:rules='[
-						(v: string) => v !== null && v.length > 0 ? ValidationRules.email(v, $t("components.accessControl.users.validations.email.email")) : true,
+						(v: string) => v !== null && v.length > 0
+							? ValidationRules.email(v, $t("components.accessControl.users.validations.email.email"))
+							: true,
 					]'
 					:prepend-inner-icon='mdiEmail'
 				/>
@@ -77,7 +79,9 @@ limitations under the License.
 					v-model='(user as UserEdit).password'
 					:label='$t("components.common.fields.password")'
 					:rules='[
-						(v: string) => v.length === 0 || ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
+						(v: string) => v.length === 0 || ValidationRules.betweenLen(
+							v, 15, 64, $t("components.common.validations.password.betweenLen"),
+						),
 						(v: string) => v.length === 0 || ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 					]'
 					:prepend-inner-icon='mdiKey'
@@ -100,8 +104,11 @@ limitations under the License.
 						</v-tooltip>
 					</template>
 				</IPasswordInput>
-				<!-- TODO - pass role to lookup table after it can show selected role -->
-				<RoleLookupTable @select="selectRole" :roleList='componentProps.roleList' />
+				<RoleSelect
+					:model-value='role'
+					:role-list='componentProps.roleList'
+					@update:model-value='selectRole'
+				/>
 				<ILanguageSelect v-model='user.language' />
 				<template #actions>
 					<IActionBtn
@@ -149,7 +156,7 @@ import {
 	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
-import { computed, ComputedRef, ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -160,7 +167,7 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-import RoleLookupTable from '../roles/RoleLookupTable.vue';
+import RoleSelect from '../roles/RoleSelect.vue';
 
 const componentProps = defineProps<{
 	action: Action.Add | Action.Invite | Action.Edit;
@@ -180,13 +187,11 @@ const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {
 	username: '',
 	email: '',
-	roleId: componentProps.roleList.find((role) => role.systemKey === 'normal')!.id!,
+	roleId: componentProps.roleList.find((role) => role.systemKey === 'normal')?.id ?? -1,
 	language: Language.English,
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
-const role: ComputedRef<RoleInfo> = computed(() => {
-	return componentProps.roleList.find((role) => role.id === user.value.roleId)!;
-});
+const role: Ref<RoleInfo | undefined> = ref(undefined);
 
 watch(showDialog, (newVal: boolean): void => {
 	if (!newVal) {
@@ -214,14 +219,43 @@ watch(showDialog, (newVal: boolean): void => {
 			} satisfies UserCreate;
 		}
 	}
+	if (!componentProps.roleList) {
+		componentState.value = ComponentState.Error;
+		// TODO - add error message about failing to retreive role list
+		return;
+	}
+	if (role.value?.id === user.value.roleId) {
+		return;
+	}
+	let defaultRole: RoleInfo | undefined = undefined;
+	if (user.value.roleId === -1) {
+		defaultRole = componentProps.roleList.find((role) => role.systemKey === 'normal');
+	} else {
+		defaultRole = componentProps.roleList.find((role) => role.id === user.value.roleId);
+	}
+	if (!defaultRole) {
+		componentState.value = ComponentState.Error;
+		// TODO - add error message about failing to retreive role list
+		return;
+	}
+	selectRole(defaultRole);
 });
 
-function selectRole(role: RoleInfo): void {
-	user.value.roleId = role.id!;
+/**
+ * Selects new user role
+ * @param {RoleInfo} newRole New user role
+ */
+function selectRole(newRole: RoleInfo | undefined): void {
+	user.value.roleId = newRole?.id!;
+	role.value = newRole;
 }
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
+		return;
+	}
+	if (role.value === undefined) {
+		// TODO - add error message that the role is required
 		return;
 	}
 	componentState.value = ComponentState.Action;

@@ -30,7 +30,7 @@ limitations under the License.
 {
 	"name": "Profile",
 	"meta": {
-		"scope": ["account_read"],
+		"scope": ["account:read"],
 	},
 }
 </route>

@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "SshKeysAdd",
 	"meta": {
-		"scope": ["security_sshkeys_read"],
+		"scope": ["security:sshkeys:read"],
 	},
 }
 </route>

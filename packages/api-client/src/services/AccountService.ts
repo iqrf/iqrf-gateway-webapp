@@ -25,8 +25,8 @@ import {
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
 	type UserAccountRecovery,
+	type UserAndRoleDetail,
 	type UserCredentials,
-	type UserInfo,
 	type UserPasswordChange,
 	type UserPasswordReset,
 	type UserPasswordSet,
@@ -44,12 +44,12 @@ export class AccountService extends BaseService {
 
 	/**
 	 * Retrieve information about the logged-in user
-	 * @return {Promise<UserInfo>} User information
+	 * @return {Promise<UserAndRoleDetail>} User information
 	 */
-	public async getInfo(): Promise<UserInfo> {
-		const response: AxiosResponse<UserInfo> =
+	public async getInfo(): Promise<UserAndRoleDetail> {
+		const response: AxiosResponse<UserAndRoleDetail> =
 			await this.axiosInstance.get('/account');
-		return UserUtils.deserialize(response.data);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 	/**
@@ -85,8 +85,8 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid password recovery request UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post(`/account/password/recovery/${requestUuid}`, request);
-		return UserUtils.deserialize(response.data);
+			await this.axiosInstance.post(`/account/passwordRecovery/${requestUuid}`, request);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 	/**
@@ -112,7 +112,7 @@ export class AccountService extends BaseService {
 		}
 		const response: AxiosResponse<UserSignedIn> =
 			await this.axiosInstance.post(`/account/password/set/${requestUuid}`, request);
-		return UserUtils.deserialize(response.data);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 	/**
@@ -147,7 +147,7 @@ export class AccountService extends BaseService {
 		}
 		const response: AxiosResponse<UserSignedIn> =
 			await this.axiosInstance.get(`/account/verification/${uuid}`);
-		return UserUtils.deserialize(response.data);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 	/**
@@ -166,7 +166,7 @@ export class AccountService extends BaseService {
 	public async signIn(credentials: UserCredentials): Promise<UserSignedIn> {
 		const response: AxiosResponse<UserSignedIn> =
 			await this.axiosInstance.post('/account/signIn', credentials);
-		return UserUtils.deserialize(response.data);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 	/**
@@ -176,7 +176,7 @@ export class AccountService extends BaseService {
 	public async refreshToken(): Promise<UserSignedIn> {
 		const response: AxiosResponse<UserSignedIn> =
 			await this.axiosInstance.post('/account/tokenRefresh');
-		return UserUtils.deserialize(response.data);
+		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 
 

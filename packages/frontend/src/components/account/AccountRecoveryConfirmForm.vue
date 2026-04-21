@@ -138,9 +138,9 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	try {
-		const user: UserSignedIn = await service.confirmPasswordRecovery(componentProps.uuid, data.value);
+		const response: UserSignedIn = await service.confirmPasswordRecovery(componentProps.uuid, data.value);
 		componentState.value = ComponentState.Success;
-		await store.processSignInResponse(user, true);
+		await store.processSignInResponse(response, true);
 		await store.refreshUserPreferences();
 		await router.push('/');
 		toast.success(

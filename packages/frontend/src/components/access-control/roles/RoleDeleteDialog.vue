@@ -21,7 +21,8 @@ limitations under the License.
 		:tooltip='$t("components.accessControl.roles.actions.delete.tooltip")'
 		:component-state='componentState'
 		:disabled='role.system'
-		persistent @submit='onSubmit()'
+		persistent
+		@submit='onSubmit()'
 	>
 		<template #title>
 			{{ $t('components.accessControl.roles.actions.delete.title') }}

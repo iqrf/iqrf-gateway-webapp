@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.accessControl.roles.title') }}</title>
 		</Head>
-		<!-- TODO - add role table -->
+		<RoleTable />
 	</div>
 </template>
 
@@ -28,12 +28,14 @@ limitations under the License.
 {
 	"name": "Roles",
 	"meta": {
-		"scope": ["security_role_read"],
+		"scope": ["security:role:read"],
 	},
 }
 </route>
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
+import RoleTable from '@/components/access-control/roles/RoleTable.vue';
 
 </script>
