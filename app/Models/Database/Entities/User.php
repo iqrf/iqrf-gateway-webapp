@@ -132,7 +132,7 @@ class User implements JsonSerializable {
 		?string $password,
 		// TODO - find out what should be done, when the role is deleted
 		#[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
-		#[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+		#[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
 		private Role $role,
 		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
 		private UserLanguage $language = UserLanguage::Default,

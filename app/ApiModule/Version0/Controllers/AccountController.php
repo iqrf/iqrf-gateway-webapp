@@ -87,15 +87,16 @@ class AccountController extends BaseController {
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/UserDetail'
+							$ref: '#/components/schemas/UserAndRoleDetail'
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, [AccessScope::account_read->value]);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		$response = $response->writeJsonObject($user);
-		return $this->validators->validateResponse('userDetail', $response);
+		$json = $this->generateUserAndRoleDetail($user);
+		$response = $response->writeJsonBody($json);
+		return $this->validators->validateResponse('userAndRoleDetail', $response);
 	}
 
 	#[Path('/')]
@@ -609,11 +610,53 @@ class AccountController extends BaseController {
 		if ($user->getState()->isBlocked()) {
 			throw new ClientErrorException('User is blocked', ApiResponse::S403_FORBIDDEN);
 		}
-
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->jwtAuthenticator->createToken($user);
+		$json = $this->generateUserTokenResponse($user);
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
+	}
+
+	/**
+	 * Generates user and role response payload
+	 * @param User $user User
+	 * @return array{
+	 *     user: array<string, int|string|null>,
+	 *     role: array{
+	 *         id: int|null,
+	 *         name: string,
+	 *         description: string,
+	 *         scopes: array<string>,
+	 *         system: bool,
+	 *         systemKey: string|null
+	 *     },
+	 * }
+	 */
+	private function generateUserAndRoleDetail(User $user): array {
+		return [
+			'user' => $user->jsonSerialize(),
+			'role' => $user->getRole()->jsonSerialize(),
+		];
+	}
+
+	/**
+	 * Generates user token response payload
+	 * @param User $user User
+	 * @return array{
+	 *     user: array<string, int|string|null>,
+	 *     role: array{
+	 *         id: int|null,
+	 *         name: string,
+	 *         description: string,
+	 *         scopes: array<string>,
+	 *         system: bool,
+	 *         systemKey: string|null
+	 *     },
+	 *     token: string
+	 * }
+	 */
+	private function generateUserTokenResponse(User $user): array {
+		$json = $this->generateUserAndRoleDetail($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
+		return $json;
 	}
 
 }

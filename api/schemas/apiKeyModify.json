@@ -7,7 +7,7 @@
 	"required": [
 		"description",
 		"expiration",
-		"scopes"
+		"roleId"
 	],
 	"properties": {
 		"description": {

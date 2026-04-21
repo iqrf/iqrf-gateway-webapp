@@ -98,7 +98,7 @@ class ApiKey implements JsonSerializable {
 		#[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
 		private readonly ?User $createdBy,
 		#[ORM\ManyToOne(targetEntity: Role::class)]
-		#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+		#[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
 		private Role $role,
 		#[ORM\Column(type: Types::INTEGER, enumType: ApiKeyState::class, options: ['default' => ApiKeyState::Active])]
 		private ApiKeyState $state = ApiKeyState::Active,

@@ -182,6 +182,8 @@ class RoleController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
+			'409':
+				$ref: '#/components/responses/Conflict'
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Role ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -193,6 +195,11 @@ class RoleController extends BaseSecurityController {
 		}
 		if ($role->isSystem()) {
 			throw new ClientErrorException('System roles can\'t be modified', ApiResponse::S403_FORBIDDEN);
+		}
+		$userCount = $this->entityManager->getUserRepository()->userCountByRole($role);
+		$apiKeyCount = $this->entityManager->getApiKeyRepository()->apiKeyCountByRole($role);
+		if ($userCount > 0 || $apiKeyCount > 0) {
+			throw new ClientErrorException('Role is still assigned to users or API keys.', ApiResponse::S409_CONFLICT);
 		}
 		$this->entityManager->remove($role);
 		$this->entityManager->flush();
@@ -243,7 +250,7 @@ class RoleController extends BaseSecurityController {
 			throw new ClientErrorException('System roles can\'t be modified', ApiResponse::S403_FORBIDDEN);
 		}
 		// get new data
-		$this->validators->validateRequest('roleEdit', $request);
+		$this->validators->validateRequest('roleCreate', $request);
 		$json = $request->getJsonBodyCopy();
 		// update role params
 		if ($this->manager->checkRoleNameConflict($json['name'], $id)) {

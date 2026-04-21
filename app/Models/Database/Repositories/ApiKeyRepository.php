@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\Role;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -28,5 +29,14 @@ use Doctrine\ORM\EntityRepository;
  * @extends EntityRepository<ApiKey>
  */
 class ApiKeyRepository extends EntityRepository {
+
+	/**
+	 * Returns count of API keys of a specific role
+	 * @param Role $role API key role
+	 * @return int Number of keys of a specific role
+	 */
+	public function apiKeyCountByRole(Role $role): int {
+		return $this->count(['role' => $role]);
+	}
 
 }
