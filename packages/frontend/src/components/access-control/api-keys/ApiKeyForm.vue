@@ -52,37 +52,44 @@ limitations under the License.
 					color='warning'
 					variant='tonal'
 					:text='$t("components.accessControl.apiKeys.legacyKeyWarning")'
+					class='mb-5'
 				/>
-				<ITextInput
-					v-model='key.description'
-					:prepend-inner-icon='mdiTextShort'
-					:label='$t("common.labels.description")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
-					]'
-					required
-				/>
-				<IDateTimeInput
-					v-model='expiration'
-					:label='$t("components.accessControl.apiKeys.expiration")'
-					:min='toRaw(minDate)'
-				/>
-				<RoleSelect
-					v-model='role'
-					:role-list='componentProps.roleList'
-				/>
-				<ITextInput
-					v-if='key.revokedBy'
-					v-model='key.revokedBy'
-					:label='$t("components.accessControl.apiKeys.revokedBy")'
-					disabled
-				/>
-				<IDateTimeInput
-					v-if='key.revokedAt'
-					v-model='key.revokedAt'
-					:label='$t("components.accessControl.apiKeys.revokedAt")'
-					disabled
-				/>
+				<v-skeleton-loader
+					class='input-skeleton-loader'
+					:loading='componentState === ComponentState.Loading'
+					type='heading@8, button'
+				>
+					<ITextInput
+						v-model='key.description'
+						:prepend-inner-icon='mdiTextShort'
+						:label='$t("common.labels.description")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
+						]'
+						required
+					/>
+					<IDateTimeInput
+						v-model='expiration'
+						:label='$t("components.accessControl.apiKeys.expiration")'
+						:min='toRaw(minDate)'
+					/>
+					<RoleSelect
+						v-model='role'
+						:role-list='componentProps.roleList'
+					/>
+					<ITextInput
+						v-if='key.revokedBy'
+						v-model='key.revokedBy'
+						:label='$t("components.accessControl.apiKeys.revokedBy")'
+						disabled
+					/>
+					<IDateTimeInput
+						v-if='key.revokedAt'
+						v-model='key.revokedAt'
+						:label='$t("components.accessControl.apiKeys.revokedAt")'
+						disabled
+					/>
+				</v-skeleton-loader>
 				<template #actions>
 					<IActionBtn
 						:action='action'

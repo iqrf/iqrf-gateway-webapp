@@ -68,7 +68,6 @@ const i18n = useI18n();
 const headers = computed(() => [
 	{ key: 'name', title: i18n.t('components.accessControl.roles.columns.name') },
 	{ key: 'description', title: i18n.t('components.accessControl.roles.columns.description') },
-	{ key: 'system', title: i18n.t('components.accessControl.roles.columns.system') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const noDataText = computed(() => {
@@ -93,17 +92,11 @@ function updateRole(role: RoleInfo): void {
 }
 
 /**
- * Deletes role
+ * Removes role from the array (delete on backend is performed in the component)
  * @param {RoleInfo} id role ID
  */
 async function deleteRole(id: number): Promise<void> {
-	try {
-		await service.delete(id);
-		roles.value = roles.value.filter((v: RoleInfo): boolean => v.id !== id);
-		toast.success(i18n.t('components.accessControl.roles.actions.delete.success'));
-	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.delete.failure'));
-	}
+	roles.value = roles.value.filter((v: RoleInfo): boolean => v.id !== id);
 }
 
 /**

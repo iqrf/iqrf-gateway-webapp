@@ -24,10 +24,10 @@ limitations under the License.
 		<template #activator='scope'>
 			<IActionBtn
 				v-if='componentProps.appearance === "button"'
-				v-bind="scope.props"
-				color="red"
-				container-type="card"
-				:icon="mdiCloseBox"
+				v-bind='scope.props'
+				color='red'
+				container-type='card'
+				:icon='mdiCloseBox'
 				:text='$t("components.accessControl.apiKeyRevocationDialog.tooltip.revoke")'
 				:disabled='componentProps.apiKey.legacy'
 			/>

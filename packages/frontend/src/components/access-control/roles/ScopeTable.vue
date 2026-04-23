@@ -109,10 +109,7 @@ const scopes = computed(
 	),
 );
 const tableItems = computed(() => {
-	if (!componentProps.disableEdit) {
-		return scopes.value;
-	}
-	return scopes.value.filter((scope: any) => scope.selected);
+	return scopes.value;
 });
 const selectedScopesText: ComputedRef<string> = computed((): string => {
 	const count = componentProps.selected.length;

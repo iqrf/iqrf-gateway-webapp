@@ -45,24 +45,37 @@ limitations under the License.
 				<template #title>
 					{{ $t(`components.accessControl.roles.actions.${action}.title`) }}
 				</template>
-				<ITextInput
-					v-model='roleConfig.name'
-					:label='$t("components.accessControl.roles.roleName.name")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.roleName.required")),
-					]'
-					required
+				<v-alert
+					v-if='componentProps.role?.system'
+					color='warning'
+					variant='tonal'
+					class='mb-5'
+					:text='$t("components.accessControl.roles.systemRoles.readOnlyWarning")'
 				/>
-				<ITextInput
-					v-model='roleConfig.description'
-					:label='$t("common.labels.description")'
-				/>
-				<ScopeTable
-					:selected='roleConfig.scopes'
-					:disable-edit='isSystemRole'
-					:disabled='componentState === ComponentState.Action'
-					@update='updateScopes'
-				/>
+				<v-skeleton-loader
+					class='input-skeleton-loader'
+					:loading='componentState === ComponentState.Loading'
+					type='heading@8, button'
+				>
+					<ITextInput
+						v-model='roleConfig.name'
+						:label='$t("components.accessControl.roles.roleName.name")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.roleName.required")),
+						]'
+						required
+					/>
+					<ITextInput
+						v-model='roleConfig.description'
+						:label='$t("common.labels.description")'
+					/>
+					<ScopeTable
+						:selected='roleConfig.scopes'
+						:disable-edit='isSystemRole'
+						:disabled='componentState === ComponentState.Action'
+						@update='updateScopes'
+					/>
+				</v-skeleton-loader>
 				<template #actions>
 					<IActionBtn
 						:action='action'

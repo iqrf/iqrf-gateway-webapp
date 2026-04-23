@@ -47,12 +47,16 @@ limitations under the License.
 			<template #item.expiration='{ item }'>
 				{{ formatTime(item.expiration) }}
 			</template>
+			<template #item.role='{ item }'>
+				<RoleBadge v-if='getRoleById(item.roleId)' :role='getRoleById(item.roleId)!' />
+			</template>
 			<template #item.state='{ item }'>
 				{{ getState(item.state) }}
 			</template>
 			<template #item.actions='{ item }'>
 				<ApiKeyRevokeDialog
-					:api-key="item"
+					:api-key='item'
+					@revoke='getKeys()'
 				/>
 				<ApiKeyForm
 					:action='Action.Edit'
@@ -91,6 +95,8 @@ import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
 
+import RoleBadge from '../roles/RoleBadge.vue';
+
 import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -102,6 +108,7 @@ const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.expiration') },
+	{ key: 'role', title: i18n.t('components.accessControl.apiKeys.role') },
 	{ key: 'state', title: i18n.t('components.accessControl.apiKeys.stateTitle') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
@@ -169,6 +176,10 @@ function getState(state: string | null): string {
 		default:
 			return i18n.t('components.accessControl.apiKeys.state.active');
 	}
+}
+
+function getRoleById(roleId: number): RoleInfo | undefined {
+	return roles.value.find((role: RoleInfo) => role.id === roleId);
 }
 
 onMounted(() => {

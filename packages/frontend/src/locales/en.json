@@ -150,6 +150,7 @@
 					"title": "Generated API key"
 				},
 				"expiration": "Expiration",
+				"legacyKeyWarning": "Warning: This key is legacy and should be replaced with new one, with properly assigned role and access scopes!",
 				"messages": {
 					"delete": {
 						"failed": "Failed to delete API key ID {id}.",
@@ -172,6 +173,9 @@
 					"empty": "No API key records found.",
 					"fetchError": "API key records could not be retrieved."
 				},
+				"revokedAt": "Revoked at",
+				"revokedBy": "Revoked by",
+				"role": "Role",
 				"state": {
 					"active": "Active",
 					"revoked": "Revoked"
@@ -328,7 +332,8 @@
 						"admin": "Administrator",
 						"normal": "Normal user",
 						"viewer": "Viewer"
-					}
+					},
+					"readOnlyWarning": "System roles cannot be modified!"
 				},
 				"title": "Roles"
 			},
@@ -609,6 +614,7 @@
 					"fetchError": "SSH key records could not be retrieved."
 				},
 				"noneSupported": "No SSH key type supported.",
+				"selectedCount": "{count} scopes selected",
 				"supported": "The following SSH key types are supported.",
 				"table": {
 					"hash": "Hash",
@@ -616,13 +622,12 @@
 					"noData": "No SSH key records found.",
 					"type": "Key type"
 				},
+				"title": "Select scopes",
 				"validation": {
 					"key": {
 						"required": "Please enter SSH key."
 					}
-				},
-				"selectedCount": "{count} scopes selected",
-				"title": "Select scopes"
+				}
 			},
 			"users": {
 				"actions": {
