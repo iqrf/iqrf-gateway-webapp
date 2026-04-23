@@ -164,13 +164,13 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		const response: EmailSentResponse = await useApiClient()
 			.getSecurityServices()
 			.getUserService()
-			.create(user.value);
+			.create(data);
 		if (response.emailSent) {
 			toast.success(i18n.t('user.messages.verificationSent'));
 		}
 		const credentials: UserCredentials = {
-			username: user.value.username,
-			password: user.value.password,
+			username: data.username,
+			password: data.password,
 		};
 		await userStore.signIn(credentials);
 		await userStore.refreshUserPreferences();
