@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,6 +80,9 @@ const emit = defineEmits<{
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
 
+/**
+ * Copies API key to clipboard.
+ */
 function copyToClipboard(): void {
 	navigator.clipboard.writeText(componentProps.apiKey!);
 	toast.success(
@@ -87,10 +90,16 @@ function copyToClipboard(): void {
 	);
 }
 
+/**
+ * Opens the dialog window.
+ */
 function open(): void {
 	show.value = true;
 }
 
+/**
+ * Closes the dialog window.
+ */
 function close(): void {
 	show.value = false;
 	emit('closed');

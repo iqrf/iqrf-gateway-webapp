@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -143,10 +143,18 @@ const noDataText = computed(() => {
 	return 'components.accessControl.users.noData.empty';
 });
 
+/**
+ * Returns role object from list of all roles.
+ * @param {number} roleId ID of role to return
+ * @return {RoleInfo|undefined} Role object with given role ID or undefined when given role is not found.
+ */
 function getRoleById(roleId: number): RoleInfo | undefined {
 	return roles.value.find((role: RoleInfo) => role.id === roleId);
 }
 
+/**
+ * Fetches all users from backend.
+ */
 async function getUsers(): Promise<void> {
 	componentState.value = [
 		ComponentState.Created,
@@ -163,6 +171,9 @@ async function getUsers(): Promise<void> {
 	}
 }
 
+/**
+ * Fetches both users and roles from backend.
+ */
 async function getData(): Promise<void> {
 	componentState.value = [
 		ComponentState.Created,

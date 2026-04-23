@@ -321,6 +321,9 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
+/**
+ * Closes the dialog window and restores default role if new one was being added.
+ */
 function close(): void {
 	if (componentProps.action === Action.Add) {
 		user.value = { ...defaultUser };

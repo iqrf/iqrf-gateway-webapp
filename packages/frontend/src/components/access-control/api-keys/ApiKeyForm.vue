@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -198,6 +198,9 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.accessControl.apiKeys.actions.edit');
 });
 
+/**
+ * Updates the roleId in API key when user selects new role.
+ */
 watch(role, () => {
 	if (!role.value) {
 		return;
@@ -255,6 +258,9 @@ function selectRole(newRole: RoleInfo | undefined): void {
 	role.value = newRole;
 }
 
+/**
+ * Validates the form and creates / updates the API key.
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
@@ -297,10 +303,16 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
+/**
+ * Clears the key value.
+ */
 function clear(): void {
 	generatedKey.value = null;
 }
 
+/**
+ * Closes the dialog window and restores default key.
+ */
 function close(): void {
 	show.value = false;
 	key.value = { ...defaultKey };

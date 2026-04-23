@@ -122,6 +122,9 @@ const noDataText = computed(() => {
 	return 'components.accessControl.apiKeys.noData.empty';
 });
 
+/**
+ * Fetches the roles from backend.
+ */
 async function getRoles(): Promise<void> {
 	componentState.value = [
 		ComponentState.Created,
@@ -138,6 +141,9 @@ async function getRoles(): Promise<void> {
 	}
 }
 
+/**
+ * Fetches the API keys from backend.
+ */
 async function getKeys(): Promise<void> {
 	componentState.value = [
 		ComponentState.Created,
@@ -154,6 +160,9 @@ async function getKeys(): Promise<void> {
 	}
 }
 
+/**
+ * Fetches both roles and keys from the backend.
+ */
 async function getAllData(): Promise<void> {
 	await getRoles();
 	if (componentState.value === ComponentState.Error) {
@@ -162,6 +171,11 @@ async function getAllData(): Promise<void> {
 	await getKeys();
 }
 
+/**
+ * Returns time formated according to the currently used locales.
+ * @param {DateTime|null} time Time object to format (or null)
+ * @return {string|null} Formated time as string (or null when no time was specified)
+ */
 function formatTime(time: DateTime | null): string|null {
 	if (time === null) {
 		return null;
@@ -169,6 +183,11 @@ function formatTime(time: DateTime | null): string|null {
 	return time.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
 }
 
+/**
+ * Returns the key state translation / locale as string
+ * @param {string} state Key state
+ * @return {string} Key state description in selected language
+ */
 function getState(state: string | null): string {
 	switch (state) {
 		case 'revoked':
@@ -178,6 +197,11 @@ function getState(state: string | null): string {
 	}
 }
 
+/**
+ * Selects role object with given ID in the list or all roles.
+ * @param {number} roleId ID of object to select
+ * @return {RoleInfo|undefined} Role object with given ID or undefined when object with given ID is not found
+ */
 function getRoleById(roleId: number): RoleInfo | undefined {
 	return roles.value.find((role: RoleInfo) => role.id === roleId);
 }

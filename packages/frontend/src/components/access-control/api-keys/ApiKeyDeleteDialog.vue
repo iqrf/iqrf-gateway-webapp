@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -60,6 +60,9 @@ const service: ApiKeyService = useApiClient()
 	.getSecurityServices()
 	.getApiKeyService();
 
+/**
+ * Sends the request to remove key to backend and emits 'refresh'.
+ */
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const translationParams = { id: componentProps.apiKey.id! };
@@ -78,6 +81,9 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Idle;
 }
 
+/**
+ * Closes the dialog window.
+ */
 function close(): void {
 	dialog.value?.close();
 }

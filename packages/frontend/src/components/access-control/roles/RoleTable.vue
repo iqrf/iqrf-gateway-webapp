@@ -100,7 +100,7 @@ async function deleteRole(id: number): Promise<void> {
 }
 
 /**
- * Returns the list of all roles
+ * Returns the list of all roles fetched from backend
  */
 async function getRoles(): Promise<void> {
 	componentState.value = [
