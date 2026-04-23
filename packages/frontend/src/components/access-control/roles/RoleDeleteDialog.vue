@@ -34,6 +34,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { RoleInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
+import { AxiosError } from 'axios';
 import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -62,8 +63,13 @@ async function onSubmit(): Promise<void> {
 		emit('delete', componentProps.role.id!);
 		toast.success(i18n.t('components.accessControl.roles.actions.delete.success'));
 		close();
-	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.delete.failure'));
+	} catch (error) {
+		if (error instanceof AxiosError && error.response?.status === 409) {
+			toast.error(i18n.t('components.accessControl.roles.actions.delete.assigned'));
+		} else {
+			toast.error(i18n.t('components.accessControl.roles.actions.delete.failure'));
+		}
+		componentState.value = ComponentState.Ready;
 	}
 }
 

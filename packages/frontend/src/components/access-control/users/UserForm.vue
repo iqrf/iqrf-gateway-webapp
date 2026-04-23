@@ -219,9 +219,9 @@ watch(showDialog, (newVal: boolean): void => {
 			} satisfies UserCreate;
 		}
 	}
-	if (!componentProps.roleList) {
+	if (!componentProps.roleList || componentProps.roleList.length === 0) {
 		componentState.value = ComponentState.Error;
-		// TODO - add error message about failing to retreive role list
+		toast.error(i18n.t('components.accessControl.roles.actions.list'));
 		return;
 	}
 	if (role.value?.id === user.value.roleId) {
@@ -235,7 +235,7 @@ watch(showDialog, (newVal: boolean): void => {
 	}
 	if (!defaultRole) {
 		componentState.value = ComponentState.Error;
-		// TODO - add error message about failing to retreive role list
+		toast.error(i18n.t('components.accessControl.roles.messages.defaultRoleUnavailable'));
 		return;
 	}
 	selectRole(defaultRole);
@@ -255,7 +255,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	if (role.value === undefined) {
-		// TODO - add error message that the role is required
+		toast.error(i18n.t('components.accessControl.roles.messages.selectionRequired'));
 		return;
 	}
 	componentState.value = ComponentState.Action;

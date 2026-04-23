@@ -292,6 +292,7 @@
 						"title": "Add role"
 					},
 					"delete": {
+						"assigned": "Role cannot be deleted because it is still assigned to one or more users or API keys.",
 						"failure": "Failed to delete role.",
 						"prompt": "Are you sure you want to delete role {role}?",
 						"success": "Role has been successfully deleted.",
@@ -312,6 +313,10 @@
 					"description": "Description",
 					"name": "Name",
 					"system": "System"
+				},
+				"messages": {
+					"defaultRoleUnavailable": "The selected role is not available!.",
+					"selectionRequired": "Please select a role."
 				},
 				"noData": {
 					"empty": "No role records found.",

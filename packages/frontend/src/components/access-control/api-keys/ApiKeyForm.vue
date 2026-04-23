@@ -215,9 +215,9 @@ watch(show, (newVal: boolean): void => {
 	if (!newVal) {
 		return;
 	}
-	if (!componentProps.roleList) {
+	if (!componentProps.roleList || componentProps.roleList.length === 0) {
 		componentState.value = ComponentState.Error;
-		// TODO - add error message about failing to retreive role list
+		toast.error(i18n.t('components.accessControl.roles.actions.list'));
 		return;
 	}
 	if (componentProps.action === Action.Add) {
@@ -243,7 +243,7 @@ watch(show, (newVal: boolean): void => {
 	}
 	if (!defaultRole) {
 		componentState.value = ComponentState.Error;
-		// TODO - add error message about failing to retreive role list
+		toast.error(i18n.t('components.accessControl.roles.messages.defaultRoleUnavailable'));
 	} else {
 		selectRole(defaultRole);
 	}
@@ -265,15 +265,15 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	if (role.value === undefined) {
+		toast.error(i18n.t('components.accessControl.roles.messages.selectionRequired'));
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	const params = { ...key.value };
 	console.warn(params, expiration.value);
 	if (expiration.value !== null) {
 		params.expiration = DateTimeUtils.deserialize(expiration.value.toJSDate().toISOString());
-	}
-	if (role.value === undefined) {
-		// TODO - add error message that the role is required
-		return;
 	}
 	const config: ApiKeyConfig = {
 		description: params.description,
