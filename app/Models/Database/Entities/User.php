@@ -130,7 +130,6 @@ class User implements JsonSerializable {
 		private string $username,
 		?string $email,
 		?string $password,
-		// TODO - find out what should be done, when the role is deleted
 		#[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
 		#[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
 		private Role $role,
