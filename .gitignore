@@ -52,3 +52,5 @@ packages/*/docs/
 # CycloneDX SBOM
 sbom-frontend.json
 sbom-backend.json
+#OpenAI coding agent
+.codex
