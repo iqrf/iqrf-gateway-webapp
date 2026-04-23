@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "MonitoringConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 

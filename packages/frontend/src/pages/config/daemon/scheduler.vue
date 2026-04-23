@@ -30,6 +30,7 @@ limitations under the License.
 	"meta": {
 		"isServiceWhitelisted": true,
 		"requiresProxy": true,
+		"scope": ["config:iqrfGatewayDaemon:read"],
 	},
 }
 </route>

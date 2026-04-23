@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "GatewayInformation",
+	"meta": {
+		"scope": ["gateway:information:read"],
+	},
 }
 </route>
 

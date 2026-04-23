@@ -28,6 +28,9 @@ limitations under the License.
 <route>
 {
 	"name": "BackupMaintenance",
+	"meta": {
+		"scope": ["gateway:backup:execute"],
+	},
 }
 </route>
 

@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "GatewayLogs",
+	"meta": {
+		"scope": ["gateway:diagnostic:read"],
+	},
 }
 </route>
 

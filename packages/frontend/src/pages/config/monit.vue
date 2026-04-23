@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "MonitConfiguration",
 	"meta": {
 		"feature": "monit",
+		"scope": ["config:monit:read"],
 	},
 }
 </route>

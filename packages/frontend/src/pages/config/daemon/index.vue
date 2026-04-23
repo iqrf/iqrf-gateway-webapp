@@ -27,10 +27,14 @@ limitations under the License.
 <route>
 {
 	"name": "DaemonConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 
 <script lang='ts' setup>
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,46 +48,55 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.config.daemon.interfaces.title'),
 		description: i18n.t('pages.config.daemon.interfaces.description'),
 		to: '/config/daemon/interfaces',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.connections.title'),
 		description: i18n.t('pages.config.daemon.connections.description'),
 		to: '/config/daemon/connections',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.scheduler.title'),
 		description: i18n.t('pages.config.daemon.scheduler.description'),
 		to: '/config/daemon/scheduler',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.json-api.title'),
 		description: i18n.t('pages.config.daemon.json-api.description'),
 		to: '/config/daemon/json-api',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.repository.title'),
 		description: i18n.t('pages.config.daemon.repository.description'),
 		to: '/config/daemon/repository',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.db.title'),
 		description: i18n.t('pages.config.daemon.db.description'),
 		to: '/config/daemon/database',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.logging.title'),
 		description: i18n.t('pages.config.daemon.logging.description'),
 		to: '/config/daemon/logging',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.monitoring.title'),
 		description: i18n.t('pages.config.daemon.monitoring.description'),
 		to: '/config/daemon/monitoring',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.data-collecting.title'),
 		description: i18n.t('pages.config.daemon.data-collecting.description'),
 		to: '/config/daemon/data-collecting',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 ]);
 </script>

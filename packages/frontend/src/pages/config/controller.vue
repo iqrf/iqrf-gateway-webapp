@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "ControllerConfiguration",
 	"meta": {
 		"feature": "iqrfGatewayController",
+		"scope": ["config:iqrfGatewayController:read"],
 	},
 }
 </route>

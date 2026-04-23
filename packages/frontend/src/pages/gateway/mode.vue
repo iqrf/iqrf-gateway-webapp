@@ -41,6 +41,7 @@ limitations under the License.
 	"name": "GatewayMode",
 	"meta": {
 		"isServiceWhitelisted": true,
+		"scope": ["config:iqrfGatewayDaemon:read"],
 	},
 }
 </route>

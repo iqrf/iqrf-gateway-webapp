@@ -70,6 +70,7 @@ limitations under the License.
 	"name": "StandardManager",
 	"meta": {
 		"requiresProxy": true,
+		"scope": ["config:iqrfGatewayDaemon:read"],
 	},
 }
 </route>

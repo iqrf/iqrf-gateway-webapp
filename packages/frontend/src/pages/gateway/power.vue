@@ -28,6 +28,9 @@ limitations under the License.
 <route>
 {
 	"name": "PowerControl",
+	"meta": {
+		"scope": ["gateway:power:read"],
+	},
 }
 </route>
 

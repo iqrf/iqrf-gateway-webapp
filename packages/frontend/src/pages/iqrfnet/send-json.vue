@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "SendJsonRequest",
 	"meta": {
 		"requiresProxy": true,
+		"scope": ["iqrfNetwork:trUpload:execute"],
 	},
 }
 </route>

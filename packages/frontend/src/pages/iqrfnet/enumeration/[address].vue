@@ -15,6 +15,9 @@
 		"requiresProxy": true,
 	},
 	"props": true,
+	"meta": {
+		"scope": ["iqrfNetwork:trUpload:execute"],
+	},
 }
 </route>
 

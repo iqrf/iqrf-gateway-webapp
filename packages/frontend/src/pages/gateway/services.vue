@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "Services",
+	"meta": {
+		"scope": ["gateway:service:read"],
+	},
 }
 </route>
 

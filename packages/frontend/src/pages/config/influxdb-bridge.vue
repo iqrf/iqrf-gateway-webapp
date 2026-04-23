@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "InfluxdbBridgeConfiguration",
 	"meta": {
 		"feature": "iqrfGatewayInfluxdbBridge",
+		"scope": ["config:iqrfGatewayInfluxdbBridge:read"],
 	},
 }
 </route>

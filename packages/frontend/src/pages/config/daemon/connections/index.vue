@@ -27,10 +27,14 @@ limitations under the License.
 <route>
 {
 	"name": "DaemonConnectionsConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 
 <script lang='ts' setup>
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,16 +48,19 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.config.daemon.connections.mqtt.title'),
 		description: i18n.t('pages.config.daemon.connections.mqtt.description'),
 		to: '/config/daemon/connections/mqtt',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.connections.ws.title'),
 		description: i18n.t('pages.config.daemon.connections.ws.description'),
 		to: '/config/daemon/connections/websocket',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.connections.udp.title'),
 		description: i18n.t('pages.config.daemon.connections.udp.description'),
 		to: '/config/daemon/connections/udp',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 ]);
 </script>

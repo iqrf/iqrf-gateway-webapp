@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "TimeConfiguration",
+	"meta": {
+		"scope": ["config:time:read"],
+	},
 }
 </route>
 

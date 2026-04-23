@@ -114,6 +114,7 @@ limitations under the License.
 	"name": "NetworkManager",
 	"meta": {
 		"requiresProxy": true,
+		"scope": ["iqrfNetwork:trUpload:execute"],
 	},
 }
 </route>
@@ -232,4 +233,3 @@ onBeforeUnmount(() => {
 });
 
 </script>
-

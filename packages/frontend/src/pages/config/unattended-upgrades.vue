@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "AptConfiguration",
 	"meta": {
 		"feature": "unattendedUpgrades",
+		"scope": ["config:automaticUpgrades:read"],
 	},
 }
 </route>

@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "DatabaseConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 

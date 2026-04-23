@@ -28,6 +28,9 @@ limitations under the License.
 <route>
 {
 	"name": "DpaConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 

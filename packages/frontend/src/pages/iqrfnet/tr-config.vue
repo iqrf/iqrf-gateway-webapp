@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "TrConfig",
 	"meta": {
 		"requiresProxy": true,
+		"scope": ["iqrfNetwork:trUpload:execute"],
 	},
 }
 </route>

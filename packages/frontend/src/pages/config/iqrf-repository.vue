@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "IqrfRepositoryExtensionConfig",
 	"meta": {
 		"feature": "iqrfRepository",
+		"scope": ["config:iqrfRepository:read"],
 	},
 }
 </route>

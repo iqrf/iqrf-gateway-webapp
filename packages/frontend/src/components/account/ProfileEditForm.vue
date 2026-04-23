@@ -78,7 +78,7 @@ limitations under the License.
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	type AccountEdit,
-	type UserInfo,
+	UserAndRoleDetail,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
@@ -135,11 +135,11 @@ async function getUserData(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		const data: UserInfo = await accountService.getInfo();
+		const data: UserAndRoleDetail = await accountService.getInfo();
 		user.value = {
-			username: data.username,
-			email: data.email ?? '',
-			language: data.language,
+			username: data.user.username,
+			email: data.user.email ?? '',
+			language: data.user.language,
 			baseUrl: new UrlBuilder().getBaseUrl(),
 		};
 		componentState.value = ComponentState.Ready;

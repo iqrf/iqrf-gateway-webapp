@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "SensorDataConfiguration",
 	"meta": {
 		"requiresProxy": true,
+		"scope": ["config:iqrfGatewayDaemon:read"],
 	},
 }
 </route>

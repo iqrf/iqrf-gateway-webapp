@@ -27,10 +27,14 @@ limitations under the License.
 <route>
 {
 	"name": "DaemonInterfaceConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 
 <script lang='ts' setup>
+import { AccessScope } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,21 +48,25 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.config.daemon.interfaces.dpa.title'),
 		description: i18n.t('pages.config.daemon.interfaces.dpa.description'),
 		to: '/config/daemon/interfaces/dpa',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.interfaces.uart.title'),
 		description: i18n.t('pages.config.daemon.interfaces.uart.description'),
 		to: '/config/daemon/interfaces/uart',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.interfaces.spi.title'),
 		description: i18n.t('pages.config.daemon.interfaces.spi.description'),
 		to: '/config/daemon/interfaces/spi',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 	{
 		title: i18n.t('pages.config.daemon.interfaces.cdc.title'),
 		description: i18n.t('pages.config.daemon.interfaces.cdc.description'),
 		to: '/config/daemon/interfaces/cdc',
+		scopes: [AccessScope.config_iqrfGatewayDaemon_read],
 	},
 ]);
 </script>

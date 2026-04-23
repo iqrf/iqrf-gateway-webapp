@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "RepositoryConfiguration",
+	"meta": {
+		"scope": ["config:iqrfGatewayDaemon:read"],
+	},
 }
 </route>
 

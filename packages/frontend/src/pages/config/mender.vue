@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "MenderConfiguration",
 	"meta": {
 		"feature": "mender",
+		"scope": ["config:mender:read"],
 	},
 }
 </route>

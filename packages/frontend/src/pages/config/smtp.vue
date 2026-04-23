@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "SmtpConfiguration",
+	"meta": {
+		"scope": ["config:mailer:read"],
+	},
 }
 </route>
 

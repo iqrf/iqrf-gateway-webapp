@@ -30,6 +30,7 @@ limitations under the License.
 	"name": "BackupMender",
 	"meta": {
 		"feature": "mender",
+		"scope": ["gateway:mender:execute"],
 	},
 }
 </route>

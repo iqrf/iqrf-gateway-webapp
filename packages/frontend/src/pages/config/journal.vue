@@ -29,6 +29,7 @@ limitations under the License.
 	"name": "JournalConfiguration",
 	"meta": {
 		"feature": "journal",
+		"scope": ["config:journal:read"],
 	},
 }
 </route>
