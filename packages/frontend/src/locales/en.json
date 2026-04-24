@@ -286,47 +286,46 @@
 			},
 			"roles": {
 				"actions": {
-					"add": {
-						"failure": "Failed to create role.",
-						"success": "Role has been successfully created.",
-						"title": "Add role"
-					},
-					"delete": {
-						"assigned": "Role cannot be deleted because it is still assigned to one or more users or API keys.",
-						"failure": "Failed to delete role.",
-						"prompt": "Are you sure you want to delete role {role}?",
-						"success": "Role has been successfully deleted.",
-						"title": "Role delete confirmation",
-						"tooltip": "Delete role"
-					},
-					"edit": {
-						"failure": "Failed to update role.",
-						"success": "Role has been successfully updated.",
-						"title": "Edit role"
-					},
-					"list": {
-						"failure": "Failed to retrieve list of roles."
-					},
+					"add": "Add role",
+					"edit": "Edit role",
 					"refresh": "Reload roles"
 				},
 				"columns": {
 					"description": "Description",
 					"name": "Name",
-					"system": "System"
+					"system": "System role"
+				},
+				"delete": {
+					"prompt": "Are you sure you want to delete role {role}?",
+					"title": "Role delete confirmation",
+					"tooltip": "Delete role"
 				},
 				"messages": {
-					"defaultRoleUnavailable": "The selected role is not available!.",
+					"add": {
+						"failed": "Failed to create role.",
+						"success": "Role has been successfully created."
+					},
+					"defaultRoleUnavailable": "The selected role is not available.",
+					"delete": {
+						"assigned": "Role cannot be deleted because it is still assigned to one or more users or API keys.",
+						"failed": "Failed to delete role.",
+						"success": "Role has been successfully deleted."
+					},
+					"edit": {
+						"failed": "Failed to update role.",
+						"success": "Role has been successfully updated."
+					},
+					"list": {
+						"failed": "Failed to retrieve list of roles."
+					},
 					"selectionRequired": "Please select a role."
 				},
+				"name": "Role name",
 				"noData": {
 					"empty": "No role records found.",
-					"fetchFailed": "Role records could not be retrieved."
+					"fetchError": "Role records could not be retrieved."
 				},
-				"roleName": {
-					"name": "Role name",
-					"required": "Please enter role name."
-				},
-				"select": "Role",
+				"role": "Role",
 				"systemRoles": {
 					"description": {
 						"admin": "Full administrative access.",
@@ -340,7 +339,12 @@
 					},
 					"readOnlyWarning": "System roles cannot be modified!"
 				},
-				"title": "Roles"
+				"title": "Roles",
+				"validations": {
+					"name": {
+						"required": "Please enter role name."
+					}
+				}
 			},
 			"scopeTable": {
 				"columns": {

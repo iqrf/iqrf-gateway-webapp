@@ -18,16 +18,16 @@ limitations under the License.
 <template>
 	<IDeleteModalWindow
 		ref='dialog'
-		:tooltip='$t("components.accessControl.roles.actions.delete.tooltip")'
+		:tooltip='$t("components.accessControl.roles.delete.tooltip")'
 		:component-state='componentState'
 		:disabled='role.system'
 		persistent
 		@submit='onSubmit()'
 	>
 		<template #title>
-			{{ $t('components.accessControl.roles.actions.delete.title') }}
+			{{ $t('components.accessControl.roles.delete.title') }}
 		</template>
-		{{ $t('components.accessControl.roles.actions.delete.prompt', { role: role.name }) }}
+		{{ $t('components.accessControl.roles.delete.prompt', { role: role.name }) }}
 	</IDeleteModalWindow>
 </template>
 
@@ -61,13 +61,13 @@ async function onSubmit(): Promise<void> {
 	try {
 		await service.delete(componentProps.role.id!);
 		emit('delete', componentProps.role.id!);
-		toast.success(i18n.t('components.accessControl.roles.actions.delete.success'));
+		toast.success(i18n.t('components.accessControl.roles.messages.delete.success'));
 		close();
 	} catch (error) {
 		if (error instanceof AxiosError && error.response?.status === 409) {
-			toast.error(i18n.t('components.accessControl.roles.actions.delete.assigned'));
+			toast.error(i18n.t('components.accessControl.roles.messages.delete.assigned'));
 		} else {
-			toast.error(i18n.t('components.accessControl.roles.actions.delete.failure'));
+			toast.error(i18n.t('components.accessControl.roles.messages.delete.failed'));
 		}
 		componentState.value = ComponentState.Ready;
 	}

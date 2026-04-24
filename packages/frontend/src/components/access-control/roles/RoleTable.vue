@@ -72,7 +72,7 @@ const headers = computed(() => [
 ]);
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return 'components.accessControl.roles.noData.fetchFailed';
+		return 'components.accessControl.roles.noData.fetchError';
 	}
 	return 'components.accessControl.roles.noData.empty';
 });
@@ -111,7 +111,7 @@ async function getRoles(): Promise<void> {
 		roles.value = await service.list();
 		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.list.failure'));
+		toast.error(i18n.t('components.accessControl.roles.messages.list.failed'));
 		componentState.value = ComponentState.FetchFailed;
 	}
 }

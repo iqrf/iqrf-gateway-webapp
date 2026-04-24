@@ -217,7 +217,7 @@ watch(show, (newVal: boolean): void => {
 	}
 	if (!componentProps.roleList || componentProps.roleList.length === 0) {
 		componentState.value = ComponentState.Error;
-		toast.error(i18n.t('components.accessControl.roles.actions.list'));
+		toast.error(i18n.t('components.accessControl.roles.messages.list.failed'));
 		return;
 	}
 	if (componentProps.action === Action.Add) {

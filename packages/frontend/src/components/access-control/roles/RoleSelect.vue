@@ -19,7 +19,7 @@ limitations under the License.
 	<ISelectInput
 		v-model='modelValue'
 		:items='roles'
-		:label='$t("components.accessControl.roles.select")'
+		:label='$t("components.accessControl.roles.role")'
 		:prepend-inner-icon='mdiAccountBadge'
 	>
 		<template #item='{ props, item }'>

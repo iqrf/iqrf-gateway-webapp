@@ -155,7 +155,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		return;
 	}
 	if (user.value.roleId < 0) {
-		toast.error(i18n.t('components.accessControl.roles.actions.list.failure'));
+		toast.error(i18n.t('components.accessControl.roles.messages.list.failed'));
 		return;
 	}
 	componentState.value = ComponentState.Action;
@@ -196,7 +196,7 @@ async function getAdminRoleId(): Promise<void> {
 		.list();
 	const adminRole = roles.filter((role) => role.systemKey === 'admin');
 	if (adminRole.length !== 1) {
-		toast.error(i18n.t('components.accessControl.roles.actions.list.failure'));
+		toast.error(i18n.t('components.accessControl.roles.messages.list.failed'));
 		return;
 	}
 	user.value.roleId = adminRole[0].id!;

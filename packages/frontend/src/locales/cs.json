@@ -96,6 +96,7 @@
 					"title": "Vygenerovaný API klíč"
 				},
 				"expiration": "Expirace",
+				"legacyKeyWarning": "Upozornění: Tento klíč je typu Legacy a měl by být nahrazen novým s korektně přiřazenou rolí a rozsahy oprávnění.",
 				"messages": {
 					"delete": {
 						"failed": "Nepodařilo se smazat API klíč s ID {id}.",
@@ -118,6 +119,9 @@
 					"empty": "Nebyly nalezeny žádné záznamy API klíčů.",
 					"fetchError": "Záznamy API klíčů se nepodařilo načíst."
 				},
+				"revokedAt": "Revokován dne",
+				"revokedBy": "Revokoval",
+				"role": "Role",
 				"state": {
 					"active": "Aktivní",
 					"revoked": "Revokovaný"
@@ -126,6 +130,68 @@
 				"validations": {
 					"description": {
 						"required": "Zadejte prosím popis API klíče."
+					}
+				}
+			},
+			"roles": {
+				"actions": {
+					"add": "Přidat roli",
+					"edit": "Upravit roli",
+					"refresh": "Obnovit role"
+				},
+				"columns": {
+					"description": "Popis",
+					"name": "Název",
+					"system": "Systémová role"
+				},
+				"delete": {
+					"prompt": "Opravdu chcete smazat roli {role}?",
+					"title": "Potvrzení smazání role",
+					"tooltip": "Smazat roli"
+				},
+				"messages": {
+					"add": {
+						"failed": "Nepodařilo se vytvořit roli.",
+						"success": "Role byla úspěšně vytvořena."
+					},
+					"defaultRoleUnavailable": "Vybraná role není k dispozici.",
+					"delete": {
+						"assigned": "Roli nelze smazat, protože je stále přiřazena jednomu nebo více uživatelům nebo API klíčům.",
+						"failed": "Nepodařilo se smazat roli.",
+						"success": "Role byla úspěšně smazána."
+					},
+					"edit": {
+						"failed": "Nepodařilo se upravit roli.",
+						"success": "Role byla úspěšně upravena."
+					},
+					"list": {
+						"failed": "Nepodařilo se načíst seznam rolí."
+					},
+					"selectionRequired": "Vyberte prosím roli."
+				},
+				"name": "Název role",
+				"noData": {
+					"empty": "Nebyly nalezeny žádné záznamy rolí.",
+					"fetchError": "Záznamy rolí se nepodařilo načíst."
+				},
+				"role": "Role",
+				"systemRoles": {
+					"description": {
+						"admin": "Plný administrátorský přístup.",
+						"normal": "Standardní přístup pro běžné uživatele.",
+						"viewer": "Přístup pouze pro čtení."
+					},
+					"name": {
+						"admin": "Administrátor",
+						"normal": "Běžný uživatel",
+						"viewer": "Prohlížející"
+					},
+					"readOnlyWarning": "Systémové role nelze upravovat."
+				},
+				"title": "Role",
+				"validations": {
+					"name": {
+						"required": "Zadejte prosím název role."
 					}
 				}
 			},
@@ -381,6 +447,7 @@
 					"fetchError": "Záznamy SSH klíčů se nepodařilo načíst."
 				},
 				"noneSupported": "Není podporován žádný typ SSH klíče.",
+				"selectedCount": "Vybráno oprávnění: {count}",
 				"supported": "Jsou podporovány následující typy SSH klíčů.",
 				"table": {
 					"createdAt": "Datum vytvoření",
@@ -389,13 +456,12 @@
 					"noData": "Nebyly nalezeny žádné záznamy SSH klíčů.",
 					"type": "Typ klíče"
 				},
+				"title": "Výběr oprávnění",
 				"validation": {
 					"key": {
 						"required": "Zadejte prosím SSH klíč."
 					}
-				},
-				"selectedCount": "Vybráno oprávnění: {count}",
-				"title": "Výběr oprávnění"
+				}
 			},
 			"users": {
 				"actions": {

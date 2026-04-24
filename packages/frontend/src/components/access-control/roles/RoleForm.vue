@@ -26,13 +26,13 @@ limitations under the License.
 				v-bind='props'
 				:action='action'
 				container-type='card-title'
-				:tooltip='$t(`components.accessControl.roles.actions.${action}.title`)'
+				:tooltip='$t(`components.accessControl.roles.actions.${action}`)'
 			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
-				:tooltip='$t(`components.accessControl.roles.actions.${action}.title`)'
+				:tooltip='$t(`components.accessControl.roles.actions.${action}`)'
 			/>
 		</template>
 		<v-form
@@ -43,7 +43,7 @@ limitations under the License.
 		>
 			<ICard :action='action'>
 				<template #title>
-					{{ $t(`components.accessControl.roles.actions.${action}.title`) }}
+					{{ $t(`components.accessControl.roles.actions.${action}`) }}
 				</template>
 				<v-alert
 					v-if='componentProps.role?.system'
@@ -59,9 +59,9 @@ limitations under the License.
 				>
 					<ITextInput
 						v-model='roleConfig.name'
-						:label='$t("components.accessControl.roles.roleName.name")'
+						:label='$t("components.accessControl.roles.name")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.roleName.required")),
+							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.roles.validations.name.required")),
 						]'
 						required
 					/>
@@ -154,10 +154,10 @@ function getRoleConfig(role?: RoleInfo): RoleConfig {
 async function addRole(config: RoleConfig): Promise<RoleInfo|null> {
 	try {
 		const result = await service.create(config);
-		toast.success(i18n.t('components.accessControl.roles.actions.add.success'));
+		toast.success(i18n.t('components.accessControl.roles.messages.add.success'));
 		return result;
 	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.add.failure'));
+		toast.error(i18n.t('components.accessControl.roles.messages.add.failed'));
 		return null;
 	}
 }
@@ -165,10 +165,10 @@ async function addRole(config: RoleConfig): Promise<RoleInfo|null> {
 async function updateRole(id: number, config: RoleConfig): Promise<RoleInfo|null> {
 	try {
 		const result = await service.update(id, config);
-		toast.success(i18n.t('components.accessControl.roles.actions.edit.success'));
+		toast.success(i18n.t('components.accessControl.roles.messages.edit.success'));
 		return result;
 	} catch {
-		toast.error(i18n.t('components.accessControl.roles.actions.edit.failure'));
+		toast.error(i18n.t('components.accessControl.roles.messages.edit.failed'));
 		return null;
 	}
 }

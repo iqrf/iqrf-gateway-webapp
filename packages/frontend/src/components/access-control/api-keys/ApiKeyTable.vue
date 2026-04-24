@@ -135,7 +135,7 @@ async function getRoles(): Promise<void> {
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
-			i18n.t('components.accessControl.roles.actions.list.failure'),
+			i18n.t('components.accessControl.roles.messages.list.failed'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
