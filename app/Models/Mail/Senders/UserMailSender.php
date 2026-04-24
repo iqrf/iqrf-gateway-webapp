@@ -47,7 +47,7 @@ class UserMailSender extends BaseMailSender {
 		$params = [
 			'url' => $baseUrl . '/account/verification/' . $uuid->toString(),
 		];
-		$this->sendMessage('accountVerification.latte', $params, $user);
+		$this->sendMessage('emailVerification.latte', $params, $user);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class UserMailSender extends BaseMailSender {
 			throw new InvalidArgumentException('Password recovery UUID cannot be null');
 		}
 		$params = [
-			'url' => $baseUrl . '/auth/password/reset/' . $uuid->toString(),
+			'url' => $baseUrl . '/account/recovery/' . $uuid->toString(),
 		];
 		$this->sendMessage('passwordRecovery.latte', $params, $recovery->getUser());
 	}

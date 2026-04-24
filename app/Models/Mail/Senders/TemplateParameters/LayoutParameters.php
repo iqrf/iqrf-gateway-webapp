@@ -46,14 +46,14 @@ readonly class LayoutParameters {
 	 * @return array{
 	 *     gatewayInfo: InfoManager,
 	 *     locale: string,
-	 *     userEntity: User|null,
+	 *     userInfo: User|null,
 	 * } Template parameters
 	 */
 	public function toArray(): array {
 		return [
 			'gatewayInfo' => $this->gatewayInfo,
 			'locale' => $this->locale,
-			'userEntity' => $this->userInfo,
+			'userInfo' => $this->userInfo,
 		];
 	}
 
