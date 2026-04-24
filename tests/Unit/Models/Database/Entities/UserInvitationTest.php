@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use DateInterval;
@@ -54,6 +55,11 @@ final class UserInvitationTest extends TestCase {
 	 * @var User User entity
 	 */
 	private User $user;
+
+	/**
+	 * @var Role User role entity
+	 */
+	private Role $role;
 
 	/**
 	 * Tests the function to get the user
@@ -102,7 +108,8 @@ final class UserInvitationTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
+		$this->role = new Role('admin', 'Administrator role', []);
+		$this->user = new User('admin', 'admin@iqrf.org', 'admin', $this->role);
 		$this->entity = new UserInvitation($this->user);
 		$this->entity->setCreatedAt();
 	}

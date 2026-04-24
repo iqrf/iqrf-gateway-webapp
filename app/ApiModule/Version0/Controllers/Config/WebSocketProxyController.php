@@ -29,8 +29,8 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\Entities\ProxyConfiguration;
-use App\Models\WebSocket\ProxyConfigManager;
 use App\Enums\AccessScope;
+use App\Models\WebSocket\ProxyConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
