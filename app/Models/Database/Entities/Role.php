@@ -24,10 +24,13 @@ use App\Enums\AccessScope;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Repositories\RoleRepository;
 use App\Models\Database\Types\AccessScopeArrayType;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
 use JsonSerializable;
+
 use function in_array;
 
 /**
@@ -71,6 +74,12 @@ class Role implements JsonSerializable {
 	private ?string $systemKey = null;
 
 	/**
+	 * @var Collection<User> Collection of all users with this role
+	 */
+	#[ORM\OneToMany(mappedBy: 'role', targetEntity: User::class)]
+	private Collection $users;
+
+	/**
 	 * Constructor
 	 * @param string $name Role name
 	 * @param string $description Role description
@@ -94,6 +103,7 @@ class Role implements JsonSerializable {
 		}
 		$this->system = $system;
 		$this->systemKey = $systemKey;
+		$this->users = new ArrayCollection();
 	}
 
 	/**
@@ -153,11 +163,27 @@ class Role implements JsonSerializable {
 	}
 
 	/**
+	 * Returns users with this role
+	 * @return Collection<int, User> Users with this role
+	 */
+	public function getUsers(): Collection {
+		return $this->users;
+	}
+
+	/**
 	 * Sets role scopes
 	 * @param array<AccessScope> $scopes Role scopes
 	 */
 	public function setScopes(array $scopes): void {
 		$this->scopes = $scopes;
+	}
+
+	/**
+	 * Sets users with this role
+	 * @param Collection<int, User> $users Users with this role
+	 */
+	public function setUsers(Collection $users): void {
+		$this->users = $users;
 	}
 
 	/**
