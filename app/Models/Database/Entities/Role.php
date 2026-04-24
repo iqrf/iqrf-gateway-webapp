@@ -30,7 +30,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
 use JsonSerializable;
-
 use function in_array;
 
 /**
@@ -74,7 +73,7 @@ class Role implements JsonSerializable {
 	private ?string $systemKey = null;
 
 	/**
-	 * @var Collection<User> Collection of all users with this role
+	 * @var Collection<int, User> Collection of all users with this role
 	 */
 	#[ORM\OneToMany(mappedBy: 'role', targetEntity: User::class)]
 	private Collection $users;

@@ -29,6 +29,7 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260421071952 extends AbstractMigration
 {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
@@ -91,4 +92,5 @@ final class Version20260421071952 extends AbstractMigration
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON users (username)');
 		$this->addSql('CREATE INDEX IDX_1483A5E9D60322AC ON users (role_id)');
 	}
+
 }
