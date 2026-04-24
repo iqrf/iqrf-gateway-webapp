@@ -30,6 +30,7 @@ limitations under the License.
 	"meta": {
 		"requiresAuth": false,
 	},
+	"props": true,
 }
 </route>
 
