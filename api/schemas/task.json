@@ -220,9 +220,6 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceUselessPrebondedNodes-request-1-0-0.json"
 				},
 				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_OtaUpload-request-1-0-0.json"
-				},
-				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Ping-request-1-0-0.json"
 				},
 				{

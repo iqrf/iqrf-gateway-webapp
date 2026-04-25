@@ -117,10 +117,6 @@
 			"title": "iqrf::MqttMessaging"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__OtaUploadService.json",
-			"title": "iqrf::OtaUploadService"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__PingService.json",
 			"title": "iqrf::PingService"
 		},
