@@ -169,16 +169,8 @@
 			"title": "shape::ConfigurationService"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__CurlRestApiService.json",
-			"title": "shape::CurlRestApiService"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__LauncherService.json",
 			"title": "shape::LauncherService"
-		},
-		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__MqttService.json",
-			"title": "shape::MqttService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__TraceFileService.json",
@@ -187,10 +179,6 @@
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__TraceFormatService.json",
 			"title": "shape::TraceFormatService"
-		},
-		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__WebsocketCppService.json",
-			"title": "shape::WebsocketCppService"
 		}
 	],
 	"example": {
