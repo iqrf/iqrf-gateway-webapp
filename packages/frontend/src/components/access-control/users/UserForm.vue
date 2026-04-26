@@ -227,7 +227,7 @@ watch(showDialog, (newVal: boolean): void => {
 	if (role.value?.id === user.value.roleId) {
 		return;
 	}
-	let defaultRole: RoleInfo | undefined = undefined;
+	let defaultRole: RoleInfo | undefined;
 	if (user.value.roleId === -1) {
 		defaultRole = componentProps.roleList.find((role) => role.systemKey === 'normal');
 	} else {

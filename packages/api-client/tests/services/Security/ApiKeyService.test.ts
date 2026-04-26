@@ -91,6 +91,7 @@ describe('ApiKeyService', (): void => {
 		mockedAxios.onPost('/security/apiKeys', {
 			description: 'Test',
 			expiration: expiration.toISO(),
+			roleId: 0,
 		})
 			.reply(201, { ...rawApiKeys[0], key });
 		const config: ApiKeyConfig = {

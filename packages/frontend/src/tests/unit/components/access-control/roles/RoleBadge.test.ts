@@ -79,7 +79,7 @@ describe('RoleBadge', (): void => {
 			},
 			color: 'teal',
 			icon: mdiAccountEye,
-			text: 'Read only user',
+			text: 'Viewer',
 		},
 	];
 

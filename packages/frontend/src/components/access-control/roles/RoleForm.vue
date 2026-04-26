@@ -181,7 +181,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	let result = null;
+	let result: RoleInfo | null;
 	if (componentProps.role?.id) {
 		result = await updateRole(componentProps.role.id, roleConfig.value);
 	} else {

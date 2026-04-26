@@ -148,19 +148,19 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPut('/account/password', request)
 			.reply(200);
-		await expect(service.updatePassword(request)).resolves.not.toThrow();
+		await expect(service.updatePassword(request)).resolves.not.toThrowError();
 	});
 
 	test('confirm password recovery - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest)).rejects
-			.toThrow(new Error('Invalid password recovery request UUID.'));
+			.toThrowError(new Error('Invalid password recovery request UUID.'));
 	});
 
 	test('confirm password recovery - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest)).rejects
-			.toThrow(new Error('Invalid password recovery request UUID version.'));
+			.toThrowError(new Error('Invalid password recovery request UUID version.'));
 	});
 
 	test('confirm password recovery', async (): Promise<void> => {
@@ -180,7 +180,7 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPost('/account/password/recovery', request)
 			.reply(200);
-		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrow();
+		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrowError();
 	});
 
 	test('set password for invited user', async (): Promise<void> => {
@@ -207,19 +207,19 @@ describe('AccountService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onPut('/account/preferences', preferences)
 			.reply(200);
-		await expect(service.updatePreferences(preferences)).resolves.not.toThrow();
+		await expect(service.updatePreferences(preferences)).resolves.not.toThrowError();
 	});
 
 	test('verify e-mail address - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('invalid-uuid')).rejects
-			.toThrow(new Error('Invalid e-mail verification UUID.'));
+			.toThrowError(new Error('Invalid e-mail verification UUID.'));
 	});
 
 	test('verify e-mail address - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('60045219-7cbf-321e-a762-c90382cd8723')).rejects
-			.toThrow(new Error('Invalid e-mail verification UUID version.'));
+			.toThrowError(new Error('Invalid e-mail verification UUID version.'));
 	});
 
 	test('verify e-mail address', async (): Promise<void> => {
@@ -238,21 +238,21 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPost('/account/verification/resend', request)
 			.reply(200);
-		await expect(service.resendVerificationEmail(request)).resolves.not.toThrow();
+		await expect(service.resendVerificationEmail(request)).resolves.not.toThrowError();
 	});
 
 	test('sign in the user', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onPost('/account/signIn', credentials)
-			.reply(200, {
-				...userSignedIn,
-				email: 'admin@xn--rksmrgs-5wao1o.josefsson.org',
-			});
+
+		const mockData = { ...userSignedIn };
+		mockData.user.email = 'admin@xn--rksmrgs-5wao1o.josefsson.org';
+
+		const expectedData = { ...userSignedIn };
+		expectedData.user.email = 'admin@räksmörgås.josefsson.org';
+
+		mockedAxios.onPost('/account/signIn', credentials).reply(200, mockData);
 		const actual: UserSignedIn = await service.signIn(credentials);
-		expect(actual).toStrictEqual({
-			...userSignedIn,
-			email: 'admin@räksmörgås.josefsson.org',
-		});
+		expect(actual).toStrictEqual(expectedData);
 	});
 
 	test('refresh JWT token', async (): Promise<void> => {

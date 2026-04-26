@@ -235,7 +235,7 @@ watch(show, (newVal: boolean): void => {
 		expiration.value = null;
 	}
 	minDate.value = DateTime.now();
-	let defaultRole: RoleInfo | undefined = undefined;
+	let defaultRole: RoleInfo | undefined;
 	if (key.value.roleId === -1) {
 		defaultRole = componentProps.roleList.find((role) => role.systemKey === 'normal');
 	} else {
