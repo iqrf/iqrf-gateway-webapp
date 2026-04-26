@@ -59,7 +59,7 @@ describe('JournalService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onPut('/config/journal', config)
 			.reply(200);
-		await expect(service.updateConfig(config)).resolves.not.toThrowError();
+		await expect(service.updateConfig(config)).resolves.not.toThrow();
 	});
 
 });

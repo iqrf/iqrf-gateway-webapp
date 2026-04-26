@@ -54,7 +54,7 @@ describe('WebSocketProxyService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onPut('/config/ws-proxy', config)
 			.reply(200);
-		await expect(service.updateConfig(config)).resolves.not.toThrowError();
+		await expect(service.updateConfig(config)).resolves.not.toThrow();
 	});
 
 });

@@ -68,7 +68,7 @@ describe('AptService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onPut('/config/apt', rawConfig)
 			.reply(200);
-		await expect(service.updateConfig(config)).resolves.not.toThrowError();
+		await expect(service.updateConfig(config)).resolves.not.toThrow();
 	});
 
 	test('update service state', async (): Promise<void> => {
@@ -80,7 +80,7 @@ describe('AptService', (): void => {
 		for (const parameter of parameters) {
 			mockedAxios.onPut('/config/apt', parameter.body)
 				.reply(200);
-			await expect(service.updateServiceState(parameter.param)).resolves.not.toThrowError();
+			await expect(service.updateServiceState(parameter.param)).resolves.not.toThrow();
 		}
 	});
 
