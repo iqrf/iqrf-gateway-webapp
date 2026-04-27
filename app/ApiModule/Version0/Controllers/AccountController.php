@@ -36,6 +36,7 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserPreferences;
@@ -45,6 +46,7 @@ use App\Models\Database\Enums\ThemePreference;
 use App\Models\Database\Enums\TimeFormat;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Mail\Senders\UserMailSender;
+use BadMethodCallException;
 use DomainException;
 use Nette\Mail\SendException;
 use ValueError;
@@ -310,34 +312,25 @@ class AccountController extends BaseController {
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBodyCopy();
-		$userRepository = $this->entityManager->getUserRepository();
-		if (array_key_exists('username', $body)) {
-			$user = $userRepository->findOneByUserName($body['username']);
-		} elseif (array_key_exists('email', $body)) {
-			$user = $userRepository->findOneByEmail($body['email']);
-		} else {
-			throw new ClientErrorException('E-mail address or username is required', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!$user instanceof User) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
-		if ($user->getEmail() === null) {
-			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!$user->getState()->isVerified()) {
-			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
-		}
-		$recovery = new PasswordRecovery($user);
-		$this->entityManager->persist($recovery);
 		try {
-			$this->mailSender->sendPasswordRecovery(
-				recovery: $recovery,
+			if (array_key_exists('username', $body)) {
+				$user = $this->manager->getByUserName($body['username']);
+			} elseif (array_key_exists('email', $body)) {
+				$user = $this->manager->getByEmail($body['email']);
+			} else {
+				throw new ClientErrorException('E-mail address or username is required', ApiResponse::S400_BAD_REQUEST);
+			}
+			$this->manager->createPasswordRecoveryRequest(
+				user: $user,
 				baseUrl: $this->getBaseUrl($request),
 			);
+		} catch (ResourceNotFoundException) {
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		} catch (BadMethodCallException) {
+			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		$this->entityManager->flush();
 		return $response;
 	}
 
@@ -387,6 +380,9 @@ class AccountController extends BaseController {
 			throw new ClientErrorException('Password recovery request is expired', ApiResponse::S410_GONE);
 		}
 		$user = $recoveryRequest->getUser();
+		if ($user->getState()->isBlocked()) {
+			throw new ClientErrorException('User is blocked', ApiResponse::S403_FORBIDDEN);
+		}
 		try {
 			$user->setPassword($body['password']);
 		} catch (InvalidPasswordException $e) {
@@ -458,8 +454,9 @@ class AccountController extends BaseController {
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('userSignIn', $request);
 		$credentials = $request->getJsonBodyCopy();
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
-		if (!$user instanceof User) {
+		try {
+			$user = $this->manager->getByUserName($credentials['username']);
+		} catch (ResourceNotFoundException) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!$user->verifyPassword($credentials['password'])) {
@@ -533,6 +530,9 @@ class AccountController extends BaseController {
 		}
 		$user = $verification->user;
 		$state = $user->getState();
+		if ($state->isBlocked()) {
+			throw new ClientErrorException('User is blocked', ApiResponse::S403_FORBIDDEN);
+		}
 		if ($state->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}

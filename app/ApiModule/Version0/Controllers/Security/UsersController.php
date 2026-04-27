@@ -36,6 +36,7 @@ use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
@@ -400,11 +401,11 @@ class UsersController extends BaseSecurityController {
 	 */
 	private function getUser(ApiRequest $request): User {
 		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if (!$user instanceof User) {
+		try {
+			return $this->manager->get($id);
+		} catch (ResourceNotFoundException) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		return $user;
 	}
 
 }

@@ -20,7 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Http\ApiResponse;
 use App\Exceptions\InvalidUserStateException;
+use App\Exceptions\ResourceNotFoundException;
+use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
@@ -28,6 +32,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\UserMailSender;
+use BadMethodCallException;
 use Nette\Mail\SendException;
 
 /**
@@ -81,7 +86,7 @@ class UserManager {
 	 * @return bool E-mail address uniqueness
 	 */
 	public function checkEmailUniqueness(string $email, ?int $userId = null): bool {
-		$user = $this->entityManager->getUserRepository()->findOneByEmail($email);
+		$user = $this->repository->findOneByEmail($email);
 		return $user instanceof User && $user->getId() !== $userId;
 	}
 
@@ -92,8 +97,78 @@ class UserManager {
 	 * @return bool Username uniqueness
 	 */
 	public function checkUsernameUniqueness(string $username, ?int $userId = null): bool {
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
+		$user = $this->repository->findOneByUserName($username);
 		return $user instanceof User && $user->getId() !== $userId;
+	}
+
+	/**
+	 * Create password recovery request
+	 * @param User $user User
+	 * @param string $baseUrl Frontend base URL
+	 * @throws BadMethodCallException User's e-mail address is not verified.
+	 * @throws SendException Failed to send e-mail message
+	 */
+	public function createPasswordRecoveryRequest(User $user, string $baseUrl): void {
+		if ($user->getEmail() === null) {
+			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);
+		}
+		if ($user->getState()->isBlocked()) {
+			throw new BadMethodCallException('User is blocked');
+		}
+		if (!$user->getState()->isVerified()) {
+			throw new BadMethodCallException('E-mail address is not verified');
+		}
+		if ($user->passwordRecovery !== null) {
+			$this->entityManager->remove($user->passwordRecovery);
+			$this->entityManager->flush();
+		}
+		$user->passwordRecovery = new PasswordRecovery($user);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		assert($user->passwordRecovery instanceof PasswordRecovery);
+		$this->mailSender->sendPasswordRecovery($user->passwordRecovery, $baseUrl);
+	}
+
+	/**
+	 * Returns the user by e-mail address
+	 * @param string $email User e-mail address
+	 * @return User User entity
+	 * @throws ResourceNotFoundException User with the e-mail address not found
+	 */
+	public function getByEmail(string $email): User {
+		$user = $this->repository->findOneByEmail($email);
+		if ($user instanceof User) {
+			return $user;
+		}
+		throw new ResourceNotFoundException('User with e-mail address ' . $email . ' not found');
+	}
+
+	/**
+	 * Returns the user by user name
+	 * @param string $username User name
+	 * @return User User entity
+	 * @throws ResourceNotFoundException User with the user name not found
+	 */
+	public function getByUserName(string $username): User {
+		$user = $this->repository->findOneByUserName($username);
+		if ($user instanceof User) {
+			return $user;
+		}
+		throw new ResourceNotFoundException('User with username ' . $username . ' not found');
+	}
+
+	/**
+	 * Returns the user by ID
+	 * @param int $id User ID
+	 * @return User User entity
+	 * @throws ResourceNotFoundException User with the ID not found
+	 */
+	public function get(int $id): User {
+		$user = $this->repository->find($id);
+		if ($user instanceof User) {
+			return $user;
+		}
+		throw new ResourceNotFoundException('User with ID ' . $id . ' not found');
 	}
 
 	/**
