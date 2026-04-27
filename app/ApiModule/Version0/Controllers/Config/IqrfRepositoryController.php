@@ -67,7 +67,7 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_read]);
 		$response = $response->writeJsonBody($this->manager->readConfig());
 		return $this->validators->validateResponse('iqrfRepositoryConfig', $response);
 	}
@@ -93,7 +93,7 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfRepository_write]);
 		$this->validators->validateRequest('iqrfRepositoryConfig', $request);
 		try {
 			$config = $request->getJsonBodyCopy();

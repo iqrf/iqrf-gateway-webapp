@@ -77,7 +77,7 @@ class WireGuardController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_read]);
 		$tunnels = $this->manager->listInterfaces();
 		$response = $response->writeJsonBody($tunnels);
 		return $this->validators->validateResponse('networkWireGuardTunnels', $response);
@@ -103,7 +103,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_read]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$tunnel = $this->manager->getInterface($id)->jsonSerialize();
@@ -139,7 +139,7 @@ class WireGuardController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write]);
 		$this->validators->validateRequest('wireguardTunnel', $request);
 		try {
 			$this->manager->createInterface($request->getJsonBody(false));
@@ -176,7 +176,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write]);
 		$this->validators->validateRequest('wireguardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
@@ -207,7 +207,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function remove(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$service = $this->tunnelService($this->manager->getInterface($id));
@@ -241,7 +241,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function activate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute]);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->start($this->tunnelService($tunnel));
@@ -271,7 +271,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function deactivate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute]);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->stop($this->tunnelService($tunnel));
@@ -301,7 +301,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function enable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute]);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->enable($this->tunnelService($tunnel));
@@ -331,7 +331,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function disable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_execute]);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->disable($this->tunnelService($tunnel));
@@ -362,7 +362,7 @@ class WireGuardController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_vpns_write]);
 		try {
 			$result = $this->manager->generateKeys();
 			$response = $response->writeJsonBody($result);

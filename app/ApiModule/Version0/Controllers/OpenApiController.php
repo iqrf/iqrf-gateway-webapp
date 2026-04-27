@@ -70,7 +70,7 @@ class OpenApiController extends BaseController {
 							$ref: '#/components/schemas/OpenApiSpecification'
 	EOT)]
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::openApi_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::openApi_read]);
 		return $response->writeJsonBody($this->schemaBuilder->getArray());
 	}
 
@@ -92,7 +92,7 @@ class OpenApiController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', required: true, description: 'Name of schema')]
 	public function getSchema(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::openApi_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::openApi_read]);
 		$name = $request->getParameter('name');
 		$path = __DIR__ . '/../../../../api/schemas/' . $name . '.json';
 		$baseUrl = Strings::replace((string) $request->getUri(), '~' . $name . '$~');

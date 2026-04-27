@@ -65,7 +65,7 @@ class DiagnosticsController extends BaseGatewayController {
 							format: binary
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read]);
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);
 		$response->writeBody(FileSystem::read($path));

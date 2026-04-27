@@ -91,7 +91,7 @@ class AwsController extends BaseCloudController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write]);
 		try {
 			$configuration = $this->getConfiguration($request);
 			$this->manager->createMqttInterface($configuration);

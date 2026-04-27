@@ -74,7 +74,7 @@ class LogController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read]);
 		$response = $response->writeJsonBody($this->logManager->getAvailableServices());
 		return $this->validators->validateResponse('logServices', $response);
 	}
@@ -103,7 +103,7 @@ class LogController extends BaseGatewayController {
 	EOT)]
 	#[RequestParameter(name: 'service', type: 'string', description: 'Service name')]
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read]);
 		$service = $request->getParameter('service');
 		try {
 			return $response->withHeader('Content-Type', 'text/plain')
@@ -133,7 +133,7 @@ class LogController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read]);
 		$path = $this->logManager->createArchive();
 		try {
 			$now = new DateTime();

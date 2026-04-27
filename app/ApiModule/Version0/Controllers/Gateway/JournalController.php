@@ -168,7 +168,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_diagnostic_read]);
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);
 		try {

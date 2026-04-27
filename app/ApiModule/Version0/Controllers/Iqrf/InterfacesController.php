@@ -62,7 +62,7 @@ class InterfacesController extends BaseIqrfController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read]);
 		$interfaces = [
 			'cdc' => $this->manager->getCdcInterfaces(),
 			'spi' => $this->manager->getSpiInterfaces(),

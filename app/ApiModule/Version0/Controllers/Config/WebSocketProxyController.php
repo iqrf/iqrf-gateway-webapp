@@ -67,7 +67,7 @@ class WebSocketProxyController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_translator_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_translator_read]);
 		try {
 			$response = $response->writeJsonObject($this->manager->readConfig());
 			return $this->validators->validateResponse('webSocketProxyConfig', $response);
@@ -99,7 +99,7 @@ class WebSocketProxyController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_translator_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_translator_write]);
 		$this->validators->validateRequest('webSocketProxyConfig', $request);
 		try {
 			$config = ProxyConfiguration::jsonDeserialize($request->getJsonBody());

@@ -71,7 +71,7 @@ class FeatureController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_features_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_features_read]);
 		$config = $this->manager->read();
 		$response = $response->writeJsonBody($config);
 		return $this->validators->validateResponse('featureList', $response);
@@ -97,7 +97,7 @@ class FeatureController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_features_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_features_read]);
 		$name = urldecode($request->getParameter('feature'));
 		try {
 			$response = $response->writeJsonBody($this->manager->get($name));
@@ -131,7 +131,7 @@ class FeatureController extends BaseController {
 	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_features_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_features_write]);
 		$name = urldecode($request->getParameter('feature'));
 		if (!$this->manager->existsDefault($name)) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);

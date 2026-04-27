@@ -100,7 +100,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$format = $request->getParsedBody()['format'] ?? null;
@@ -146,7 +146,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		$this->validators->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);
@@ -195,7 +195,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		$this->validators->validateRequest('uploaderFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);

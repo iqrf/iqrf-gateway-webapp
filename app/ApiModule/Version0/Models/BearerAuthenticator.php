@@ -57,7 +57,7 @@ class BearerAuthenticator implements IAuthenticator {
 		}
 		// Authenticate with API key
 		// TODO: UPDATE REGEX TO BE MORE STRICT, 0-2x '=' -> 44, [..]{43}=, [..]{42}={2}..
-		if (Strings::match($token, '~^webapp;[0-9]+;([0-9A-Za-z+/=]{44})$~') !== null) {
+		if (Strings::match($token, '~^iqrf-gw-webapp;[0-9]+;([0-9A-Za-z+/=]{44})$~') !== null) {
 			return $this->authenticateApp($token);
 		}
 		// Authentication with legacy API key

@@ -72,7 +72,7 @@ class ShellUserController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_shellUser_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_shellUser_write]);
 		$this->validators->checkFeatures(['gatewayPass']);
 		$this->validators->validateRequest('gatewayPassword', $request);
 		try {

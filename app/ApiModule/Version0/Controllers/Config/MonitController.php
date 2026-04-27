@@ -71,7 +71,7 @@ class MonitController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_monit_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_monit_read]);
 		try {
 			$config = $this->manager->getConfig();
 			$response = $response->writeJsonBody($config);
@@ -102,7 +102,7 @@ class MonitController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_monit_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_monit_write]);
 		$this->validators->validateRequest('monitConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBodyCopy());
@@ -130,7 +130,7 @@ class MonitController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function getCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_monit_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_monit_read]);
 		try {
 			$config = $this->manager->getCheck($request->getParameter('name'));
 			$response = $response->writeJsonBody($config);
@@ -154,7 +154,7 @@ class MonitController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function enableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_monit_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_monit_write]);
 		try {
 			$this->manager->enableCheck($request->getParameter('name'));
 			return $response;
@@ -177,7 +177,7 @@ class MonitController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function disableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_monit_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_monit_write]);
 		try {
 			$this->manager->disableCheck($request->getParameter('name'));
 			return $response;

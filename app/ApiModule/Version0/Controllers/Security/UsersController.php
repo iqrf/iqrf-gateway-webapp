@@ -95,7 +95,7 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_read]);
 		$response = $response->writeJsonBody($this->manager->list([]));
 		return $this->validators->validateResponse('userList', $response);
 	}
@@ -131,7 +131,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
-			$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+			$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		}
 		$this->validators->validateRequest('userCreate', $request);
 		$json = $request->getJsonBodyCopy();
@@ -204,7 +204,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_read]);
 		$user = $this->getUser($request);
 		$response = $response->writeJsonObject($user);
 		return $this->validators->validateResponse('userDetail', $response);
@@ -224,7 +224,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		$user = $this->getUser($request);
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
@@ -259,7 +259,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		$user = $this->getUser($request);
 		$this->validators->validateRequest('userEdit', $request);
 		$json = $request->getJsonBodyCopy();
@@ -335,7 +335,7 @@ class UsersController extends BaseSecurityController {
 				description: User is already blocked
 	EOT)]
 	public function block(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		try {
 			$user = $this->getUser($request);
 			$currentUser = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -364,7 +364,7 @@ class UsersController extends BaseSecurityController {
 				description: User is not blocked
 	EOT)]
 	public function unblock(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		try {
 			$this->manager->unblock($this->getUser($request));
 			return $response->withStatus(ApiResponse::S200_OK);
@@ -393,7 +393,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_users_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_users_write]);
 		$user = $this->getUser($request);
 		if ($user->getEmail() === null) {
 			throw new ClientErrorException('User does not have an e-mail address', ApiResponse::S400_BAD_REQUEST);

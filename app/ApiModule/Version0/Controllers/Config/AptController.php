@@ -70,7 +70,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_read]);
 		try {
 			$response = $response->writeJsonBody($this->manager->read());
 			return $this->validators->validateResponse('aptConfiguration', $response);
@@ -100,7 +100,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_automaticUpgrades_write]);
 		$this->validators->validateRequest('aptConfiguration', $request);
 		try {
 			$this->manager->write($request->getJsonBodyCopy());

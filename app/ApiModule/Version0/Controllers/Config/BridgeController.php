@@ -69,7 +69,7 @@ class BridgeController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_read]);
 		try {
 			$config = $this->configManager->getConfig();
 			$response = $response->writeJsonBody($config);
@@ -102,7 +102,7 @@ class BridgeController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayInfluxdbBridge_write]);
 		$this->validators->validateRequest('bridgeConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBodyCopy());

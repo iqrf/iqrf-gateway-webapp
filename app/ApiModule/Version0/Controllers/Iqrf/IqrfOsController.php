@@ -75,7 +75,7 @@ class IqrfOsController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		$patches = $this->iqrfOsManager->listOsPatches();
 		$response = $response->writeJsonBody($patches);
 		return $this->validators->validateResponse('iqrfOsPatchDetail', $response);
@@ -104,7 +104,7 @@ class IqrfOsController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		$this->validators->validateRequest('iqrfOsPatchUpgrade', $request);
 		$data = $request->getJsonBodyCopy(false);
 		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->build, $data->mcuType);
@@ -137,7 +137,7 @@ class IqrfOsController extends BaseIqrfController {
 				$ref: '#/components/responses/ServiceUnavailable'
 	EOT)]
 	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::iqrfNetwork_trUpload_execute]);
 		$this->validators->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
 			$this->iqrfOsManager->upgradeOs($request->getJsonBodyCopy(false));

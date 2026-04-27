@@ -69,7 +69,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_journal_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_journal_read]);
 		$this->validators->checkFeatures('journal');
 		try {
 			$response = $response->writeJsonBody($this->configManager->getConfig());
@@ -100,7 +100,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_journal_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_journal_write]);
 		$this->validators->checkFeatures('journal');
 		$this->validators->validateRequest('journal', $request);
 		try {

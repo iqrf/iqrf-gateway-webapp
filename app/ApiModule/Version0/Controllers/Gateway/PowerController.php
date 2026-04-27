@@ -71,7 +71,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute]);
 		$response = $response->writeJsonBody($this->powerManager->powerOff());
 		return $this->validators->validateResponse('powerControl', $response);
 	}
@@ -91,7 +91,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_execute]);
 		$response = $response->writeJsonBody($this->powerManager->reboot());
 		return $this->validators->validateResponse('powerControl', $response);
 	}
@@ -119,7 +119,7 @@ class PowerController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_power_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_power_read]);
 		try {
 			$response = $response->writeJsonBody($this->tuptimeManager->list());
 			return $this->validators->validateResponse('tuptimeStats', $response);

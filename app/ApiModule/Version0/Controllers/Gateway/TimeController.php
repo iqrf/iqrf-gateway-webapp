@@ -70,7 +70,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_time_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_time_read]);
 		try {
 			$time = $this->manager->getTime();
 			$response = $response->writeJsonBody($time);
@@ -95,7 +95,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_time_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_time_write]);
 		$this->validators->validateRequest('timeSet', $request);
 		try {
 			$time = $request->getJsonBodyCopy();
@@ -121,7 +121,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_time_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_time_read]);
 		$timezones = $this->manager->availableTimezones();
 		$response = $response->writeJsonBody($timezones);
 		return $this->validators->validateResponse('timezoneList', $response);

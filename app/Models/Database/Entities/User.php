@@ -224,18 +224,18 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns all user scopes
-	 * @return array<string> User scopes
+	 * @return array<AccessScope> User scopes
 	 */
 	public function getScopes(): array {
-		return array_map(static fn (AccessScope $scope): string => $scope->value, $this->role->getScopes());
+		return $this->role->getScopes();
 	}
 
 	/**
 	 * Checks if the user has a scope
-	 * @param string $scope Scope
+	 * @param AccessScope $scope Scope
 	 * @return bool User has a scope
 	 */
-	public function hasScope(string $scope): bool {
+	public function hasScope(AccessScope $scope): bool {
 		return in_array($scope, $this->getScopes(), true);
 	}
 

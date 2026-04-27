@@ -97,7 +97,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read]);
 		$typeParam = $request->getQueryParam('type', null);
 		$type = $typeParam === null ? null : ConnectionTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
@@ -123,7 +123,7 @@ class ConnectionsController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write]);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
@@ -161,7 +161,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write]);
 		$this->validators->validateRequest('networkConnection', $request);
 		try {
 			$json = $request->getJsonBodyCopy(false);
@@ -198,7 +198,7 @@ class ConnectionsController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_write]);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->validators->validateRequest('networkConnection', $request);
@@ -234,7 +234,7 @@ class ConnectionsController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read]);
 		try {
 			$uuid = $this->getUuid($request);
 			$response = $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
@@ -272,7 +272,7 @@ class ConnectionsController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		$interface = $request->getQueryParam('interface', null);
 		try {
 			$uuid = $this->getUuid($request);
@@ -303,7 +303,7 @@ class ConnectionsController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->down($uuid);

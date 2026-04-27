@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Enums\AccessScope;
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\ApiKeyState;
@@ -47,7 +48,7 @@ class ApiKey implements JsonSerializable {
 	/**
 	 * Identifier
 	 */
-	private const IDENT = 'webapp';
+	private const IDENT = 'iqrf-gw-webapp';
 
 	/**
 	 * @var string|null Secret
@@ -216,10 +217,27 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Returns API key scopes derived from role
-	 * @return array<string> API key scopes
+	 * @return array<AccessScope> API key scopes
 	 */
 	public function getScopes(): array {
-		return array_map(static fn ($scope): string => $scope->value, $this->role->getScopes());
+		return $this->role->getScopes();
+	}
+
+	/**
+	 * Returns API key scopes derived from role as strings
+	 * @return array<string> API key scopes
+	 */
+	public function getScopesStringArray(): array {
+		return array_map(static fn (AccessScope $scope): string => $scope->value, $this->getScopes());
+	}
+
+	/**
+	 * Checks if the API key has a scope
+	 * @param AccessScope $scope Scope
+	 * @return bool API key has a scope
+	 */
+	public function hasScope(AccessScope $scope): bool {
+		return in_array($scope, $this->getScopes(), true);
 	}
 
 	/**
@@ -272,6 +290,8 @@ class ApiKey implements JsonSerializable {
 	 *     createdBy: int|null,
 	 *     createdAt: string,
 	 *     state: string,
+	 *     roleId: int|null,
+	 *     scopes: array<string>,
 	 *     revokedBy: int|null,
 	 *     revokedAt: string|null,
 	 *     key?: string
@@ -286,7 +306,7 @@ class ApiKey implements JsonSerializable {
 			'createdAt' => $this->getCreatedAt()->format('c'),
 			'state' => $this->state->jsonSerialize(),
 			'roleId' => $this->role->getId(),
-			'scopes' => $this->getScopes(),
+			'scopes' => $this->getScopesStringArray(),
 			'revokedBy' => $this->revokedBy?->getId(),
 			'revokedAt' => $this->revokedAt?->format('c'),
 		];

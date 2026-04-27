@@ -68,7 +68,7 @@ class CellularModemsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read]);
 		try {
 			$response = $response->writeJsonBody($this->manager->listModems());
 			return $this->validators->validateResponse('modemList', $response);
@@ -90,7 +90,7 @@ class CellularModemsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		try {
 			$this->manager->scanModems();
 			return $response;

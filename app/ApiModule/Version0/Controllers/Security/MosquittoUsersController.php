@@ -74,7 +74,7 @@ class MosquittoUsersController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listUsers(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read]);
 		try {
 			$response = $response->withHeader('Content-Type', 'application/json')
 				->writeBody($this->manager->listUsers());
@@ -104,7 +104,7 @@ class MosquittoUsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mosquitto user ID')]
 	public function getUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_read]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$response = $response->withHeader('Content-Type', 'application/json')
@@ -153,7 +153,7 @@ class MosquittoUsersController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function createUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write]);
 		$this->validators->validateRequest('mosquittoUserCreate', $request);
 		$data = $request->getJsonBodyCopy(false);
 		try {
@@ -187,7 +187,7 @@ class MosquittoUsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mosquitto user ID')]
 	public function blockUser(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_mosquittoUsers_write]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->blockUser($id);

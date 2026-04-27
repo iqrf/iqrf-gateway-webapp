@@ -68,7 +68,7 @@ class WifiController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read]);
 		try {
 			$response = $response->writeJsonBody($this->manager->list());
 			return $this->validators->validateResponse('networkWifiList', $response);

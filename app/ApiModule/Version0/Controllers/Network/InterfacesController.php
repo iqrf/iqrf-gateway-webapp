@@ -95,7 +95,7 @@ class InterfacesController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_read]);
 		$typeParam = $request->getQueryParam('type', null);
 		$type = $typeParam === null ? null : InterfaceTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
@@ -119,7 +119,7 @@ class InterfacesController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		try {
 			$this->manager->connect($request->getParameter('name'));
 			return $response;
@@ -148,7 +148,7 @@ class InterfacesController extends BaseNetworkController {
 	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		try {
 			$this->manager->disconnect($request->getParameter('name'));
 			return $response;

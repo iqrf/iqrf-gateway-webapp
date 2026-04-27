@@ -76,7 +76,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mailer_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_read]);
 		try {
 			$config = $this->manager->read();
 			$response = $response->writeJsonObject($config);
@@ -109,7 +109,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mailer_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_write]);
 		$this->validators->validateRequest('mailer', $request);
 		try {
 			$configuration = MailerConfiguration::jsonDeserialize($request->getJsonBody());
@@ -150,7 +150,7 @@ class MailerController extends BaseConfigController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mailer_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mailer_write]);
 		$this->validators->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {

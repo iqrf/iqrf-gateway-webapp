@@ -72,7 +72,7 @@ class HostnameController extends BaseGatewayController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_information_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_information_write]);
 		$this->validators->validateRequest('hostname', $request);
 		try {
 			$config = $request->getJsonBodyCopy();

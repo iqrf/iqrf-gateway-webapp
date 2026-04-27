@@ -83,7 +83,7 @@ class BackupController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute]);
 		$this->validators->validateRequest('gatewayBackup', $request);
 		try {
 			$filePath = $this->manager->backup($request->getJsonBodyCopy());
@@ -121,7 +121,7 @@ class BackupController extends BaseMaintenanceController {
 				description: 'Unsupported media type'
 	EOT)]
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_backup_execute]);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
 		ContentTypeUtil::validContentType($request, $contentTypes);
 		$path = '/tmp/iqrf-gateway-backup-upload.zip';

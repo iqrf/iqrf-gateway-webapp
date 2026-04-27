@@ -68,7 +68,7 @@ class ConnectivityController extends BaseNetworkController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute->value]);
+		$this->validators->checkScopes($request, [AccessScope::ipNetwork_physicalConnections_execute]);
 		try {
 			$state = $this->manager->check()->value;
 			$response = $response->writeJsonBody(['state' => $state]);

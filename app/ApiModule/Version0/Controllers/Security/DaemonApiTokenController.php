@@ -73,7 +73,7 @@ class DaemonApiTokenController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function listTokens(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_read]);
 		try {
 			$response = $response->withHeader('Content-Type', 'application/json')
 				->writeBody($this->manager->listTokens());
@@ -103,7 +103,7 @@ class DaemonApiTokenController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Daemon API access token ID')]
 	public function getToken(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_read]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$response = $response->withHeader('Content-Type', 'application/json')
@@ -146,7 +146,7 @@ class DaemonApiTokenController extends BaseSecurityController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function createToken(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write]);
 		$this->validators->validateRequest('daemonApiTokenCreate', $request);
 		$data = $request->getJsonBodyCopy(false);
 		try {
@@ -176,7 +176,7 @@ class DaemonApiTokenController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Daemon API access token ID')]
 	public function revokeToken(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->revokeToken($id);
@@ -210,7 +210,7 @@ class DaemonApiTokenController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Daemon API access token ID')]
 	public function rotateToken(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_daemonAccessTokens_write]);
 		try {
 			$id = (int) $request->getParameter('id');
 			$token = $this->manager->rotateToken($id);

@@ -78,7 +78,7 @@ class RoleController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_role_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_role_read]);
 		$response = $response->writeJsonBody($this->manager->list());
 		return $this->validators->validateResponse('roleList', $response);
 	}
@@ -117,7 +117,7 @@ class RoleController extends BaseSecurityController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_role_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_role_write]);
 		$this->validators->validateRequest('roleCreate', $request);
 		$json = $request->getJsonBodyCopy();
 		try {
@@ -161,7 +161,7 @@ class RoleController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Role ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_role_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_role_read]);
 		$id = (int) $request->getParameter('id');
 		$role = $this->repository->find($id);
 		if ($role === null) {
@@ -187,7 +187,7 @@ class RoleController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Role ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_role_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_role_write]);
 		$id = (int) $request->getParameter('id');
 		$role = $this->repository->find($id);
 		if ($role === null) {
@@ -238,7 +238,7 @@ class RoleController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Role ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_role_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_role_write]);
 		// get role
 		$id = (int) $request->getParameter('id');
 		$role = $this->repository->find($id);

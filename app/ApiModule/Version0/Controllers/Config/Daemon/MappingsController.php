@@ -76,7 +76,7 @@ class MappingsController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'interface', type: 'string', in: 'query', required: false, description: 'Interface type')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read]);
 		$criteria = $request->hasQueryParam('interface') ? ['type' => $request->getQueryParam('interface')] : [];
 		$mappings = $this->repository->findBy($criteria);
 		$response = $response->writeJsonBody($mappings);
@@ -111,7 +111,7 @@ class MappingsController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write]);
 		$this->validators->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
 		if ($json->type === MappingType::UART->value) {
@@ -171,7 +171,7 @@ class MappingsController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_read]);
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);
 		if ($mapping === null) {
@@ -193,7 +193,7 @@ class MappingsController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write]);
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);
 		if ($mapping === null) {
@@ -226,7 +226,7 @@ class MappingsController extends BaseDaemonConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write]);
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);
 		if ($mapping === null) {

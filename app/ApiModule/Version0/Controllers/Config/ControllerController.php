@@ -75,7 +75,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read]);
 		try {
 			$config = $this->configManager->getConfig();
 			$response = $response->writeJsonBody($config);
@@ -108,7 +108,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write]);
 		$this->validators->validateRequest('controllerConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBodyCopy());
@@ -133,7 +133,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function listPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read]);
 		$response = $response->writeJsonBody($this->pinManager->listPinConfigs());
 		return $this->validators->validateResponse('controllerPinConfigList', $response);
 	}
@@ -156,7 +156,7 @@ class ControllerController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function getPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_read]);
 		$id = (int) $request->getParameter('id');
 		try {
 			$entity = $this->pinManager->getPinConfig($id);
@@ -195,7 +195,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write]);
 		$this->validators->validateRequest('controllerPinConfig', $request);
 		$json = $request->getJsonBodyCopy(false);
 		$entity = $this->pinManager->addPinConfig($json);
@@ -229,7 +229,7 @@ class ControllerController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function editPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write]);
 		$this->validators->validateRequest('controllerPinConfig', $request);
 		$id = (int) $request->getParameter('id');
 		$json = $request->getJsonBodyCopy(false);
@@ -255,7 +255,7 @@ class ControllerController extends BaseConfigController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function removePins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayController_write]);
 		$id = (int) $request->getParameter('id');
 		try {
 			$this->pinManager->removePinConfig($id);

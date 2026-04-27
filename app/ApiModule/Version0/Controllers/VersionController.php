@@ -69,7 +69,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function all(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_version_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_version_read]);
 		$versions = $this->manager->getAll();
 		$response = $response->writeJsonBody($versions);
 		return $this->validators->validateResponse('versions', $response);
@@ -92,7 +92,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_version_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_version_read]);
 		$version = $this->manager->getDaemon();
 		if ($version !== 'none' && $version !== 'unknown') {
 			$response = $response->writeJsonBody(['version' => $version]);
@@ -118,7 +118,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_version_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_version_read]);
 		try {
 			$response = $response->writeJsonBody($this->manager->getWebappJson());
 			return $this->validators->validateResponse('versionWebapp', $response);

@@ -26,6 +26,8 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
+use App\Enums\AccessScope;
+use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 
 /**
@@ -66,13 +68,20 @@ class ControllerValidators {
 	/**
 	 * Checks the scopes
 	 * @param ApiRequest $request API request
-	 * @param array<string> $scopes Supported scopes
+	 * @param array<AccessScope> $scopes Supported scopes
 	 */
 	public function checkScopes(ApiRequest $request, array $scopes): void {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if ($user instanceof User && array_intersect($scopes, $user->getScopes()) === []) {
-			throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
+		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER) ?? $request->getAttribute(RequestAttributes::APP_LOGGED_APP);
+		if (!$identity instanceof User && !$identity instanceof ApiKey) {
+			// Legacy key passthrough
+			return;
 		}
+		foreach ($scopes as $scope) {
+			if ($identity->hasScope($scope)) {
+				return;
+			}
+		}
+		throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
 	}
 
 	/**

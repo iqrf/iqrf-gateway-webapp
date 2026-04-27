@@ -72,7 +72,7 @@ class MenderController extends BaseConfigController {
 				description: Unsupported Mender client version
 	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mender_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mender_read]);
 		try {
 			$config = $this->manager->getConfig();
 			$response = $response->writeJsonBody($config);
@@ -109,7 +109,7 @@ class MenderController extends BaseConfigController {
 				description: Unsupported Mender client version
 	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mender_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mender_write]);
 		$this->validators->validateRequest('menderConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBodyCopy());
@@ -152,7 +152,7 @@ class MenderController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::config_mender_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_mender_write]);
 		try {
 			$file = $request->getUploadedFiles()[0];
 			$fileName = $file->getClientFilename();

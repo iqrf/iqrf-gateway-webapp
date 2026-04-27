@@ -73,7 +73,7 @@ abstract class BaseCloudController extends BaseController {
 	 * @param ApiRequest $request API request to validate
 	 */
 	protected function checkRequest(string $schema, ApiRequest $request): void {
-		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write->value]);
+		$this->validators->checkScopes($request, [AccessScope::config_iqrfGatewayDaemon_write]);
 		$this->validators->validateRequest($schema, $request);
 	}
 

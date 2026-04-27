@@ -71,7 +71,7 @@ class CertificateController extends BaseController {
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::security_certificates_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::security_certificates_read]);
 		try {
 			$response = $response->writeJsonBody($this->manager->getInfo());
 			return $this->validators->validateResponse('certificate', $response);

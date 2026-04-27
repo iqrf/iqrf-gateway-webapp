@@ -64,7 +64,7 @@ class InfoController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_information_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_information_read]);
 		$info = $this->infoManager->get();
 		$response = $response->writeJsonBody($info);
 		return $this->validators->validateResponse('gatewayInfo', $response);
@@ -85,7 +85,7 @@ class InfoController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, [AccessScope::gateway_information_read->value]);
+		$this->validators->checkScopes($request, [AccessScope::gateway_information_read]);
 		$info = $this->infoManager->getBrief();
 		$response = $response->writeJsonBody($info);
 		return $this->validators->validateResponse('gatewayBriefInfo', $response);
