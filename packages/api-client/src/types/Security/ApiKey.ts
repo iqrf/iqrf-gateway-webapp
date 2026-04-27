@@ -51,14 +51,24 @@ export interface ApiKeyInfo extends ApiKeyConfig {
 	id?: number;
 
 	/**
-	 * User who revoked the key
+	 * ID of user who revoked the key
 	 */
-	revokedBy?: UserInfo;
+	revokedBy?: number | null;
 
 	/**
 	 * Time when key was revoked
 	 */
-	revokedAt?: DateTime;
+	revokedAt?: DateTime | null;
+
+	/**
+	 * ID of user who created the key
+	 */
+	creaedBy?: number | null;
+
+	/**
+	 * Time when key was created
+	 */
+	createdAt?: DateTime;
 
 	/**
 	 * Key state

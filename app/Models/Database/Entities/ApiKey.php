@@ -291,7 +291,6 @@ class ApiKey implements JsonSerializable {
 	 *     createdAt: string,
 	 *     state: string,
 	 *     roleId: int|null,
-	 *     scopes: array<string>,
 	 *     revokedBy: int|null,
 	 *     revokedAt: string|null,
 	 *     key?: string
@@ -306,7 +305,6 @@ class ApiKey implements JsonSerializable {
 			'createdAt' => $this->getCreatedAt()->format('c'),
 			'state' => $this->state->jsonSerialize(),
 			'roleId' => $this->role->getId(),
-			'scopes' => $this->getScopesStringArray(),
 			'revokedBy' => $this->revokedBy?->getId(),
 			'revokedAt' => $this->revokedAt?->format('c'),
 		];

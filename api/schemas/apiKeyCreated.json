@@ -8,6 +8,12 @@
 		"id",
 		"description",
 		"expiration",
+		"createdBy",
+		"createdAt",
+		"state",
+		"roleId",
+		"revokedBy",
+		"revokedAt",
 		"key"
 	],
 	"properties": {
@@ -25,6 +31,61 @@
 		},
 		"expiration": {
 			"$id": "#/properties/expiration",
+			"type": "string",
+			"format": "date-time",
+			"title": "API key expiration",
+			"example": "2026-05-27T16:00:00+02:00"
+		},
+		"createdBy": {
+			"$id": "#/properties/createdBy",
+			"title": "Created by user ID",
+			"oneOf": [
+				{
+					"type": "integer"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": 1
+		},
+		"createdAt": {
+			"$id": "#/properties/createdAt",
+			"type": "string",
+			"format": "date-time",
+			"title": "API key creation time",
+			"example": "2026-04-27T16:00:00+02:00"
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"title": "API key state",
+			"type": "string",
+			"enum": [
+				"active",
+				"revoked"
+			]
+		},
+		"roleId": {
+			"$id": "#/properties/roleId",
+			"title": "ID of API key role",
+			"type": "integer",
+			"example": 1
+		},
+		"revokedBy": {
+			"$id": "#/properties/revokedBy",
+			"title": "Revoked by user ID",
+			"oneOf": [
+				{
+					"type": "integer"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": null
+		},
+		"revokedAt": {
+			"$id": "#/properties/revokedAt",
 			"oneOf": [
 				{
 					"type": "string",
@@ -34,14 +95,14 @@
 					"type": "null"
 				}
 			],
-			"title": "API key expiration",
+			"title": "API key revocation time",
 			"example": null
 		},
 		"key": {
 			"$id": "#/properties/key",
 			"type": "string",
 			"title": "API key",
-			"example": "ec8eca92c12774f564c0224eb7ec48d2028f42038a7fea9bf84ec2d565ed0750"
+			"example": "iqrf-gw-webapp;1;ec8eca92c12774f564c0224eb7ec48d2028f42038a7fea9bf84ec2d565ed0750"
 		}
 	}
 }

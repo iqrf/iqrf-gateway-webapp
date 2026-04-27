@@ -36,31 +36,25 @@
 			"title": "API key expiration",
 			"example": null
 		},
-		"revokedBy": {
-			"$id": "#/properties/revokedBy",
-			"title": "Revoked by user",
+		"createdBy": {
+			"$id": "#/properties/createdBy",
+			"title": "Created by user ID",
 			"oneOf": [
 				{
-					"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json"
-				},
-				{
-					"type": "null"
-				}
-			]
-		},
-		"revokedAt": {
-			"$id": "#/properties/revokedAt",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "date-time"
+					"type": "integer"
 				},
 				{
 					"type": "null"
 				}
 			],
-			"title": "API key expiration",
-			"example": null
+			"example": 1
+		},
+		"createdAt": {
+			"$id": "#/properties/createdAt",
+			"type": "string",
+			"format": "date-time",
+			"title": "API key creation time",
+			"example": "2026-04-27T16:00:00+02:00"
 		},
 		"state": {
 			"$id": "#/properties/state",
@@ -76,6 +70,33 @@
 			"title": "ID of API key role",
 			"type": "integer",
 			"example": 1
+		},
+		"revokedBy": {
+			"$id": "#/properties/revokedBy",
+			"title": "Revoked by user ID",
+			"oneOf": [
+				{
+					"type": "integer"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": null
+		},
+		"revokedAt": {
+			"$id": "#/properties/revokedAt",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "API key revocation time",
+			"example": null
 		},
 		"legacy": {
 			"$id": "#/properties/legacy",
