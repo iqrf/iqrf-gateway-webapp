@@ -88,15 +88,45 @@ describe('OpenApiService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/openapi')
 			.reply(200, specification);
-		const actual: OpenAPI3 = await service.getSpecification('http://localhost:8080/api/v0/');
+		const actual: OpenAPI3 = await service.getSpecification();
 		expect(actual).toStrictEqual({
 			...specification,
 			servers: [
 				{
-					'url': 'http://localhost:8080/api/v0/',
+					'url': '/api/v0',
 				},
 			],
 		});
+	});
+
+	/**
+	 * REST API specification URL test case
+	 */
+	interface SpecificationUrlTestCase {
+		/// Actual specification URL
+		actual: string;
+		/// Expected fixed specification URL
+		expected: string;
+	}
+
+	const specificationUrlTestCases: SpecificationUrlTestCase[] = [
+		{
+			actual: 'https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json',
+			expected: '/api/v0/openapi/schemas/definitions/user',
+		},
+		{
+			actual: 'https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json',
+			expected: '/api/v0/openapi/schemas/userDetail',
+		},
+		{
+			actual: 'https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/docs.json',
+			expected: '/api/v0/openapi/schemas/features/docs',
+		},
+	];
+
+	test.each(specificationUrlTestCases)('fix specification URL', ({ actual, expected }: SpecificationUrlTestCase): void => {
+		expect.assertions(1);
+		expect(service.fixSchemaUrls(actual)).toBe(expected);
 	});
 
 });

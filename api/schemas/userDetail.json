@@ -15,62 +15,27 @@
 	"properties": {
 		"id": {
 			"$id": "#/properties/id",
-			"type": "integer",
-			"title": "User ID",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/id"
 		},
 		"username": {
 			"$id": "#/properties/username",
-			"type": "string",
-			"title": "Username",
-			"example": "iqrf"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
 		},
 		"email": {
 			"$id": "#/properties/email",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "email"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "Email",
-			"example": "iqrf@example.org"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/email"
 		},
 		"language": {
 			"$id": "#/properties/language",
-			"type": "string",
-			"title": "Language",
-			"enum": [
-				"cs",
-				"en"
-			],
-			"default": "en",
-			"example": "en"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
 		},
 		"role": {
 			"$id": "#/properties/role",
-			"type": "string",
-			"title": "Role",
-			"enum": [
-				"admin",
-				"normal",
-				"basic"
-			],
-			"default": "normal",
-			"example": "normal"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/role"
 		},
 		"state": {
 			"$id": "#/properties/state",
-			"type": "string",
-			"title": "Account state",
-			"enum": [
-				"unverified",
-				"verified"
-			],
-			"example": "verified"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/state"
 		}
 	}
 }

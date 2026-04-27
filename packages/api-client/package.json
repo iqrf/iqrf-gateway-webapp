@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.3.1-beta.4",
+	"version": "0.3.1-beta.5",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
@@ -84,7 +84,7 @@
 	"dependencies": {
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
 		"@iqrf/iqrf-ui-common-types": "^0.1.0",
-		"axios": "^1.15.1",
+		"axios": "^1.15.2",
 		"luxon": "^3.7.2",
 		"openapi-typescript": "^7.13.0",
 		"punycode": "^2.3.1",
@@ -95,17 +95,17 @@
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^25.6.0",
 		"@types/punycode": "^2.1.4",
-		"@vitest/coverage-istanbul": "^4.1.4",
-		"@vitest/spy": "^4.1.4",
+		"@vitest/coverage-istanbul": "^4.1.5",
+		"@vitest/spy": "^4.1.5",
 		"axios-mock-adapter": "^2.1.0",
 		"eslint": "^10.2.1",
 		"ts-node": "^10.9.2",
-		"tsdown": "^0.21.9",
+		"tsdown": "^0.21.10",
 		"typedoc": "^0.28.19",
 		"typedoc-material-theme": "^1.4.1",
 		"typedoc-plugin-mdn-links": "^5.1.1",
 		"typescript": "^6.0.3",
 		"vite-tsconfig-paths": "^6.1.1",
-		"vitest": "^4.1.4"
+		"vitest": "^4.1.5"
 	}
 }

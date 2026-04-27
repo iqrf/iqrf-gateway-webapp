@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json",
+	"definitions": {
+		"id": {
+			"$id": "#/definitions/id",
+			"type": "integer",
+			"title": "ID",
+			"example": 1
+		},
+		"uuid": {
+			"$id": "#/definitions/uuid",
+			"type": "string",
+			"pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+			"title": "UUID",
+			"example": "5d92beb1-25a4-4864-8387-d0479c29e603"
+		}
+	}
+}

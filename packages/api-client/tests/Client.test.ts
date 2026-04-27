@@ -52,7 +52,7 @@ describe('Client', (): void => {
 		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
 		expect(client.getAxiosInstance().defaults.baseURL)
-			.toBe('/api/');
+			.toBe('/api/v0/');
 		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(30_000);
 	});

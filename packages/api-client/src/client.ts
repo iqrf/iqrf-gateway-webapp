@@ -100,7 +100,7 @@ export class Client {
 	 */
 	private readonly defaultAxiosConfig: AxiosRequestConfig = {
 		/** IQRF Gateway Webapp API base URL */
-		baseURL: '/api/',
+		baseURL: '/api/v0/',
 		/** Timeout in milliseconds */
 		timeout: 30_000,
 	};

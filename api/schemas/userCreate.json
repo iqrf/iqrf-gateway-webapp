@@ -26,56 +26,23 @@
 		},
 		"username": {
 			"$id": "#/properties/username",
-			"type": "string",
-			"title": "Username",
-			"minLength": 1,
-			"example": "iqrf"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
 		},
 		"email": {
 			"$id": "#/properties/email",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "idn-email"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "Email",
-			"example": "iqrf@example.org"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/email"
 		},
 		"password": {
 			"$id": "#/properties/password",
-			"type": "string",
-			"title": "Password",
-			"minLength": 15,
-			"maxLength": 64,
-			"pattern": "^[ -~]+$",
-			"example": "8Yz#t>pL^sD|Uq&bW@"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/password"
 		},
 		"language": {
 			"$id": "#/properties/language",
-			"type": "string",
-			"title": "Language",
-			"enum": [
-				"cs",
-				"en"
-			],
-			"default": "en",
-			"example": "en"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
 		},
 		"role": {
 			"$id": "#/properties/role",
-			"type": "string",
-			"title": "Role",
-			"enum": [
-				"admin",
-				"normal",
-				"basic"
-			],
-			"default": "normal",
-			"example": "normal"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/role"
 		}
 	}
 }

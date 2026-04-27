@@ -11,15 +11,11 @@
 	"properties": {
 		"username": {
 			"$id": "#/properties/username",
-			"type": "string",
-			"title": "Username",
-			"example": "iqrf"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
 		},
 		"password": {
 			"$id": "#/properties/password",
-			"type": "string",
-			"title": "Password",
-			"example": "8Yz#t>pL^sD|Uq&bW@"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/passwordOld"
 		}
 	}
 }

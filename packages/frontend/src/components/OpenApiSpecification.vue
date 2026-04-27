@@ -61,7 +61,6 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
@@ -75,8 +74,6 @@ const userStore = useUserStore();
 const { getToken: token } = storeToRefs(userStore);
 /// OpenAPI service
 const service = useApiClient().getOpenApiService();
-/// URL builder
-const urlBuilder: UrlBuilder = new UrlBuilder();
 
 /**
  * Extended Swagger request interface
@@ -93,7 +90,7 @@ interface Request extends SwaggerRequest {
 async function fetch(): Promise<void> {
 	componentState.value = ComponentState.Loading;
 	try {
-		const specification: OpenAPI3 = await service.getSpecification(urlBuilder.getRestApiUrl());
+		const specification: OpenAPI3 = await service.getSpecification();
 		componentState.value = ComponentState.Ready;
 		SwaggerUIBundle({
 			spec: specification,
@@ -107,6 +104,9 @@ async function fetch(): Promise<void> {
 			],
 			requestInterceptor: (swaggerRequest: SwaggerRequest): SwaggerRequest => {
 				const request = swaggerRequest as Request;
+				if (service.schemaPathRegExp.test(request.url)) {
+					request.url = service.fixSchemaUrls(request.url);
+				}
 				if (token.value && !request.headers.Authorization) {
 					request.headers.Authorization = `Bearer ${token.value}`;
 				}

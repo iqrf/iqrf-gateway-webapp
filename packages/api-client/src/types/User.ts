@@ -137,6 +137,14 @@ export interface UserPasswordReset {
 }
 
 /**
+ * User password set interface
+ */
+export interface UserPasswordSet {
+	/// New user password
+	password: string;
+}
+
+/**
  * User account recovery interface
  */
 export interface UserAccountRecovery {

@@ -281,7 +281,7 @@ class AccountController extends BaseController {
 		return $response;
 	}
 
-	#[Path('/passwordRecovery')]
+	#[Path('/password/recovery')]
 	#[Method('POST')]
 	#[OpenApi(<<<'EOT'
 		summary: Requests the password recovery
@@ -334,7 +334,7 @@ class AccountController extends BaseController {
 		return $response;
 	}
 
-	#[Path('/passwordRecovery/{uuid}')]
+	#[Path('/password/recovery/{uuid}')]
 	#[Method('POST')]
 	#[OpenApi(<<<'EOT'
 		summary: Recovers the forgotten password
@@ -399,6 +399,59 @@ class AccountController extends BaseController {
 			}
 		}
 		return $this->createSignedInResponse($response, $user);
+	}
+
+	#[Path('/password/set/{uuid}')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Sets the password for invited user
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: "#/components/schemas/PasswordSet"
+		responses:
+			"200":
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: "#/components/schemas/UserSignedIn"
+			"403":
+				description: User is blocked
+			"404":
+				description: Password set not found
+			"410":
+				description: Password set request is expired
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'integer', description: 'Password set UUID')]
+	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->validateRequest('passwordSet', $request);
+		$body = $request->getJsonBodyCopy();
+		try {
+			$userInvitation = $this->entityManager->getUserInvitationRepository()
+				->getByUuid($request->getParameter('uuid'));
+			if ($userInvitation->isExpired()) {
+				$this->entityManager->remove($userInvitation);
+				$this->entityManager->flush();
+				throw new ClientErrorException('Password set request is expired', ApiResponse::S410_GONE);
+			}
+			$user = $userInvitation->user;
+			if ($user->getState()->isBlocked()) {
+				throw new ClientErrorException('User is blocked', ApiResponse::S403_FORBIDDEN);
+			}
+			$user->setPassword($body['password']);
+			$user->setState($user->getState()->verify());
+			$user->invitation = null;
+			$this->entityManager->persist($user);
+			$this->entityManager->flush();
+			return $this->createSignedInResponse($response, $user);
+		} catch (ResourceNotFoundException) {
+			throw new ClientErrorException('Password set request not found', ApiResponse::S404_NOT_FOUND);
+		} catch (InvalidPasswordException) {
+			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST);
+		}
 	}
 
 	#[Path('/tokenRefresh')]

@@ -29,6 +29,7 @@ import {
 	type UserInfo,
 	type UserPasswordChange,
 	type UserPasswordReset,
+	type UserPasswordSet,
 	type UserPreferences,
 	type UserSignedIn,
 } from '../types';
@@ -84,7 +85,7 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid password recovery request UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post(`/account/passwordRecovery/${requestUuid}`, request);
+			await this.axiosInstance.post(`/account/password/recovery/${requestUuid}`, request);
 		return UserUtils.deserialize(response.data);
 	}
 
@@ -93,7 +94,25 @@ export class AccountService extends BaseService {
 	 * @param {UserAccountRecovery} recovery Account recovery request
 	 */
 	public async requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
-		await this.axiosInstance.post('/account/passwordRecovery', recovery);
+		await this.axiosInstance.post('/account/password/recovery', recovery);
+	}
+
+	/**
+	 * Set a password for the invited user
+	 * @param {string} requestUuid User invitation UUID
+	 * @param {UserPasswordSet} request Password set request
+	 * @return {Promise<UserSignedIn>} Signed-in user
+	 */
+	public async setPassword(requestUuid: string, request: UserPasswordSet): Promise<UserSignedIn> {
+		if (!uuidValidate(requestUuid)) {
+			throw new Error('Invalid user invitation UUID.');
+		}
+		if (uuidVersion(requestUuid) !== 4) {
+			throw new Error('Invalid user invitation UUID version.');
+		}
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post(`/account/password/set/${requestUuid}`, request);
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**

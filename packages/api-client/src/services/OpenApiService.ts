@@ -25,19 +25,40 @@ import { BaseService } from './BaseService';
 export class OpenApiService extends BaseService {
 
 	/**
+	 * Schema path regular expression
+	 */
+	public readonly schemaPathRegExp: RegExp = /https:\/\/apidocs\.iqrf\.org\/openapi\/iqrf-gateway-webapp\/schemas\/((features\/|definitions\/)?(\w*))\.json/g;
+
+	/**
 	 * Retrieve OpenAPI specification
-	 * @param {string} baseUrl REST API base URL
 	 * @return {Promise<OpenAPI3>} OpenAPI specification
 	 */
-	public async getSpecification(baseUrl: string = ''): Promise<OpenAPI3> {
+	public async getSpecification(): Promise<OpenAPI3> {
 		const response: AxiosResponse<OpenAPI3> =
 			await this.axiosInstance.get('/openapi');
-		const regExp: RegExp = /https:\/\/apidocs\.iqrf\.org\/iqrf-gateway-webapp-api\/schemas\/(\w*)\.json/g;
-		const replacement: string = `${baseUrl}/openapi/schemas/$1`;
-		const spec: OpenAPI3 = JSON.parse(JSON.stringify(response.data).replaceAll(regExp, replacement)) as OpenAPI3;
+		const spec: OpenAPI3 = JSON.parse(this.fixSchemaUrls(JSON.stringify(response.data))) as OpenAPI3;
 		// @ts-ignore Ignore missing description and variable properties in OpenAPI v3.x server object
-		spec.servers = [{ url: baseUrl }];
+		spec.servers = [{ url: this.getBaseUrl() }];
 		return spec;
+	}
+
+	/**
+	 * Fixes the OpenAPI specification reference URLs
+	 * @param {string} response OpenAPI specification reference URLs
+	 * @return {string} Fixed OpenAPI specification reference URLs
+	 */
+	public fixSchemaUrls(response: string): string {
+		const replacement: string = `${this.getBaseUrl()}/openapi/schemas/$1`;
+		return response.replaceAll(this.schemaPathRegExp, replacement);
+	}
+
+	/**
+	 * Retrieves the base URL of the REST API
+	 * @return {string} Base URL of the REST API
+	 * @private
+	 */
+	private getBaseUrl(): string {
+		return (this.apiClient.getAxiosInstance().defaults.baseURL ?? '/api/v0/').replace(/\/$/, '');
 	}
 
 }

@@ -1,0 +1,88 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json",
+	"definitions": {
+		"id": {
+			"$id": "#/definitions/id",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/username",
+			"title": "User ID",
+		},
+		"username": {
+			"$id": "#/definitions/username",
+			"type": "string",
+			"title": "Username",
+			"example": "iqrf"
+		},
+		"email": {
+			"$id": "#/definitions/email",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "email"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Email",
+			"example": "iqrf@example.org"
+		},
+		"language": {
+			"$id": "#/definitions/language",
+			"type": "string",
+			"title": "User language",
+			"enum": [
+				"cs",
+				"en"
+			],
+			"default": "en",
+			"example": "en"
+		},
+		"password": {
+			"$id": "#/definitions/password",
+			"type": "string",
+			"title": "Password",
+			"minLength": 15,
+			"maxLength": 64,
+			"pattern": "^[ -~]+$",
+			"example": "8Yz#t>pL^sD|Uq&bW@"
+		},
+		"passwordOld": {
+			"$id": "#/definitions/passwordOld",
+			"type": "string",
+			"title": "Password",
+			"minLength": 1,
+			"example": "8Yz#t>pL^sD|Uq&bW@"
+		},
+		"role": {
+			"$id": "#/definitions/role",
+			"type": "string",
+			"title": "User role",
+			"enum": [
+				"admin",
+				"normal",
+				"basic"
+			],
+			"default": "normal",
+			"example": "normal"
+		},
+		"state": {
+			"$id": "#/definitions/state",
+			"type": "string",
+			"title": "Account state",
+			"enum": [
+				"unverified",
+				"verified",
+				"blocked",
+				"invited"
+			],
+			"example": "verified"
+		},
+		"has2Fa": {
+			"$id": "#/definitions/has2Fa",
+			"type": "boolean",
+			"title": "Has 2FA enabled",
+			"example": false
+		}
+	}
+}

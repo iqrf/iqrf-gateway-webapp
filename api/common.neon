@@ -290,6 +290,8 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordRecovery.json
 		PasswordRecoveryRequest:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordRecoveryRequest.json
+		PasswordSet:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordSet.json
 		PowerControl:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/powerControl.json
 		Remount:
