@@ -29,7 +29,6 @@ limitations under the License.
 			{{ $t('components.account.verification.unverified', { email: userEmail }) }}
 			<v-btn
 				color='warning'
-				size='small'
 				density='compact'
 				:loading='componentState === ComponentState.Loading'
 				:prepend-icon='mdiEmailFast'
@@ -42,7 +41,6 @@ limitations under the License.
 			{{ $t('components.account.verification.missing') }}
 			<v-btn
 				color='warning'
-				size='small'
 				to='/profile'
 				dense
 				:prepend-icon='mdiEmailFast'
