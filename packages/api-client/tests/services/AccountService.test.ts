@@ -28,6 +28,7 @@ import {
 	type UserInfo,
 	type UserPasswordChange,
 	type UserPasswordReset,
+	type UserPasswordSet,
 	type UserPreferences,
 	UserRole,
 	type UserSignedIn,
@@ -143,7 +144,7 @@ describe('AccountService', (): void => {
 	test('confirm password recovery', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
-		mockedAxios.onPost(`/account/passwordRecovery/${uuid}`, passwordResetRequest)
+		mockedAxios.onPost(`/account/password/recovery/${uuid}`, passwordResetRequest)
 			.reply(200, userSignedIn);
 		const actual: UserSignedIn = await service.confirmPasswordRecovery(uuid, passwordResetRequest);
 		expect(actual).toStrictEqual(userSignedIn);
@@ -155,9 +156,21 @@ describe('AccountService', (): void => {
 			username: 'admin',
 			baseUrl: 'http://iqaros.local/',
 		};
-		mockedAxios.onPost('/account/passwordRecovery', request)
+		mockedAxios.onPost('/account/password/recovery', request)
 			.reply(200);
 		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrow();
+	});
+
+	test('set password for invited user', async (): Promise<void> => {
+		expect.assertions(1);
+		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
+		const requestBody: UserPasswordSet = {
+			password: '8Yz#t>pL^sD|Uq&bW@',
+		};
+		mockedAxios.onPost(`/account/password/set/${uuid}`, requestBody)
+			.reply(200, userSignedIn);
+		const actual: UserSignedIn = await service.setPassword(uuid, requestBody);
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	test('get user preferences', async (): Promise<void> => {
