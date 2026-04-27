@@ -124,7 +124,10 @@ abstract class UserCommand extends EntityManagerCommand {
 			}
 			return $role;
 		}
-		$roles = array_column($this->roleRepository->findAll(), 'name');
+		$roles = array_map(
+			static fn (Role $role): string => $role->getName(),
+			$this->roleRepository->findAll()
+		);
 		$role = null;
 		while ($role === null) {
 			$helper = $this->getQuestionHelper();
