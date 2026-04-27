@@ -38,7 +38,7 @@ describe('TimeService', (): void => {
 	test('fetch Time and NTP config', async (): Promise<void> => {
 		expect.assertions(1);
 		const config: TimeConfig = {
-			abbrevation: 'CEST',
+			abbreviation: 'CEST',
 			formattedTime: '2023-10-26 13:06:11',
 			formattedZone: '(UTC+0200) Europe/Prague (CEST)',
 			gmtOffset: '+0200',

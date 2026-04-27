@@ -85,7 +85,7 @@ class TimeManager {
 		$tokens = explode(';', $date->format('e;T;P;Z;U;Y-m-d H:i:s'));
 		$array = [
 			'zoneName' => $tokens[0],
-			'abbrevation' => $tokens[1],
+			'abbreviation' => $tokens[1],
 			'gmtOffset' => $tokens[2],
 			'gmtOffsetSec' => intval($tokens[3]),
 			'formattedZone' => sprintf('(UTC%s) %s (%s)', $tokens[2], $tokens[0], $tokens[1]),

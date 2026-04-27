@@ -34,7 +34,7 @@
 		"apn": {
 			"$id": "#/properties/apn",
 			"title": "APN",
-			"description": "Acess point name.",
+			"description": "Access point name.",
 			"type": "string",
 			"example": "internet.t-mobile.cz"
 		},

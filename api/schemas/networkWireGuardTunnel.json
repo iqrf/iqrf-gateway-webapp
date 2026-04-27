@@ -180,7 +180,7 @@
 					},
 					"allowedIPs": {
 						"$id": "#/properties/peers/items/properties/allowedIPs",
-						"title": "WireGuard tunnel peer allowed IP adresses",
+						"title": "WireGuard tunnel peer allowed IP addresses",
 						"type": "object",
 						"required": [
 							"ipv4",

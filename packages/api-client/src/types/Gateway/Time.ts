@@ -19,7 +19,7 @@
  */
 export interface TimeConfig {
 	/// Time zone code
-	abbrevation: string;
+	abbreviation: string;
 	/// Formatted time string
 	formattedTime: string;
 	/// Formatted zone string

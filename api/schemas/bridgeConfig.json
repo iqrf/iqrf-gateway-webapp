@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "Configuration schema",
-	"description": "IQRF Gateway Influxdb Bridge configuration schema.",
+	"description": "IQRF Gateway InfluxDB Bridge configuration schema.",
 	"type": "object",
 	"examples": [
 		{
@@ -40,8 +40,8 @@
 	"properties": {
 		"influx": {
 			"$id": "#/properties/influx",
-			"title": "Influxdb",
-			"description": "Influxdb client configuration.",
+			"title": "InfluxDB",
+			"description": "InfluxDB client configuration.",
 			"type": "object",
 			"required": [
 				"host",
@@ -63,36 +63,36 @@
 				"port": {
 					"$id": "#/properties/influx/properties/port",
 					"title": "Port",
-					"description": "Port number of influxdb.",
+					"description": "Port number of InfluxDB.",
 					"type": "integer"
 				},
 				"user": {
 					"$id": "#/properties/influx/properties/user",
 					"title": "User",
-					"description": "Influxdb API authentication username (1.x).",
+					"description": "InfluxDB API authentication username (1.x).",
 					"type": "string"
 				},
 				"password": {
 					"$id": "#/properties/influx/properties/password",
 					"title": "Password",
-					"description": "Influxdb API authentication password (1.x)."
+					"description": "InfluxDB API authentication password (1.x)."
 				},
 				"token": {
 					"$id": "#/properties/influx/properties/token",
 					"title": "API token",
-					"description": "Influxdb API authentication token (2.0).",
+					"description": "InfluxDB API authentication token (2.0).",
 					"type": "string"
 				},
 				"org": {
 					"$id": "#/properties/influx/properties/org",
 					"title": "Organization",
-					"description": "Influxdb organization name.",
+					"description": "InfluxDB organization name.",
 					"type": "string"
 				},
 				"buckets": {
 					"$id": "#/properties/influx/properties/buckets",
 					"title": "Buckets",
-					"description": "Influxdb buckets.",
+					"description": "InfluxDB buckets.",
 					"type": "object",
 					"required": [
 						"gateway",
@@ -169,7 +169,7 @@
 				},
 				"topics": {
 					"$id": "#/properties/mqtt/properties/topics",
-					"title": "Reponse topics",
+					"title": "Response topics",
 					"description": "Array of topics to subscribe to.",
 					"type": "array",
 					"additionalItems": false,

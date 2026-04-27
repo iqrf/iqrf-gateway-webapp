@@ -52,7 +52,7 @@ limitations under the License.
 						type='info'
 						variant='tonal'
 					>
-						{{ $t('components.config.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbrevation }} {{ `(UTC${gatewayTime?.gmtOffset})` }}
+						{{ $t('components.config.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbreviation }} {{ `(UTC${gatewayTime?.gmtOffset})` }}
 					</v-alert>
 					<v-autocomplete
 						v-model='timezone'
@@ -188,7 +188,7 @@ async function getTime(): Promise<void> {
 		gatewayTime.value = data;
 		timezone.value = {
 			name: data.zoneName,
-			code: data.abbrevation,
+			code: data.abbreviation,
 			offset: data.gmtOffset,
 		};
 		timeSet.value = {

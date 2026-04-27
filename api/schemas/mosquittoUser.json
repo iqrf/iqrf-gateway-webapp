@@ -35,7 +35,7 @@
 		},
 		"state": {
 			"$id": "#/properties/state",
-			"title": "Useer state (0 - active, 1 - blocked)",
+			"title": "User state (0 - active, 1 - blocked)",
 			"type": "integer",
 			"enum": [0, 1],
 			"example": 0

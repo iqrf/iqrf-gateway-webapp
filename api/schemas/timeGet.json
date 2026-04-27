@@ -5,7 +5,7 @@
 	"title": "Gateway time information",
 	"example": {
 		"zoneName": "Europe/Prague",
-		"abbrevation": "CEST",
+		"abbreviation": "CEST",
 		"gmtOffset": "+0200",
 		"gmtOffsetSec": 7200,
 		"formattedZone": "Europe/Prague (CEST, +0200)",
@@ -17,7 +17,7 @@
 	},
 	"required": [
 		"zoneName",
-		"abbrevation",
+		"abbreviation",
 		"gmtOffset",
 		"gmtOffsetSec",
 		"formattedZone",
@@ -36,8 +36,8 @@
 			"type": "string",
 			"example": "Europe/Prague"
 		},
-		"abbrevation": {
-			"$id": "#/properties/abbrevation",
+		"abbreviation": {
+			"$id": "#/properties/abbreviation",
 			"title": "Timezone abbreviation",
 			"description": "Abbreviation (code) if available, otherwise GMT offset is used.",
 			"type": "string",
