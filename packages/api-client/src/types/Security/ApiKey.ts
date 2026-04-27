@@ -16,8 +16,6 @@
 
 import { type DateTime } from 'luxon';
 
-import { type UserInfo } from '../User';
-
 /**
  * API key configuration
  */
