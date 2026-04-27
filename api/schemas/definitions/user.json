@@ -4,8 +4,8 @@
 	"definitions": {
 		"id": {
 			"$id": "#/definitions/id",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/username",
-			"title": "User ID",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id",
+			"title": "User ID"
 		},
 		"username": {
 			"$id": "#/definitions/username",
