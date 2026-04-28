@@ -169,7 +169,7 @@ const schema = z.object({
 				error: i18n.t('components.iqrfnet.send-json.validation.properties.hwpId.type'),
 			}).int({
 				error: i18n.t('components.iqrfnet.send-json.validation.properties.hwpId.type'),
-			}).refine((v: number) => v >= 0 && v <= 65535, {
+			}).refine((v: number) => v >= 0 && v <= 65_535, {
 				error: i18n.t('components.iqrfnet.send-json.validation.properties.hwpId.value'),
 			})
 				.optional(),

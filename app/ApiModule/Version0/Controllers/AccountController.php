@@ -518,7 +518,7 @@ class AccountController extends BaseController {
 		return $this->createSignedInResponse($response, $user);
 	}
 
-	#[Path('/emailVerification/resend')]
+	#[Path('/verification/resend')]
 	#[Method('POST')]
 	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
@@ -554,7 +554,7 @@ class AccountController extends BaseController {
 		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
-	#[Path('/emailVerification/{uuid}')]
+	#[Path('/verification/{uuid}')]
 	#[Method('GET')]
 	#[OpenApi(<<<'EOT'
 		summary: Verifies the user

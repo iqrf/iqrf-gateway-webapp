@@ -41,6 +41,7 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Nette\Mail\SendException;
 use ValueError;
@@ -132,19 +133,23 @@ class UsersController extends BaseSecurityController {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$email = $json['email'] ?? null;
+			$password = $json['password'] ?? null;
 			if ($email !== null && $this->manager->checkEmailUniqueness($email)) {
 				throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
 			}
-			if ($email === null && $json['password'] === null) {
+			if ($email === null && $password === null) {
 				throw new ClientErrorException('Password is required if e-mail address is not provided', ApiResponse::S400_BAD_REQUEST);
 			}
 			$user = new User(
 				username: $json['username'],
 				email: $email,
-				password: $json['password'] ?? null,
+				password: $password,
 				role: UserRole::fromString($json['role']),
 				language: UserLanguage::from($json['language']),
 			);
+			if ($password === null) {
+				$user->setState(UserState::Invited);
+			}
 			$this->entityManager->persist($user);
 			$this->entityManager->flush();
 		} catch (InvalidEmailAddressException $e) {
@@ -155,7 +160,11 @@ class UsersController extends BaseSecurityController {
 		$responseBody = ['emailSent' => false];
 		if ($user->getEmail() !== null) {
 			try {
-				$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
+				if ($user->getState()->isInvited()) {
+					$this->manager->sendInvitationEmail($user, $this->getBaseUrl($request));
+				} else {
+					$this->manager->sendVerificationEmail($user, $this->getBaseUrl($request));
+				}
 				$responseBody['emailSent'] = true;
 			} catch (SendException) {
 				// Ignore failure

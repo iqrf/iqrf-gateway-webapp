@@ -132,7 +132,6 @@ const componentProps = defineProps<{
 	index: number;
 }>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const urlBuilder = new UrlBuilder();
 const installStore = useInstallStore();
 const userStore = useUserStore();
 const user: Ref<UserCreate> = ref({
@@ -158,7 +157,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const data: UserCreate = {
 		...user.value,
-		baseUrl: urlBuilder.getBaseUrl(),
+		baseUrl: new UrlBuilder().getBaseUrl(),
 	};
 	try {
 		const response: EmailSentResponse = await useApiClient()

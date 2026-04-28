@@ -126,7 +126,7 @@ class UserController extends BaseController {
 	#[OpenApi(<<<'EOT'
 		summary: Requests the password recovery
 		deprecated: true
-		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery` instead. Will be removed in the version 3.1.0."
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/password/recovery` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -160,7 +160,7 @@ class UserController extends BaseController {
 	#[OpenApi(<<<'EOT'
 		summary: Recovers the forgotten password
 		deprecated: true
-		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery/{uuid}` instead. Will be removed in the version 3.1.0."
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/password/recovery/{uuid}` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -193,7 +193,7 @@ class UserController extends BaseController {
 	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
 		deprecated: true
-		description: "Deprecated in favor of the new account controller, use `POST` `/account/emailVerification/resend` instead. Will be removed in the version 3.1.0."
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/verification/resend` instead. Will be removed in the version 3.1.0."
 		responses:
 			'200':
 				description: Success
@@ -265,7 +265,7 @@ class UserController extends BaseController {
 	#[OpenApi(<<<'EOT'
 		summary: Verifies the user
 		deprecated: true
-		description: "Deprecated in favor of the new account controller, use `GET` `/account/emailVerification/{uuid}` instead. Will be removed in the version 3.1.0."
+		description: "Deprecated in favor of the new account controller, use `GET` `/account/verification/{uuid}` instead. Will be removed in the version 3.1.0."
 		responses:
 			'200':
 				description: Success

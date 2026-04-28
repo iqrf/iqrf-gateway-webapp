@@ -30,6 +30,11 @@ export enum AccountState {
 	Verified = 'verified',
 }
 
+export interface WithBaseUrl {
+	/// IQRF Gateway Webapp frontend base URL
+	baseUrl?: string;
+}
+
 /**
  * User preferences
  */
@@ -69,9 +74,7 @@ export interface UserBase {
 /**
  * User create interface
  */
-export interface UserCreate extends UserBase {
-	/// Base URL
-	baseUrl?: string;
+export interface UserCreate extends UserBase, WithBaseUrl {
 	/// User password
 	password: string;
 }
@@ -79,9 +82,7 @@ export interface UserCreate extends UserBase {
 /**
  * User edit interface
  */
-export interface UserEdit extends UserBase {
-	/// Base URL
-	baseUrl?: string;
+export interface UserEdit extends UserBase, WithBaseUrl {
 	/// User password
 	password?: string;
 }
@@ -107,8 +108,7 @@ export interface UserSignedIn extends UserInfo {
 /**
  * Current user edit profile
  */
-export interface AccountEdit {
-	baseUrl?: string;
+export interface AccountEdit extends WithBaseUrl {
 	username?: string;
 	language?: Language;
 	email?: string;
@@ -117,9 +117,7 @@ export interface AccountEdit {
 /**
  * User password change interface
  */
-export interface UserPasswordChange {
-	/// Base URL
-	baseUrl?: string;
+export interface UserPasswordChange extends WithBaseUrl {
 	/// New user password
 	new: string;
 	/// Current user password
@@ -129,9 +127,7 @@ export interface UserPasswordChange {
 /**
  * User password reset interface
  */
-export interface UserPasswordReset {
-	/// Base URL
-	baseUrl?: string;
+export interface UserPasswordReset extends WithBaseUrl {
 	/// New user password
 	password: string;
 }
@@ -147,9 +143,7 @@ export interface UserPasswordSet {
 /**
  * User account recovery interface
  */
-export interface UserAccountRecovery {
-	/// Base URL
-	baseUrl?: string;
+export interface UserAccountRecovery extends WithBaseUrl {
 	/// Username
 	username: string;
 }
@@ -157,10 +151,7 @@ export interface UserAccountRecovery {
 /**
  * E-mail address verification resend request interface
  */
-export interface EmailVerificationResendRequest {
-	/// Base URL
-	baseUrl?: string;
-}
+export type EmailVerificationResendRequest = WithBaseUrl;
 
 /**
  * User theme preference

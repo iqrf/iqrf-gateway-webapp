@@ -20,9 +20,7 @@
 	"properties": {
 		"baseUrl": {
 			"$id": "#/properties/baseUrl",
-			"type": "string",
-			"title": "Frontend base URL",
-			"example": "https://iqaros.local/system/"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/baseUrl"
 		},
 		"username": {
 			"$id": "#/properties/username",

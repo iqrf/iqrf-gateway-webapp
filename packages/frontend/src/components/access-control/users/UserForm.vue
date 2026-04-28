@@ -73,6 +73,7 @@ limitations under the License.
 					:prepend-inner-icon='mdiEmail'
 				/>
 				<IPasswordInput
+					v-if='action !== Action.Invite'
 					v-model='(user as UserEdit).password'
 					:label='$t("components.common.fields.password")'
 					:rules='[
@@ -156,6 +157,7 @@ import UserRoleInput from '@/components/access-control/users/UserRoleInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 const componentProps = defineProps<{
 	action: Action.Add | Action.Invite | Action.Edit;
@@ -184,7 +186,11 @@ watch(showDialog, (newVal: boolean): void => {
 		return;
 	}
 	if (componentProps.action === Action.Add) {
-		user.value = { ...defaultUser, password: '' } as UserCreate;
+		user.value = {
+			...defaultUser,
+			password: '',
+			baseUrl: new UrlBuilder().getBaseUrl(),
+		} satisfies UserCreate;
 	} else if (componentProps.action === Action.Edit) {
 		if (componentProps.userInfo) {
 			user.value = {
@@ -195,7 +201,10 @@ watch(showDialog, (newVal: boolean): void => {
 				password: '',
 			};
 		} else {
-			user.value = { ...defaultUser };
+			user.value = {
+				...defaultUser,
+				baseUrl: new UrlBuilder().getBaseUrl(),
+			} satisfies UserCreate;
 		}
 	}
 });

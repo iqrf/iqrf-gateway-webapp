@@ -203,7 +203,7 @@ describe('AccountService', (): void => {
 	test('verify e-mail address', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
-		mockedAxios.onGet(`/account/emailVerification/${uuid}`)
+		mockedAxios.onGet(`/account/verification/${uuid}`)
 			.reply(200, userSignedIn);
 		const actual: UserSignedIn = await service.verifyEmail(uuid);
 		expect(actual).toStrictEqual(userSignedIn);
@@ -214,7 +214,7 @@ describe('AccountService', (): void => {
 		const request: EmailVerificationResendRequest = {
 			baseUrl: 'http://iqaros.local/',
 		};
-		mockedAxios.onPost('/account/emailVerification/resend', request)
+		mockedAxios.onPost('/account/verification/resend', request)
 			.reply(200);
 		await expect(service.resendVerificationEmail(request)).resolves.not.toThrow();
 	});

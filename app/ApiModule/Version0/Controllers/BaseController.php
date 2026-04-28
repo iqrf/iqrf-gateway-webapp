@@ -46,9 +46,11 @@ abstract class BaseController implements IController {
 	 * @return string REST API base URL
 	 */
 	protected function getBaseUrl(ApiRequest $request): string {
-		$body = $request->getJsonBodyCopy();
-		if (array_key_exists('baseUrl', $body)) {
-			return trim($body['baseUrl'], '/');
+		if ($request->getBody()->getSize() > 0) {
+			$body = $request->getJsonBodyCopy();
+			if (array_key_exists('baseUrl', $body)) {
+				return trim($body['baseUrl'], '/');
+			}
 		}
 		return explode('/api/v0/', (string) $request->getUri(), 2)[0];
 	}

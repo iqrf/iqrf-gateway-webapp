@@ -87,7 +87,7 @@ class UserMailSender extends BaseMailSender {
 			throw new InvalidArgumentException('Invitation UUID cannot be null');
 		}
 		$params = [
-			'url' => $baseUrl . '/auth/password/set/' . $uuid->toString(),
+			'url' => $baseUrl . '/account/invite/' . $uuid->toString(),
 		];
 		$this->sendMessage('passwordSet.latte', $params, $invitation->user);
 	}

@@ -129,7 +129,7 @@ class User implements JsonSerializable {
 		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 		private string $username,
 		?string $email,
-		string $password,
+		?string $password,
 		#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
 		private UserRole $role = UserRole::Default,
 		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
@@ -140,7 +140,9 @@ class User implements JsonSerializable {
 		//private bool $forcePasswordChange = false,
 	) {
 		$this->setEmail($email);
-		$this->setPassword($password);
+		if ($password !== null) {
+			$this->setPassword($password);
+		}
 	}
 
 	/**

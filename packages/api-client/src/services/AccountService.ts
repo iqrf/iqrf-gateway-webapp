@@ -146,7 +146,7 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid e-mail verification UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.get(`/account/emailVerification/${uuid}`);
+			await this.axiosInstance.get(`/account/verification/${uuid}`);
 		return UserUtils.deserialize(response.data);
 	}
 
@@ -155,7 +155,7 @@ export class AccountService extends BaseService {
 	 * @param {EmailVerificationResendRequest} request Verification e-mail resend request
 	 */
 	public async resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
-		await this.axiosInstance.post('/account/emailVerification/resend', request);
+		await this.axiosInstance.post('/account/verification/resend', request);
 	}
 
 	/**

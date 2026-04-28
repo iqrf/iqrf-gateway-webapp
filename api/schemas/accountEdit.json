@@ -7,40 +7,19 @@
 	"properties": {
 		"baseUrl": {
 			"$id": "#/properties/baseUrl",
-			"type": "string",
-			"title": "Frontend base URL",
-			"example": "https://iqaros.local/system/"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/baseUrl"
 		},
 		"username": {
 			"$id": "#/properties/username",
-			"type": "string",
-			"title": "Username",
-			"minLength": 1,
-			"example": "iqrf"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
 		},
 		"email": {
 			"$id": "#/properties/email",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "idn-email"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "Email",
-			"example": "iqrf@example.org"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/email"
 		},
 		"language": {
 			"$id": "#/properties/language",
-			"type": "string",
-			"title": "Language",
-			"enum": [
-				"cs",
-				"en"
-			],
-			"example": "en"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
 		}
 	}
 }

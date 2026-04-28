@@ -400,6 +400,17 @@
 				},
 				"title": "Account details"
 			},
+			"invitation": {
+				"button": "Set new password",
+				"messages": {
+					"blocked": "Your account is blocked. Please contact the administrator.",
+					"expired": "Account invitation has expired. Please request a new invitation.",
+					"failure": "An error has occurred during account invitation.",
+					"notFound": "Account invitation not found.",
+					"success": "Your account has been successfully created."
+				},
+				"prompt": "Please enter the password for your new account."
+			},
 			"language": {
 				"label": "Language"
 			},
@@ -4230,6 +4241,9 @@
 			}
 		},
 		"account": {
+			"invitation": {
+				"title": "User invitation"
+			},
 			"recovery": {
 				"title": "Account recovery"
 			}
