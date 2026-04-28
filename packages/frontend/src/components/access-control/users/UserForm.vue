@@ -154,10 +154,10 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import UserRoleInput from '@/components/access-control/users/UserRoleInput.vue';
+import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import UrlBuilder from '@/helpers/urlBuilder';
 
 const componentProps = defineProps<{
 	action: Action.Add | Action.Invite | Action.Edit;
