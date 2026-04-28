@@ -85,7 +85,7 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid password recovery request UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post(`/account/passwordRecovery/${requestUuid}`, request);
+			await this.axiosInstance.post(`/account/password/recovery/${requestUuid}`, request);
 		return UserUtils.deserializeUserRoleToken(response.data);
 	}
 

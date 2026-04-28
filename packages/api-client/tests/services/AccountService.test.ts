@@ -76,7 +76,7 @@ describe('AccountService', (): void => {
 		id: 1,
 		username: 'admin',
 		email: 'admin@example.com',
-		roleId: 0,
+		roleId: 1,
 		language: Language.English,
 		state: AccountState.Verified,
 	};
