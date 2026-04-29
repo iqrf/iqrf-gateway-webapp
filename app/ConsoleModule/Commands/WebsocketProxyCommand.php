@@ -25,12 +25,22 @@ use App\ApiModule\Version0\Models\BearerAuthenticator;
 use App\Models\WebSocket\ProxyConfigManager;
 use App\Models\WebSocket\ProxyHandler;
 use Contributte\Monolog\LoggerManager;
-use Ratchet\App;
+use Ratchet\Http\HttpServer;
+use Ratchet\Http\OriginCheck;
+use Ratchet\Http\Router;
+use Ratchet\Server\IoServer;
+use Ratchet\WebSocket\WsServer;
+use React\EventLoop\Loop;
+use React\Socket\SocketServer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 #[AsCommand(name: 'websocket:proxy:run', description: 'Starts websocket proxy')]
 class WebsocketProxyCommand extends Command {
@@ -65,26 +75,74 @@ class WebsocketProxyCommand extends Command {
 			return 1;
 		}
 		$style->info('Starting server at ' . $config->host . ':' . strval($config->port));
-		// Create Ratchet app
-		$app = new App(
-			httpHost: $config->host,
-			port: $config->port,
-			address: $config->address,
-		);
-		// Register connection handler
-		$app->route(
+		// Setup routes
+		$routes = new RouteCollection();
+		// Register proxy route
+		$this->registerRoute(
+			routes: $routes,
 			path: '',
-			controller: new ProxyHandler(
+			handler: new ProxyHandler(
 				upstreamUrl: $config->upstream,
 				upstreamToken: $config->token,
 				authenticator: $this->authenticator,
 				loggerManager: $this->loggerManager,
 			),
-			allowedOrigins: ['*'],
+			httpHost: $config->host,
 		);
-		// Run server
-		$app->run();
+		// Setup server
+		$loop = Loop::get();
+		$socket = new SocketServer(
+			uri: $config->address . ':' . $config->port,
+			context: [],
+			loop: $loop,
+		);
+		$server = new IoServer(
+			app: new HttpServer(
+				new Router(
+					new UrlMatcher(
+						routes: $routes,
+						context: new RequestContext(),
+					),
+				),
+			),
+			socket: $socket,
+			loop: $loop,
+		);
+		$server->run();
 		return 0;
+	}
+
+	/**
+	 * Register route with a handler
+	 * @param RouteCollection $routes Route collection
+	 * @param string $path Route path
+	 * @param object $handler Controller / route handler
+	 * @param string $httpHost HTTP host
+	 * @param array<string> $allowedOrigins Allowed origins
+	 */
+	private function registerRoute(
+		RouteCollection $routes,
+		string $path,
+		object $handler,
+		string $httpHost,
+		array $allowedOrigins = ['*'],
+	): void {
+		$ws = new WsServer($handler);
+		if ($allowedOrigins !== [] && $allowedOrigins[0] !== '*') {
+			$ws = new OriginCheck($ws, $allowedOrigins);
+		}
+		$routes->add(
+			name: $path,
+			route: new Route(
+				path: $path,
+				defaults: ['_controller' => $ws],
+				requirements: ['Origin' => $httpHost],
+				options: [],
+				host: $httpHost,
+				schemes: [],
+				methods: ['GET'],
+			),
+		);
 	}
 
 }
