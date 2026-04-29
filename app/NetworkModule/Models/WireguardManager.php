@@ -77,6 +77,11 @@ class WireguardManager {
 		$this->peerRepository = $this->entityManager->getWireguardPeerRepository();
 	}
 
+	/**
+	 * Returns WireGuard interface IP stack type
+	 * @param WireguardInterface $interface WireGuard interface
+	 * @return WireguardIpStack WireGuard interface IP stack type
+	 */
 	public function getInterfaceIpStack(WireguardInterface $interface): WireguardIpStack {
 		if ($interface->getIpv4() === null) {
 			return WireguardIpStack::IPV6;
