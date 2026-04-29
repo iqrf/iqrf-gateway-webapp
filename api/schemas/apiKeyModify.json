@@ -12,29 +12,18 @@
 	"properties": {
 		"description": {
 			"$id": "#/properties/description",
-			"type": "string",
-			"title": "API key description",
-			"example": "My awesome app"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/description",
+			"title": "API key description"
 		},
 		"expiration": {
 			"$id": "#/properties/expiration",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "date-time"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "API key expiration",
-			"example": null
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/expiration",
+			"title": "API key expiration"
 		},
 		"roleId": {
 			"$id": "#/properties/roleId",
-			"title": "ID of API key role",
-			"type": "integer",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/roleId",
+			"title": "ID of API key role"
 		}
 	}
 }

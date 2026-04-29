@@ -56,9 +56,8 @@
 		},
 		"roleId": {
 			"$id": "#/properties/roleId",
-			"type": "number",
-			"title": "Role ID",
-			"example": "1"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id",
+			"title": "Role ID"
 		},
 		"state": {
 			"$id": "#/definitions/state",

@@ -13,18 +13,18 @@
 	"properties": {
 		"name": {
 			"$id": "#/properties/name",
-			"type": "string",
-			"title": "Role name",
-			"example": "IQRF network administrator."
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/name",
+			"title": "Role name"
 		},
 		"description": {
 			"$id": "#/properties/description",
-			"type": "string",
-			"title": "Role description",
-			"example": "Administrator for managing IQRF network settings."
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/description",
+			"title": "Role description"
 		},
 		"scopes": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+			"$id": "#/properties/scopes",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/accessScopes.json",
+			"title": "Access scopes"
 		}
 	}
 }

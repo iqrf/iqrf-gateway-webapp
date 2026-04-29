@@ -19,90 +19,53 @@
 	"properties": {
 		"id": {
 			"$id": "#/properties/id",
-			"type": "integer",
-			"title": "API key ID",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/id",
+			"title": "API key ID"
 		},
 		"description": {
 			"$id": "#/properties/description",
-			"type": "string",
-			"title": "API key description",
-			"example": "My awesome app"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/description",
+			"title": "API key description"
 		},
 		"expiration": {
 			"$id": "#/properties/expiration",
-			"type": "string",
-			"format": "date-time",
-			"title": "API key expiration",
-			"example": "2026-05-27T16:00:00+02:00"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/expiration",
+			"title": "API key expiration"
 		},
 		"createdBy": {
 			"$id": "#/properties/createdBy",
-			"title": "Created by user ID",
-			"oneOf": [
-				{
-					"type": "integer"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/createdBy",
+			"title": "ID of user who created the API key"
 		},
 		"createdAt": {
 			"$id": "#/properties/createdAt",
-			"type": "string",
-			"format": "date-time",
-			"title": "API key creation time",
-			"example": "2026-04-27T16:00:00+02:00"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/createdAt",
+			"title": "API key creation time"
 		},
 		"state": {
 			"$id": "#/properties/state",
-			"title": "API key state",
-			"type": "string",
-			"enum": [
-				"active",
-				"revoked"
-			]
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/state",
+			"title": "API key state"
 		},
 		"roleId": {
 			"$id": "#/properties/roleId",
-			"title": "ID of API key role",
-			"type": "integer",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/roleId",
+			"title": "ID of API key role"
 		},
 		"revokedBy": {
 			"$id": "#/properties/revokedBy",
-			"title": "Revoked by user ID",
-			"oneOf": [
-				{
-					"type": "integer"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"example": null
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/revokedBy",
+			"title": "Revoked by user ID"
 		},
 		"revokedAt": {
 			"$id": "#/properties/revokedAt",
-			"oneOf": [
-				{
-					"type": "string",
-					"format": "date-time"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "API key revocation time",
-			"example": null
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/revokedAt",
+			"title": "API key revocation time"
 		},
 		"key": {
 			"$id": "#/properties/key",
-			"type": "string",
-			"title": "API key",
-			"example": "iqrf-gw-webapp;1;ec8eca92c12774f564c0224eb7ec48d2028f42038a7fea9bf84ec2d565ed0750"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json#/definitions/key",
+			"title": "API key"
 		}
 	}
 }

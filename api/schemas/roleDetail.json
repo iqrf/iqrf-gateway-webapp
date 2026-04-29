@@ -13,36 +13,33 @@
 	"properties": {
 		"id": {
 			"$id": "#/properties/id",
-			"type": "integer",
-			"title": "Role ID",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/id",
+			"title": "Role ID"
 		},
 		"name": {
 			"$id": "#/properties/name",
-			"type": "string",
-			"title": "Role name",
-			"example": "Device supervisor"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/name",
+			"title": "Role name"
 		},
 		"description": {
 			"$id": "#/properties/description",
-			"type": "string",
-			"title": "Role description",
-			"example": "Account with limited access intended only for supervising device state."
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/description",
+			"title": "Role description"
 		},
 		"scopes": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+			"$id": "#/properties/scopes",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/accessScopes.json",
+			"title": "Access scopes"
 		},
 		"system": {
 			"$id": "#/properties/system",
-			"type": "boolean",
-			"title": "System role flag",
-			"example": false
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/system",
+			"title": "System role flag"
 		},
 		"systemKey": {
 			"$id": "#/properties/systemKey",
-			"type": "string",
-			"title": "System key - system role identifier",
-			"example": "admin"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/role.json#/definitions/systemKey",
+			"title": "System key - system role identifier"
 		}
 	}
 }

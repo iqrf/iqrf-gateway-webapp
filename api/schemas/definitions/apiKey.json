@@ -1,0 +1,92 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/apiKey.json",
+	"definitions": {
+		"id": {
+			"$id": "#/properties/id",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id",
+			"title": "API key ID"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"type": "string",
+			"title": "API key description",
+			"example": "API key for my awesome app."
+		},
+		"expiration": {
+			"$id": "#/properties/expiration",
+			"type": "string",
+			"format": "date-time",
+			"title": "API key expiration",
+			"example": "2026-05-27T16:00:00+02:00"
+		},
+		"createdBy": {
+			"$id": "#/properties/createdBy",
+			"title": "ID of user who created the API key",
+			"oneOf": [
+				{
+					"type": "integer"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": 1
+		},
+		"createdAt": {
+			"$id": "#/properties/createdAt",
+			"type": "string",
+			"format": "date-time",
+			"title": "API key creation time",
+			"example": "2026-04-27T16:00:00+02:00"
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"title": "API key state",
+			"type": "string",
+			"enum": [
+				"active",
+				"revoked"
+			]
+		},
+		"roleId": {
+			"$id": "#/properties/roleId",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id",
+			"title": "Role ID"
+		},
+		"revokedBy": {
+			"$id": "#/properties/revokedBy",
+			"title": "Revoked by user ID",
+			"oneOf": [
+				{
+					"type": "integer"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": null
+		},
+		"revokedAt": {
+			"$id": "#/properties/revokedAt",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "API key revocation time",
+			"example": null
+		},
+		"key": {
+			"$id": "#/properties/key",
+			"type": "string",
+			"title": "API key",
+			"pattern": "^(?:iqrf-gw-webapp;[0-9]+;[A-Za-z0-9+/]{43}=|[./A-Za-z0-9]{22}\\.[A-Za-z0-9+/]{43}=)$",
+			"example": "iqrf-gw-webapp;1;zDrcvQaXWopzJ+DbfkpGq3Tn00wkt3n6fExj8iUsYio="
+		}
+	}
+}
