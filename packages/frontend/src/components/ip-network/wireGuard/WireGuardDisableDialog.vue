@@ -81,13 +81,13 @@ async function enable(): Promise<void> {
 		await service.enableTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
 		toast.success(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.enable'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.success'),
 		);
 		emit('updateEnableFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.enable'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failure'),
 		);
 	}
 }
@@ -104,14 +104,14 @@ async function disable(): Promise<void> {
 		await service.disableTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
 		toast.success(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.disable'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.disable.success'),
 		);
 		actionDialogInstance.value?.close();
 		emit('updateEnableFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.disable'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.disable.failure'),
 		);
 	}
 }

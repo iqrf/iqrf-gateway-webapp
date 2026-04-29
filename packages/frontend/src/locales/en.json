@@ -2808,21 +2808,7 @@
 							"deactivate": "Deactivate",
 							"delete": "Delete tunnel",
 							"disable": "Disable",
-							"enable": "Enable",
-							"failure": {
-								"activate": "Failed to activate WireGuard tunnel!",
-								"deactivate": "Failed to deactivate WireGuard tunnel!",
-								"delete": "Failed to delete WireGuard tunnel!",
-								"disable": "Failed to disable WireGuard tunnel!",
-								"enable": "Failed to enable WireGuard tunnel!"
-							},
-							"success": {
-								"activate": "WireGuard tunnel activation successful.",
-								"deactivate": "WireGuard tunnel deactivation successful.",
-								"delete": "WireGuard tunnel deleted successfully.",
-								"disable": "WireGuard tunnel disabled successfully.",
-								"enable": "WireGuard tunnel enabled successfully."
-							}
+							"enable": "Enable"
 						},
 						"active": "Active",
 						"enabled": "Enabled",
@@ -2879,6 +2865,28 @@
 						"disable": "Disable the tunnel",
 						"prompt": "If you disable the {name} WireGuard tunnel then it will not automatically connect when the device restart. Do you wish to proceed?",
 						"title": "Disable WireGuard tunnel"
+					},
+					"messages": {
+						"activate": {
+							"failure": "Failed to activate WireGuard tunnel!",
+							"success": "WireGuard tunnel activation successful."
+						},
+						"deactivate": {
+							"failure": "Failed to deactivate WireGuard tunnel!",
+							"success": "WireGuard tunnel deactivation successful."
+						},
+						"delete": {
+							"failure": "Failed to delete WireGuard tunnel!",
+							"success": "WireGuard tunnel deleted successfully."
+						},
+						"disable": {
+							"failure": "Failed to disable WireGuard tunnel!",
+							"success": "WireGuard tunnel disabled successfully."
+						},
+						"enable": {
+							"failure": "Failed to enable WireGuard tunnel!",
+							"success": "WireGuard tunnel enabled successfully."
+						}
 					},
 					"title": "WireGuard tunnels",
 					"update": {

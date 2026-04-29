@@ -80,13 +80,13 @@ async function activate(): Promise<void> {
 		await service.activateTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
 		toast.success(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.activate'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.activate.success'),
 		);
 		emit('updateActiveFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.activate'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.activate.failure'),
 		);
 	}
 }
@@ -103,14 +103,14 @@ async function deactivate(): Promise<void> {
 		await service.deactivateTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
 		toast.success(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.deactivate'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.deactivate.success'),
 		);
 		actionDialogInstance.value?.close();
 		emit('updateActiveFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.deactivate'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.deactivate.failure'),
 		);
 	}
 }

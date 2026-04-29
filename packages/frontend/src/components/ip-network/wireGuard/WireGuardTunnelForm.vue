@@ -338,7 +338,7 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			service.enableTunnel(response.id!);
 		} catch {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.enable'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failure'),
 			);
 		}
 	}
@@ -347,7 +347,7 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			service.activateTunnel(response.id!);
 		} catch {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.activate'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.activate.failure'),
 			);
 		}
 	}
