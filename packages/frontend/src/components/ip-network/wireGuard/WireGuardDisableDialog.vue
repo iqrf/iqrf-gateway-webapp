@@ -19,8 +19,8 @@ limitations under the License.
 	<WireGuardActionDialog
 		ref='actionDialogInstance'
 		:enabled='wgListEntry.enabled'
-		:disable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.disable")'
-		:enable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.enable")'
+		:disable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.actions.disable")'
+		:enable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.actions.enable")'
 		:title='$t("components.ipNetwork.wireGuard.tunnels.disable.title")'
 		:prompt='$t("components.ipNetwork.wireGuard.tunnels.disable.prompt", { name: wgListEntry.name })'
 		:disable-button-text='$t("components.ipNetwork.wireGuard.tunnels.disable.disable")'
@@ -87,7 +87,7 @@ async function enable(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failure'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failed'),
 		);
 	}
 }
@@ -111,7 +111,7 @@ async function disable(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.disable.failure'),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.messages.disable.failed'),
 		);
 	}
 }

@@ -28,27 +28,28 @@ import {
 	WireGuardIpStack,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /// Component model value
 const modelValue = defineModel<WireGuardIpStack|undefined>({
 	required: true,
 });
 
+const i18n = useI18n();
 /// Select options
 const options = computed(() => [
 	{
-		title: 'IPv4',
+		title: i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.stackOptions.ipv4'),
 		value: WireGuardIpStack.IPV4,
 	},
 	{
-		title: 'IPv6',
+		title: i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.stackOptions.ipv6'),
 		value: WireGuardIpStack.IPV6,
 	},
 	{
-		title: 'Dual Stack',
+		title: i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.stackOptions.dual'),
 		value: WireGuardIpStack.DUAL,
 	},
 ]);
 </script>
-
 

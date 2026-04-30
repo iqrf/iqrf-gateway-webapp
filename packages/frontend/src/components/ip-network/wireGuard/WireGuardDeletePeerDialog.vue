@@ -19,7 +19,7 @@ limitations under the License.
 	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.ipNetwork.wireGuard.peers.columns.action.delete")'
+		:tooltip='$t("components.ipNetwork.wireGuard.peers.actions.delete")'
 		persistent
 		@submit='onSubmit'
 	>
@@ -96,7 +96,7 @@ async function onSubmit(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.peers.delete.messages.failure', { name: componentProps.peer.endpoint }),
+			i18n.t('components.ipNetwork.wireGuard.peers.delete.messages.failed', { name: componentProps.peer.endpoint }),
 		);
 	}
 }

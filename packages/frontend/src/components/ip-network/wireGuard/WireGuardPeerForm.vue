@@ -385,11 +385,11 @@ async function onSubmit(restartTunnelOnSave: boolean = false): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		} else if (componentProps.action === Action.Add) {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.peers.add.messages.failure'),
+				i18n.t('components.ipNetwork.wireGuard.peers.add.messages.failed'),
 			);
 		} else {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.peers.update.messages.failure'),
+				i18n.t('components.ipNetwork.wireGuard.peers.update.messages.failed'),
 			);
 		}
 	}

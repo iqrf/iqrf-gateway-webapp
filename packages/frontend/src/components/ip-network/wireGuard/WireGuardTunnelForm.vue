@@ -324,11 +324,11 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		} else if (componentProps.action === Action.Add) {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.failure'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.failed'),
 			);
 		} else {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.failure'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.failed'),
 			);
 		}
 		return;
@@ -338,7 +338,7 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			service.enableTunnel(response.id!);
 		} catch {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failure'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.enable.failed'),
 			);
 		}
 	}
@@ -347,7 +347,7 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			service.activateTunnel(response.id!);
 		} catch {
 			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.activate.failure'),
+				i18n.t('components.ipNetwork.wireGuard.tunnels.messages.activate.failed'),
 			);
 		}
 	}

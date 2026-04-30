@@ -19,7 +19,7 @@ limitations under the License.
 	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.delete")'
+		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.actions.delete")'
 		persistent
 		@submit='onSubmit'
 	>
@@ -95,7 +95,7 @@ async function onSubmit(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failure', { name: componentProps.tunnel.name }),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failed', { name: componentProps.tunnel.name }),
 		);
 	}
 }

@@ -875,17 +875,17 @@
 			},
 			"wireGuard": {
 				"peers": {
+					"actions": {
+						"delete": "Smazat uzel"
+					},
 					"add": {
 						"messages": {
 							"conflict": "Veřejný klíč je již používán jiným uzlem!",
-							"failure": "Nepodařilo se přidat WireGuard uzel!",
+							"failed": "Nepodařilo se přidat WireGuard uzel!",
 							"success": "WireGuard uzel byl úspěšně přidán!"
 						}
 					},
 					"columns": {
-						"action": {
-							"delete": "Smazat uzel"
-						},
 						"endpoint": "Adresa uzlu",
 						"port": "Port uzlu",
 						"publicKey": "Veřejný klíč uzlu",
@@ -927,7 +927,7 @@
 					},
 					"delete": {
 						"messages": {
-							"failure": "Nepodařilo se odstranit WireGuard uzel {name}.",
+							"failed": "Nepodařilo se odstranit WireGuard uzel {name}.",
 							"success": "WireGuard uzel {name} byl úspěšně smazán."
 						},
 						"prompt": "Opravdu si přejete smazat WireGuard uzel {name}?",
@@ -936,41 +936,27 @@
 					"title": "WireGuard uzly",
 					"update": {
 						"messages": {
-							"failure": "Nepodařilo se aktualizovat konfiguraci WireGuard uzlu!",
+							"failed": "Nepodařilo se aktualizovat konfiguraci WireGuard uzlu!",
 							"success": "Konfigurace WireGuard uzlu byla úspěšně aktualizována!"
 						}
 					}
 				},
 				"tunnels": {
+					"actions": {
+						"activate": "Aktivovat",
+						"deactivate": "Deaktivovat",
+						"delete": "Smazat tunel",
+						"disable": "Zakázat automatické spuštění při startu systému",
+						"enable": "Povolit automatické spuštění při startu systému"
+					},
 					"add": {
 						"messages": {
 							"conflict": "Název nebo soukromý klíč tunelu jsou již používány jiným tunelem!",
-							"failure": "Přidání WireGuard tunelu selhalo!",
+							"failed": "Přidání WireGuard tunelu selhalo!",
 							"success": "WireGuard tunel byl úspěšně přidán!"
 						}
 					},
 					"columns": {
-						"action": {
-							"activate": "Aktivovat",
-							"deactivate": "Deaktivovat",
-							"delete": "Smazat tunel",
-							"disable": "Zakázat automatické spuštění při startu systému",
-							"enable": "Povolit automatické spuštění při startu systému",
-							"failure": {
-								"activate": "Nepodařilo se aktivovat WireGuard tunel!",
-								"deactivate": "Nepodařilo se deaktivovat WireGuard tunel!",
-								"delete": "Nepodařilo se smazat WireGuard tunel!",
-								"disable": "Nepodařilo se zakázat WireGuard tunel!",
-								"enable": "Nepodařilo se povolit WireGuard tunel!"
-							},
-							"success": {
-								"activate": "WireGuard tunel byl úspěšně aktivován.",
-								"deactivate": "WireGuard tunel byl úspěšně deaktivován.",
-								"delete": "WireGuard tunel byl úspěšně smazán.",
-								"disable": "WireGuard tunel byl úspěšně zakázán.",
-								"enable": "WireGuard tunel byl úspěšně povolen."
-							}
-						},
 						"active": "Aktivní",
 						"enabled": "Povoleno automatické spuštění",
 						"name": "Název"
@@ -997,7 +983,12 @@
 							"publicKey": "Veřejný klíč tunelu",
 							"saveActivate": "Uložit a aktivovat tunel",
 							"saveEnable": "Uložit a povolit tunel",
-							"stack": "Verze IP protokolu používaný tunelem"
+							"stack": "Verze IP protokolu používaný tunelem",
+							"stackOptions": {
+								"dual": "Duální stack",
+								"ipv4": "IPv4",
+								"ipv6": "IPv6"
+							}
 						},
 						"title": "Konfigurace WireGuard tunelu",
 						"validation": {
@@ -1016,7 +1007,7 @@
 					},
 					"delete": {
 						"messages": {
-							"failure": "Nepodařilo se odstranit WireGuard tunel {name}.",
+							"failed": "Nepodařilo se odstranit WireGuard tunel {name}.",
 							"success": "WireGuard tunel {name} byl úspěšně smazán."
 						},
 						"prompt": "Opravdu si přejete smazat WireGuard tunel {name}? Tímto odstraníte i všechny uzly přiřazené k tomuto tunelu!",
@@ -1027,10 +1018,32 @@
 						"prompt": "Pokud zakážete WireGuard tunel {name}, nebude se automaticky připojovat při restartu zařízení. Chcete pokračovat?",
 						"title": "Zakázání WireGuard tunelu"
 					},
+					"messages": {
+						"activate": {
+							"failed": "Nepodařilo se aktivovat WireGuard tunel!",
+							"success": "WireGuard tunel byl úspěšně aktivován."
+						},
+						"deactivate": {
+							"failed": "Nepodařilo se deaktivovat WireGuard tunel!",
+							"success": "WireGuard tunel byl úspěšně deaktivován."
+						},
+						"delete": {
+							"failed": "Nepodařilo se smazat WireGuard tunel!",
+							"success": "WireGuard tunel byl úspěšně smazán."
+						},
+						"disable": {
+							"failed": "Nepodařilo se zakázat WireGuard tunel!",
+							"success": "WireGuard tunel byl úspěšně zakázán."
+						},
+						"enable": {
+							"failed": "Nepodařilo se povolit WireGuard tunel!",
+							"success": "WireGuard tunel byl úspěšně povolen."
+						}
+					},
 					"title": "WireGuard tunely",
 					"update": {
 						"messages": {
-							"failure": "Aktualizace WireGuard tunelu selhala!",
+							"failed": "Aktualizace WireGuard tunelu selhala!",
 							"success": "WireGuard tunel byl úspěšně aktualizován!"
 						}
 					}
