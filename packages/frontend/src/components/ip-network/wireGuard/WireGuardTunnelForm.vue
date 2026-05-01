@@ -69,12 +69,35 @@ limitations under the License.
 					<INumberInput
 						v-model='wgConfig.port'
 						:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.port")'
+						:rules='[
+							(v: number | null) => ValidationRules.required(
+								v,
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.portRequired"),
+							),
+							(v: number) => ValidationRules.between(
+								v,
+								0,
+								65_535,
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.portNumber"),
+							),
+						]'
 					/>
 					<ITextInput
 						v-model='wgConfig.publicKey'
 						:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.publicKey")'
 						:readonly='!editKeys'
 						:variant='editKeys ? "filled" : "solo"'
+						:rules='[
+							(v: string | null) => ValidationRules.required(
+								v,
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.publicKey"),
+							),
+							(v: string) => ValidationRules.regex(
+								v,
+								wireguardKeyRegex,
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.publicKeyFormat"),
+							),
+						]'
 					>
 						<template #append>
 							<v-btn
@@ -100,6 +123,17 @@ limitations under the License.
 						:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.privateKey")'
 						:readonly='!editKeys'
 						:variant='editKeys ? "filled" : "solo"'
+						:rules='[
+							(v: string | null) => ValidationRules.required(
+								showPrivateKey ? v : "placeholder used when the key is not loaded in frontend",
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.privateKey"),
+							),
+							(v: string) => ValidationRules.regex(
+								v,
+								wireguardKeyRegex,
+								$t("components.ipNetwork.wireGuard.tunnels.configuration.validation.privateKeyFormat"),
+							),
+						]'
 					>
 						<template #append>
 							<v-btn
@@ -239,6 +273,8 @@ const emit = defineEmits<{
 	];
 }>();
 
+/// WireGuard key verification regex
+const wireguardKeyRegex = /^[\d+/a-z]{43}=$/i;
 /// WireGuard API service
 const service = useApiClient().getNetworkServices().getWireGuardService();
 /// Dialog visibility

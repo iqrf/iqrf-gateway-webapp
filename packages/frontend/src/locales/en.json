@@ -2772,10 +2772,12 @@
 						},
 						"validation": {
 							"endpoint": "Endpoint is required!",
+							"endpointFormat": "Endpoint must be an IPv4 address, IPv6 address, localhost, or fully-qualified domain name.",
 							"keepalive": "Keepalive interval is required!",
 							"portNumber": "Port number must be between 0 and 65,535!",
 							"portRequired": "Port number is required!",
-							"publicKey": "Public key is required!"
+							"publicKey": "Public key is required!",
+							"publicKeyFormat": "Public key must be a valid WireGuard public key."
 						}
 					},
 					"delete": {
@@ -2850,7 +2852,13 @@
 							"ipAddressRequired": "IP address is required!",
 							"ipv4AddressPrefix": "Prefix must be between 0 and 32!",
 							"ipv6AddressPrefix": "Prefix must be between 0 and 128!",
-							"name": "Tunnel name is required!"
+							"name": "Tunnel name is required!",
+							"portNumber": "Port number must be between 0 and 65,535!",
+							"portRequired": "Port number is required!",
+							"privateKey": "Privte key is required!",
+							"privateKeyFormat": "Private key must be a valid WireGuard private key.",
+							"publicKey": "Public key is required!",
+							"publicKeyFormat": "Public key must be a valid WireGuard public key."
 						}
 					},
 					"deactivate": {

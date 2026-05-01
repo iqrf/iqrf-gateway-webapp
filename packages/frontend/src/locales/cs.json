@@ -919,10 +919,12 @@
 						},
 						"validation": {
 							"endpoint": "Prosím zadejte adresu nebo doménové jméno!",
+							"endpointFormat": "Adresa uzlu musí být IPv4 adresa, IPv6 adresa, localhost nebo plně kvalifikované doménové jméno.",
 							"keepalive": "Prosím zadejte keep-alive interval!",
 							"portNumber": "Číslo portu musí být mezi 0 a 65 535!",
 							"portRequired": "Prosím zadejte číslo portu!",
-							"publicKey": "Prosím zadejte veřejný klíč!"
+							"publicKey": "Prosím zadejte veřejný klíč!",
+							"publicKeyFormat": "Veřejný klíč musí být platný veřejný klíč WireGuard."
 						}
 					},
 					"delete": {
@@ -997,7 +999,13 @@
 							"ipAddressRequired": "Prosím zadejte IP adresu!",
 							"ipv4AddressPrefix": "Prefix musí být mezi 0 a 32!",
 							"ipv6AddressPrefix": "Prefix musí být mezi 0 a 128!",
-							"name": "Prosím zadejte název tunelu!"
+							"name": "Prosím zadejte název tunelu!",
+							"portNumber": "Číslo portu musí být mezi 0 a 65 535!",
+							"portRequired": "Prosím zadejte číslo portu!",
+							"privateKey": "Prosím zadejte soukromý klíč!",
+							"privateKeyFormat": "Soukromý klíč musí být platný soukromý klíč WireGuard.",
+							"publicKey": "Prosím zadejte veřejný klíč!",
+							"publicKeyFormat": "Veřejný klíč musí být platný veřejný klíč WireGuard."
 						}
 					},
 					"deactivate": {

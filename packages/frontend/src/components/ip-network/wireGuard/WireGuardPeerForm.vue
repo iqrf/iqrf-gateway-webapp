@@ -77,6 +77,11 @@ limitations under the License.
 								v,
 								$t("components.ipNetwork.wireGuard.peers.configuration.validation.publicKey"),
 							),
+							(v: string) => ValidationRules.regex(
+								v,
+								wireguardKeyRegex,
+								$t("components.ipNetwork.wireGuard.peers.configuration.validation.publicKeyFormat"),
+							),
 						]'
 						required
 					/>
@@ -101,6 +106,10 @@ limitations under the License.
 							(v: string | null) => ValidationRules.required(
 								v,
 								$t("components.ipNetwork.wireGuard.peers.configuration.validation.endpoint"),
+							),
+							(v: string) => ValidationRules.host(
+								v,
+								i18n.t("components.ipNetwork.wireGuard.peers.configuration.validation.endpointFormat"),
 							),
 						]'
 					/>
@@ -291,6 +300,8 @@ const peerConfig: Ref<WireGuardPeer> = ref(getDefaultConfig());
 const i18n = useI18n();
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// WireGuard key verification regex
+const wireguardKeyRegex = /^[\d+/a-z]{43}=$/i;
 /// Tunnel IP stack
 const tunnelStack: Ref<WireGuardIpStack> = computed(() => {
 	const tunnel = componentProps.tunnels.find((t) => t.id === peerConfig.value.tunnelId);
