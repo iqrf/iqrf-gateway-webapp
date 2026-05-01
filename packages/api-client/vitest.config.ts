@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-import tsconfigPaths from 'vite-tsconfig-paths';
 import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
+	resolve: {
+		tsconfigPaths: true,
+	},
 	test: {
 		...configDefaults,
 		coverage: {
@@ -34,7 +36,4 @@ export default defineConfig({
 		},
 		reporters: ['default', 'junit'],
 	},
-	plugins: [
-		tsconfigPaths(),
-	],
 });
