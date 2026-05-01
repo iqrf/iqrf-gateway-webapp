@@ -81,17 +81,17 @@ class Kernel {
 			$versionInfo = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
 			$version = $versionInfo->version . ($versionInfo->pipeline !== '' ? '~' . $versionInfo->pipeline : '');
 		} catch (IOException | JsonException) {
-			$version = 'unknown';
-		} finally {
-			$configurator->addStaticParameters([
-				'console' => [
-					'version' => $version,
-				],
-				'sentry' => [
-					'release' => $version,
-				],
-			]);
+			// Keep fallback version
 		}
+
+		$configurator->addStaticParameters([
+			'console' => [
+				'version' => $version,
+			],
+			'sentry' => [
+				'release' => $version,
+			],
+		]);
 	}
 
 }
