@@ -58,8 +58,8 @@ final class WireguardManagerTest extends TestCase {
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
 		'publicKey' => 'wg pubkey',
-		'tunnelState' => 'wg show \'wg0\'',
-		'deleteTunnel' => 'ip link delete dev \'wg0\'',
+		'tunnelState' => 'wg show \'wg_iqrf_\'',
+		'deleteTunnel' => 'ip link delete dev \'wg_iqrf_\'',
 	];
 
 	/**
@@ -280,7 +280,7 @@ final class WireguardManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::COMMANDS['deleteTunnel'],
 			needSudo: true,
-			stderr: 'Cannot find device "wg0"',
+			stderr: 'Cannot find device "wg_iqrf_"',
 			exitCode: 1,
 		);
 		Assert::false($this->manager->deleteTunnel($this->interfaceEntity));

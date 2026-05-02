@@ -100,8 +100,8 @@ class WireguardManager {
 		return array_map(fn (WireguardInterface $interface): array => [
 			'id' => $interface->getId(),
 			'name' => $interface->getName(),
-			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
-			'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
+			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getInterfaceIdentifier()),
+			'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getInterfaceIdentifier()),
 			'stack' => $this->getInterfaceIpStack($interface),
 		], $this->interfaceRepository->findAll());
 	}
@@ -389,7 +389,7 @@ class WireguardManager {
 	 * @param WireguardInterface $interface WireGuard interface entity
 	 */
 	public function initializeTunnel(WireguardInterface $interface): void {
-		$name = $interface->getName();
+		$name = $interface->getInterfaceIdentifier();
 		$output = $this->commandManager->run('ip link add ' . escapeshellarg($name) . ' type wireguard', true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to create new interface: %s.', $output->getStderr()));

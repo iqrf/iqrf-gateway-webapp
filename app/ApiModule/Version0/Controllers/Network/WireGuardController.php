@@ -591,7 +591,7 @@ class WireGuardController extends BaseNetworkController {
 	 * @param WireguardInterface $iface WireGuard interface entity
 	 */
 	private function tunnelService(WireguardInterface $iface): string {
-		return 'iqrf-gateway-webapp-wg@' . $iface->getName();
+		return 'iqrf-gateway-webapp-wg@' . $iface->getInterfaceIdentifier();
 	}
 
 	/**

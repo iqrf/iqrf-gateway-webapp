@@ -39,6 +39,11 @@ class WireguardInterface implements JsonSerializable {
 	use TId;
 
 	/**
+	 * Prefix for interface identifier used in system commands.
+	 */
+	private const interface_prefix = 'wg_iqrf_';
+
+	/**
 	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
 	 */
 	#[ORM\OneToOne(mappedBy: 'interface', targetEntity: WireguardInterfaceIpv4::class, cascade: ['persist'], orphanRemoval: true)]
@@ -186,6 +191,14 @@ class WireguardInterface implements JsonSerializable {
 	}
 
 	/**
+	 * Returns wireguard interface identifier that is used for identification in system commands.
+	 * @return string Interface identifier
+	 */
+	public function getInterfaceIdentifier(): string {
+		return self::interface_prefix . strval($this->getId());
+	}
+
+	/**
 	 * Serializes WireGuard interface entity into JSON
 	 * @return array<string, array<array<string, array<string, array<int, mixed>>|int|string|null>|int|string>|int|string|null> JSON serialized WireGuard interface entity
 	 */
@@ -209,7 +222,7 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string JSON serialized WireGuard interface entity
 	 */
 	public function wgSerialize(): string {
-		$command = 'wg set ' . escapeshellarg($this->getName());
+		$command = 'wg set ' . escapeshellarg($this->getInterfaceIdentifier());
 		$command .= sprintf(' \'private-key\' %s', escapeshellarg($this->getPrivateKey()));
 		$port = $this->getPort();
 		if ($port !== null) {
@@ -223,7 +236,7 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string IP utility interface delete command
 	 */
 	public function ipDelete(): string {
-		return 'ip link delete dev ' . escapeshellarg($this->getName());
+		return 'ip link delete dev ' . escapeshellarg($this->getInterfaceIdentifier());
 	}
 
 	/**
@@ -231,7 +244,7 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string WG utility interface status command
 	 */
 	public function wgStatus(): string {
-		return 'wg show ' . escapeshellarg($this->getName());
+		return 'wg show ' . escapeshellarg($this->getInterfaceIdentifier());
 	}
 
 }
