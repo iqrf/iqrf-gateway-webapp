@@ -37,9 +37,9 @@ use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Models\WireguardManager;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
+use Iqrf\ServiceManager\Exceptions\NonexistentServiceException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\IServiceManager;
 
 /**
  * WireGuard VPN controller
@@ -50,12 +50,12 @@ class WireguardController extends NetworkController {
 
 	/**
 	 * Constructor
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param IServiceManager $serviceManager Service manager
 	 * @param WireguardManager $wireguardManager Wireguard VPN manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
 	public function __construct(
-		private readonly ServiceManager $serviceManager,
+		private readonly IServiceManager $serviceManager,
 		private readonly WireguardManager $wireguardManager,
 		RestApiSchemaValidator $validator,
 	) {

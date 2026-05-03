@@ -34,7 +34,7 @@ COPY --from=builder /app /app
 WORKDIR /app
 
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
-RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon
+RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker-supervisor'/g" app/config/config.neon
 RUN chmod 777 log/ \
  && chmod 777 temp/
 RUN rm -rf app/config/database.db \

@@ -41,11 +41,11 @@ use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\ServiceManager\Exceptions\NonexistentServiceException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\IServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -74,7 +74,7 @@ class BackupManager {
 	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param IServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
 	public function __construct(
@@ -82,7 +82,7 @@ class BackupManager {
 		private readonly CommandExecutor $commandExecutor,
 		private readonly PowerManager $powerManager,
 		private readonly ComponentSchemaManager $schemaManager,
-		private readonly ServiceManager $serviceManager,
+		private readonly IServiceManager $serviceManager,
 		private readonly GatewayInfoUtil $gwInfo,
 	) {
 	}
@@ -194,14 +194,14 @@ class BackupManager {
 		}
 		try {
 			if ($toEnable !== []) {
-				$this->serviceManager->enableMultiple($toEnable, false);
+				$this->serviceManager->enable($toEnable, false);
 			}
 		} catch (NonexistentServiceException) {
 			// noop
 		}
 		try {
 			if ($toDisable !== []) {
-				$this->serviceManager->disableMultiple($toDisable, false);
+				$this->serviceManager->disable($toDisable, false);
 			}
 		} catch (NonexistentServiceException) {
 			// noop

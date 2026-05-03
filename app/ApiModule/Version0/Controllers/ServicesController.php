@@ -31,10 +31,10 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
-use App\ServiceModule\Exceptions\NotImplementedException;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
+use Iqrf\ServiceManager\Exceptions\NonexistentServiceException;
+use Iqrf\ServiceManager\Exceptions\NotImplementedException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\IServiceManager;
 
 /**
  * Service manager controller
@@ -65,12 +65,12 @@ class ServicesController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param ServiceManager $manager Service manager
+	 * @param IServiceManager $manager Service manager
 	 * @param FeatureManager $featureManager Optional features manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
 	public function __construct(
-		private readonly ServiceManager $manager,
+		private readonly IServiceManager $manager,
 		private readonly FeatureManager $featureManager,
 		RestApiSchemaValidator $validator,
 	) {

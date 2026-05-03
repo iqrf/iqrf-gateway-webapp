@@ -50,6 +50,7 @@
 		"iqrf/file-manager": "^v0.1.3",
 		"iqrf/iqrf-ide-macros-parser": "^v1.3.0",
 		"iqrf/iqrf-repository": "^v0.2.5",
+		"iqrf/service-manager": "^0.2.1",
 		"justinrainbow/json-schema": "^v6.7.2",
 		"latte/latte": "^v3.1.3",
 		"lcobucci/clock": "^3.3.1",

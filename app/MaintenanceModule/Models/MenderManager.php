@@ -28,11 +28,11 @@ use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\FileManager\PrivilegedFileManager;
+use Iqrf\ServiceManager\Exceptions\NonexistentServiceException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\IServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -78,13 +78,13 @@ class MenderManager {
 	 * Constructor
 	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param IServiceManager $serviceManager Service manager
 	 * @param VersionManager $versionManager Version manager
 	 */
 	public function __construct(
 		private readonly PrivilegedFileManager $fileManager,
 		private readonly CommandExecutor $commandExecutor,
-		private readonly ServiceManager $serviceManager,
+		private readonly IServiceManager $serviceManager,
 		VersionManager $versionManager
 	) {
 		$clientVersion = $versionManager->getMenderClient();

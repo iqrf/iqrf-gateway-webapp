@@ -34,9 +34,9 @@ use App\NetworkModule\Entities\MultiAddress;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Models\WireguardManager;
-use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
+use Iqrf\ServiceManager\IServiceManager;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\ArrayHash;
@@ -91,9 +91,9 @@ final class WireguardManagerTest extends TestCase {
 	private WireguardManager $manager;
 
 	/**
-	 * @var MockInterface|ServiceManager Mocked service manager
+	 * @var MockInterface|IServiceManager Mocked service manager
 	 */
-	private MockInterface|ServiceManager $serviceManager;
+	private MockInterface|IServiceManager $serviceManager;
 
 	/**
 	 * Tests the function to create peer
@@ -300,7 +300,7 @@ final class WireguardManagerTest extends TestCase {
 		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
 		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
 		$this->entityManager->shouldReceive('getWireguardPeerRepository');
-		$this->serviceManager = Mockery::mock(ServiceManager::class);
+		$this->serviceManager = Mockery::mock(IServiceManager::class);
 		$this->manager = new WireguardManager($this->commandExecutor, $this->entityManager, $this->serviceManager);
 	}
 

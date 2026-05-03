@@ -35,7 +35,7 @@ use App\CoreModule\Exceptions\ZipEmptyException;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
 use App\GatewayModule\Models\BackupManager;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
 use JsonException;
 use Nette\Utils\FileSystem;
 

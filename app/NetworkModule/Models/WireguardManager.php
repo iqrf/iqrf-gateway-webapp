@@ -36,10 +36,10 @@ use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
-use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
 use Exception;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\ServiceManager\IServiceManager;
 use Nette\Utils\FileSystem;
 use stdClass;
 
@@ -82,12 +82,12 @@ class WireguardManager {
 	 * Constructor
 	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param EntityManager $entityManager Entity manager
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param IServiceManager $serviceManager Service manager
 	 */
 	public function __construct(
 		private readonly CommandExecutor $commandExecutor,
 		private readonly EntityManager $entityManager,
-		private readonly ServiceManager $serviceManager,
+		private readonly IServiceManager $serviceManager,
 	) {
 		$this->wireguardInterfaceIpv4Repository = $this->entityManager->getWireguardInterfaceIpv4Repository();
 		$this->wireguardInterfaceIpv6Repository = $this->entityManager->getWireguardInterfaceIpv6Repository();
