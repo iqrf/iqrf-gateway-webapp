@@ -40,11 +40,11 @@ use App\GatewayModule\Models\Backup\TimesyncdBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\ServiceManager\Exceptions\NonexistentServiceException;
+use Iqrf\ServiceManager\Exceptions\UnsupportedInitSystemException;
+use Iqrf\ServiceManager\IServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -73,7 +73,7 @@ class BackupManager {
 	 * @param CommandExecutor $commandManager Command manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param IServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
 	public function __construct(
@@ -81,7 +81,7 @@ class BackupManager {
 		private readonly CommandExecutor $commandManager,
 		private readonly PowerManager $powerManager,
 		private readonly ComponentSchemaManager $schemaManager,
-		private readonly ServiceManager $serviceManager,
+		private readonly IServiceManager $serviceManager,
 		private readonly GatewayInfoUtil $gwInfo,
 	) {
 	}

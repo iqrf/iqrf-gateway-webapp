@@ -91,6 +91,7 @@ extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+	serviceManager: Iqrf\ServiceManager\DI\ServiceManagerExtension
 
 commandExecutor:
 	# Enable/disable Tracy panel
@@ -110,6 +111,9 @@ iqrfRepository:
 
 middleware:
 	debug: %debugMode%
+
+serviceManager:
+	initDaemon: %initDaemon%
 
 tracy:
 	strictMode: true
