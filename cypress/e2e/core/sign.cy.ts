@@ -21,9 +21,9 @@ context('Sign in and sign out', () => {
 	it('Sign in (invalid credentials)', () => {
 		cy.visit('/sign/in');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/sign/in');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('#username')
 			.type('admin')
@@ -35,9 +35,9 @@ context('Sign in and sign out', () => {
 			.click();
 		cy.toast('error', 'The username or password you entered is incorrect.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/sign/in');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 
 	});
@@ -45,9 +45,9 @@ context('Sign in and sign out', () => {
 	it('Sign in (valid credentials)', () => {
 		cy.visit('/sign/in');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/sign/in');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('#username')
 			.type('admin')
@@ -59,9 +59,9 @@ context('Sign in and sign out', () => {
 			.click();
 		cy.toast('success', 'You have been signed in successfully.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 
@@ -69,9 +69,9 @@ context('Sign in and sign out', () => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('#user-menu-button')
 			.click();
@@ -80,9 +80,9 @@ context('Sign in and sign out', () => {
 			.click();
 		cy.toast('success', 'You have been signed out.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/sign/in');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 

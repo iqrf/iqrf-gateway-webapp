@@ -30,25 +30,25 @@ context('User management', (): void => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('ul.c-sidebar-nav > li.c-sidebar-nav-item > a.c-sidebar-nav-link')
 			.contains('User manager')
 			.click();
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('div.card > header.card-header > a.btn-success')
 			.contains('Add')
 			.click();
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/add/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('#username')
 			.type(username)
@@ -65,9 +65,9 @@ context('User management', (): void => {
 		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
 			.contains('User has been added successfully.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 
@@ -76,9 +76,9 @@ context('User management', (): void => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/user/add/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/add/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		const password = faker.internet.password();
 		cy.get('#username')
@@ -100,9 +100,9 @@ context('User management', (): void => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/user/add/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/add/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		const username = faker.internet.username();
 		cy.get('#username')
@@ -124,9 +124,9 @@ context('User management', (): void => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/user/add/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/add/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		const username = 'admin';
 		const password = faker.internet.password();
@@ -144,9 +144,9 @@ context('User management', (): void => {
 			.click();
 		cy.toast('error', 'Failed to create new user: Username is already used');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/add/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 
@@ -155,9 +155,9 @@ context('User management', (): void => {
 		cy.signIn('admin', 'iqrf');
 		cy.visit('/user/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('[aria-label="column name: \'username\' filter input"]')
 			.type(username)
@@ -182,9 +182,9 @@ context('User management', (): void => {
 			.should('have.length', 1)
 			.contains('No records have been found.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 

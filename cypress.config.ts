@@ -26,13 +26,13 @@ export default defineConfig({
 			 * https://on.cypress.io/browser-launch-api
 			 */
 			on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions): Cypress.BeforeBrowserLaunchOptions => {
-				console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless,);
+				console.warn('launching browser %s is headless? %s', browser.name, browser.isHeadless,);
 
 				// the browser width and height we want to get
 				// our screenshots and videos will be of that resolution
 				const width = 2560;
 				const height = 1440;
-				console.log('setting the browser window size to %dx%d', width, height);
+				console.warn('setting the browser window size to %dx%d', width, height);
 
 				if (browser.name === 'chrome' && browser.isHeadless) {
 					launchOptions.args.push(`--window-size=${width},${height}`);

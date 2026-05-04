@@ -21,9 +21,9 @@ context('Installation wizard', () => {
 	it('Introduction', () => {
 		cy.visit('/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/install/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('.progress__wrapper')
 			.children('span.progress__block')
@@ -51,18 +51,18 @@ context('Installation wizard', () => {
 			.contains('Create a new user')
 			.click();
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/install/webapp-user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 
 	it('Create user', () => {
 		cy.visit('/install/webapp-user/');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/install/webapp-user/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('.progress__wrapper')
 			.children('span.progress__block')
@@ -107,17 +107,17 @@ context('Installation wizard', () => {
 			.click();
 		// cy.toast('success', 'An email containing instructions to verify your account was sent to your address.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/install/smtp/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 
 	it('Configure SMTP server', () => {
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/install/smtp/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 		cy.get('.progress__wrapper')
 			.children('span.progress__block')
@@ -144,9 +144,9 @@ context('Installation wizard', () => {
 			.click();
 		cy.toast('success', 'Installation process successfully completed.');
 		cy.location().should((location) => {
-			expect(location.hash).to.be.empty;
+			expect(location.hash).to.eq('');
 			expect(location.pathname).to.eq('/');
-			expect(location.search).to.be.empty;
+			expect(location.search).to.eq('');
 		});
 	});
 

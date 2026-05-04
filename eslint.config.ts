@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import vueParser from 'vue-eslint-parser';
+import globals from 'globals';
 
 export default [
 	{
@@ -31,25 +32,21 @@ export default [
 				extraFileExtensions: ['.vue'],
 			},
 			globals: {
-				// Browser
-				window: 'readonly',
-				document: 'readonly',
-				navigator: 'readonly',
-				// Node/CommonJS
-				module: 'readonly',
-				require: 'readonly',
-				process: 'readonly',
-				// Jest
-				describe: 'readonly',
-				it: 'readonly',
-				test: 'readonly',
-				expect: 'readonly',
-				beforeEach: 'readonly',
-				afterEach: 'readonly',
+				...globals.es2019,
+				...globals.browser,
+				...globals.node,
 			},
 		},
 		rules: {
 			'@typescript-eslint/no-explicit-any': 'warn',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_',
+				},
+			],
 			indent: [
 				'error',
 				'tab',

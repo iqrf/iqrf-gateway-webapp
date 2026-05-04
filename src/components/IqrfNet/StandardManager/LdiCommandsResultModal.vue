@@ -111,15 +111,15 @@ export default class LdiCommandsResultModal extends ModalBase {
 	];
 
 	private getStatusString(status: number): string {
-		let message = '';
+		let message: string;
 		if (status === 128) {
-			message = 'iqrfnet.standard.light.result.ldiCommand.statuses.notReceived';
+			message = this.$t('iqrfnet.standard.light.result.ldiCommand.statuses.notReceived').toString();
 		} else if (status === 129) {
-			message = 'iqrfnet.standard.light.result.ldiCommand.statuses.received';
+			message = this.$t('iqrfnet.standard.light.result.ldiCommand.statuses.received').toString();
 		} else {
-			message = 'iqrfnet.standard.light.result.ldiCommand.statuses.error';
+			message = this.$t('iqrfnet.standard.light.result.ldiCommand.statuses.error').toString();
 		}
-		return this.$t(message).toString();
+		return message;
 	}
 
 	private getStatusClass(status: number): string|null {

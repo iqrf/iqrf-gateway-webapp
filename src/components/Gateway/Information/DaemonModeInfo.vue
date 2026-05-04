@@ -18,7 +18,7 @@ limitations under the License.
 	<span v-if='requestRunning && mode === "unknown"'>
 		<CSpinner color='info' class='cinfo-spinner' />
 	</span>
-	<span v-else>{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}</span>
+	<span v-else>{{ mode !== 'unknown' ? $t('gateway.mode.modes.' + mode) : $t('gateway.mode.messages.getFailed') }}</span>
 </template>
 
 <script lang='ts'>

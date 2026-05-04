@@ -504,7 +504,7 @@ export default class OtaUpload extends Vue {
 	 */
 	private handleOtaUploadResponse(response): void {
 		if (response.status > 1000) {
-			let message = '';
+			let message: string;
 			switch (response.status) {
 				case 1001:
 					message = this.$t('iqrfnet.networkManager.otaUpload.messages.invalidRequest', {error: response.statusStr}).toString();

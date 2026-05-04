@@ -588,7 +588,7 @@ export default class AutoNetwork extends Vue {
 			return;
 		}
 		let updatedAddressSpace = '';
-		let first = 0, last = 0;
+		let first: number, last: number;
 		for (let i = 0; i < this.addresses.length; ++i) {
 			first = last = this.addresses[i];
 			while ((this.addresses[i] + 1) === this.addresses[i + 1]) {

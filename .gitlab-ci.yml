@@ -287,10 +287,10 @@ include:
       php_version: '8.3'
       project_dir: '.'
   # Coding style - frontend
-#  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
-#    inputs:
-#      job_name: frontend:eslint
-#      project_dir: '.'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
+    inputs:
+      job_name: frontend:eslint
+      project_dir: '.'
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-stylelint@master
     inputs:
       job_name: frontend:stylelint
