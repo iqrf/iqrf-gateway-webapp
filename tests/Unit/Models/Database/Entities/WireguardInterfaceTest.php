@@ -44,9 +44,9 @@ require __DIR__ . '/../../../../bootstrap.php';
 class WireguardInterfaceTest extends TestCase {
 
 	/**
-	 * Interface prefix (/ value because ID is null)
+	 * Interface prefix (and interface identifier value when ID = null)
 	 */
-	private const interface_prefix = 'wg_iqrf_';
+	private const INTERFACE_PREFIX = 'wg_iqrf_';
 
 	/**
 	 * WireGuard interface name
@@ -235,7 +235,7 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to serialize wg interface configuration into wg utility string
 	 */
 	public function testWgSerialize(): void {
-		$expected = sprintf('wg set \'%s\' \'private-key\' \'%s\' \'listen-port\' \'%u\'', self::interface_prefix, self::PRIVATE_KEY, self::PORT);
+		$expected = sprintf('wg set \'%s\' \'private-key\' \'%s\' \'listen-port\' \'%u\'', self::INTERFACE_PREFIX, self::PRIVATE_KEY, self::PORT);
 		Assert::same($expected, $this->entity->wgSerialize());
 	}
 
@@ -243,7 +243,7 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to serialize wg interface configuration into wg utility string with peer
 	 */
 	public function testWgSerializePeer(): void {
-		$expected = sprintf('wg set \'%s\' \'private-key\' \'%s\' \'listen-port\' \'%u\' \'peer\' \'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=\' \'endpoint\' \'vpn.example.org:51280\' \'persistent-keepalive\' \'25\' \'allowed-ips\' \'\'', self::interface_prefix, self::PRIVATE_KEY, self::PORT);
+		$expected = sprintf('wg set \'%s\' \'private-key\' \'%s\' \'listen-port\' \'%u\' \'peer\' \'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=\' \'endpoint\' \'vpn.example.org:51280\' \'persistent-keepalive\' \'25\' \'allowed-ips\' \'\'', self::INTERFACE_PREFIX, self::PRIVATE_KEY, self::PORT);
 		$this->entity->addPeer($this->peerEntity);
 		Assert::same($expected, $this->entity->wgSerialize());
 	}
@@ -252,7 +252,7 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to create command to delete WireGuard tunnel using the ip utility
 	 */
 	public function testIpDelete(): void {
-		$expected = 'ip link delete dev \'' . self::interface_prefix . '\'';
+		$expected = 'ip link delete dev \'' . self::INTERFACE_PREFIX . '\'';
 		Assert::same($expected, $this->entity->ipDelete());
 	}
 
@@ -260,8 +260,40 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to create command to show WireGuard tunnel status
 	 */
 	public function testWgStatus(): void {
-		$expected = 'wg show \'' . self::interface_prefix . '\'';
+		$expected = 'wg show \'' . self::INTERFACE_PREFIX . '\'';
 		Assert::same($expected, $this->entity->wgStatus());
+	}
+
+	/**
+	 * Tests the function to reject invalid wg interface identifier
+	 */
+	public function testVerifyIdentifierError(): void {
+		$expected = null;
+		Assert::same($expected, $this->entity->verifyIdentifier('wrong identifier'));
+	}
+
+	/**
+	 * Tests the function to reject wg interface identifier without ID (Edge case)
+	 */
+	public function testVerifyIdentifierNoId(): void {
+		$expected = null;
+		Assert::same($expected, $this->entity->verifyIdentifier(self::INTERFACE_PREFIX));
+	}
+
+	/**
+	 * Tests the function to parse wg interface identifier with zero ID (Edge case)
+	 */
+	public function testVerifyIdentifierZeroId(): void {
+		$expected = 0;
+		Assert::same($expected, $this->entity->verifyIdentifier(self::INTERFACE_PREFIX . '0'));
+	}
+
+	/**
+	 * Tests the function to parse wg interface identifier
+	 */
+	public function testVerifyIdentifierCorrect(): void {
+		$expected = 11;
+		Assert::same($expected, $this->entity->verifyIdentifier(self::INTERFACE_PREFIX . '11'));
 	}
 
 	/**
