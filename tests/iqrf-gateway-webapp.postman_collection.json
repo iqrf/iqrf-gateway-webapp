@@ -1407,13 +1407,6 @@
                   "            'enabled': false,",
                   "            'user': 'root',",
                   "        },",
-                  "        'grafana': {",
-                  "            'enabled': false,",
-                  "            'url': '/grafana/',",
-                  "        },",
-                  "        'iqaros': {",
-                  "            'enabled': false,",
-                  "        },",
                   "        'iqrfCloudProvisioning': {",
                   "            'enabled': false,",
                   "        },",
@@ -1441,10 +1434,6 @@
                   "        },",
                   "        'networkManager': {",
                   "            'enabled': false,",
-                  "        },",
-                  "        'nodeRed': {",
-                  "            'enabled': false,",
-                  "            'url': '/node-red/',",
                   "        },",
                   "        'remount': {",
                   "            'enabled': false,",
@@ -1507,11 +1496,11 @@
                   "    pm.response.to.have.header('Content-Type');",
                   "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
                   "});",
-                  "pm.test('Optional feature for Grafana', function () {",
+                  "pm.test('Optional feature for supervisord', function () {",
                   "    var jsonData = pm.response.json();",
                   "    const feature = {",
                   "\t\t'enabled': false,",
-                  "\t\t'url': '/grafana/',",
+                  "\t\t'url': '/supervisord/',",
                   "\t};",
                   "    pm.expect(jsonData).to.eql(feature);",
                   "});"
@@ -1524,7 +1513,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "raw": "{{baseUrl}}/api/v0/features/supervisord",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1532,7 +1521,7 @@
                 "api",
                 "v0",
                 "features",
-                "grafana"
+                "supervisord"
               ]
             }
           },
@@ -1590,17 +1579,17 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "const checkRequest = {",
-                  "    url: pm.environment.get('baseUrl') + '/api/v0/features/grafana',",
+                  "    url: pm.environment.get('baseUrl') + '/api/v0/features/supervisord',",
                   "    header: {",
                   "        'Authorization': 'Bearer ' + pm.collectionVariables.get('adminUserToken')",
                   "    },",
                   "};",
                   "pm.sendRequest(checkRequest, (error, response) => {",
-                  "    pm.test('Chack optional feature for Grafana', function () {",
+                  "    pm.test('Chack optional feature for supervisord', function () {",
                   "        var jsonData = response.json();",
                   "        const feature = {",
                   "\t\t    'enabled': true,",
-                  "\t\t    'url': '/grafana/',",
+                  "\t\t    'url': '/supervisord/',",
                   "\t    };",
                   "        pm.expect(jsonData).to.eql(feature);",
                   "    });",
@@ -1617,7 +1606,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\"\n}",
+              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/supervisord/\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1625,7 +1614,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "raw": "{{baseUrl}}/api/v0/features/supervisord",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1633,7 +1622,7 @@
                 "api",
                 "v0",
                 "features",
-                "grafana"
+                "supervisord"
               ]
             }
           },
@@ -1655,7 +1644,7 @@
                   "});",
                   "pm.test('Error message is \\'JSON does not validate.\\'', function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[url] The property url is required');",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/supervisord Violations:\\n[url] The property url is required');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1675,7 +1664,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "raw": "{{baseUrl}}/api/v0/features/supervisord",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1683,7 +1672,7 @@
                 "api",
                 "v0",
                 "features",
-                "grafana"
+                "supervisord"
               ]
             }
           },
@@ -1705,7 +1694,7 @@
                   "});",
                   "pm.test('Error message is \\'JSON does not validate.\\'', function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/supervisord Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1717,7 +1706,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\",\n    \"extra\": {}\n}",
+              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/supervisord/\",\n    \"extra\": {}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1725,7 +1714,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "raw": "{{baseUrl}}/api/v0/features/supervisord",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1733,7 +1722,7 @@
                 "api",
                 "v0",
                 "features",
-                "grafana"
+                "supervisord"
               ]
             }
           },

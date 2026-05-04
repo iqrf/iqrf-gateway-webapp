@@ -46,10 +46,6 @@ describe('FeatureService', (): void => {
 					'enabled': false,
 					'user': 'root',
 				},
-				'grafana': {
-					'enabled': false,
-					'url': '/grafana/',
-				},
 			});
 		const actual: Features = await service.list();
 		expect(actual).toStrictEqual({
@@ -63,10 +59,6 @@ describe('FeatureService', (): void => {
 			'gatewayPass': {
 				'enabled': false,
 				'user': 'root',
-			},
-			'grafana': {
-				'enabled': false,
-				'url': '/grafana/',
 			},
 		});
 	});

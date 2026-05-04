@@ -61,11 +61,6 @@ export enum Feature {
 	gatewayPassword = 'gatewayPass',
 
 	/**
-	 * Grafana dashboard feature
-	 */
-	grafana = 'grafana',
-
-	/**
 	 * iTemp service feature
 	 */
 	iTemp = 'iTemp',
@@ -109,11 +104,6 @@ export enum Feature {
 	 * Network manager feature
 	 */
 	networkManager = 'networkManager',
-
-	/**
-	 * Node-RED feature
-	 */
-	nodeRed = 'nodeRed',
 
 	/**
 	 * Remount root filesystem endpoints feature

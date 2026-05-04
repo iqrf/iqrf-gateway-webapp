@@ -48,11 +48,6 @@ class ServicesController extends BaseController {
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',
-		'influxdb' => 'iqaros',
-		'iqaros-data-availability' => 'iqaros',
-		'iqaros-influxdb-poll' => 'iqaros',
-		'iqaros-network-sync' => 'iqaros',
-		'iqaros-webapp-wsserver' => 'iqaros',
 		'iqrf-cloud-provisioning' => 'iqrfCloudProvisioning',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
@@ -63,7 +58,6 @@ class ServicesController extends BaseController {
 		'mender-updated' => 'mender',
 		'monit' => 'monit',
 		'ModemManager' => 'networkManager',
-		'nodered' => 'nodeRed',
 		'ssh' => 'ssh',
 		'systemd-journald' => 'journal',
 		'unattended-upgrades' => 'unattendedUpgrades',

@@ -34,17 +34,8 @@ nginx_default_site() {
 	if [ -f "${GATEWAY_FILE}" ] ; then
 		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
 		case "${image}" in
-			industrial*)
-				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial.localhost" "${SITE_AVAILABLE_PATH}"
-				;;
 			iqaros-*-v2*)
 				:
-				;;
-			iqaros*|nakit*)
-				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros.localhost" "${SITE_AVAILABLE_PATH}"
-				;;
-			iqube*)
-				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqube.localhost" "${SITE_AVAILABLE_PATH}"
 				;;
 			*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
@@ -80,7 +71,7 @@ nginx_virtualhost_install() {
 		rm "${SITES_ENABLED}/default"
 	fi
 	# Remove old HTTPS redirect virtualhost
-	rm -rf "${SITES_AVAILABLE}/${HTTPS_CONFIG}" "${SITES_ENABLED}/${HTTPS_CONFIG}"
+	rm -rf "${SITES_AVAILABLE:?}/${HTTPS_CONFIG}" "${SITES_ENABLED:?}/${HTTPS_CONFIG}"
 
 	# Remove broken symlinks to virtualhosts and non-symlinked virtualhosts
 	for SITES in ${SITES_AVAILABLE} ${SITES_ENABLED} ; do

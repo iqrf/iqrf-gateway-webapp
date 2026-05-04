@@ -7,7 +7,6 @@
 		"apcupsd",
 		"docs",
 		"gatewayPass",
-		"grafana",
 		"iqaros",
 		"iqrfCloudProvisioning",
 		"iqrfGatewayController",
@@ -18,7 +17,6 @@
 		"monit",
 		"mosquittoPlugin",
 		"networkManager",
-		"nodeRed",
 		"remount",
 		"ssh",
 		"supervisord",
@@ -37,12 +35,6 @@
 		},
 		"gatewayPass": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/gatewayPass.json"
-		},
-		"grafana": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/grafana.json"
-		},
-		"iqaros": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqaros.json"
 		},
 		"iqrfCloudProvisioning": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfCloudProvisioning.json"
@@ -70,9 +62,6 @@
 		},
 		"networkManager": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/networkManager.json"
-		},
-		"nodeRed": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/nodeRed.json"
 		},
 		"remount": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/remount.json"

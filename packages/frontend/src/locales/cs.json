@@ -404,7 +404,7 @@
 			"checks": {
 				"loading": "IQRF Gateway Webapp se načítá…",
 				"messages": {
-					"failed": "Při načítání aplikace IQAROS došlo k chybě. Zkuste znovu načíst stránku."
+					"failed": "Při načítání aplikace IQRF Gateway došlo k chybě. Zkuste znovu načíst stránku."
 				}
 			},
 			"errors": {

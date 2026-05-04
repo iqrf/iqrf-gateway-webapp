@@ -2200,10 +2200,6 @@
 						"description": "",
 						"name": "APC UPS Daemon"
 					},
-					"influxdb": {
-						"description": "Time series database storing sensor measurements from IQAROS system.",
-						"name": "InfluxDB"
-					},
 					"iqrf-cloud-provisioning": {
 						"description": "Provisioning tool for IQRF Cloud.",
 						"name": "IQRF Cloud Provisioning."
@@ -2241,10 +2237,6 @@
 					"monit": {
 						"description": "Monit is a utility for management and monitoring of Unix systems.",
 						"name": "Monit"
-					},
-					"nodered": {
-						"description": "",
-						"name": "Node-RED"
 					},
 					"ssh": {
 						"description": "SSH daemon is used to access the device via SSH protocol.",

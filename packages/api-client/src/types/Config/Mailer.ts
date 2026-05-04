@@ -24,11 +24,6 @@ export enum MailerTheme {
 	 */
 	Generic = 'generic',
 
-	/**
-	 * Theme for IQAROS gateways
-	 */
-	IQAROS = 'iqaros',
-
 }
 
 /**

@@ -47,13 +47,6 @@ class FeatureManager {
 			'enabled' => false,
 			'user' => 'root',
 		],
-		'grafana' => [
-			'enabled' => false,
-			'url' => '/grafana/',
-		],
-		'iqaros' => [
-			'enabled' => false,
-		],
 		'iqrfCloudProvisioning' => [
 			'enabled' => false,
 		],
@@ -81,10 +74,6 @@ class FeatureManager {
 		],
 		'networkManager' => [
 			'enabled' => false,
-		],
-		'nodeRed' => [
-			'enabled' => false,
-			'url' => '/node-red/',
 		],
 		'remount' => [
 			'enabled' => false,

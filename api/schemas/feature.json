@@ -14,9 +14,6 @@
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/gatewayPass.json"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/grafana.json"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfCloudProvisioning.json"
 		},
 		{
@@ -39,9 +36,6 @@
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/networkManager.json"
-		},
-		{
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/nodeRed.json"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/remount.json"

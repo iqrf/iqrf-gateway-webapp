@@ -23,13 +23,6 @@ docs:
 gatewayPass:
 	enabled: false
 	user: root
-# Grafana dashboard
-grafana:
-	enabled: false
-	url: /grafana/
-# IQAROS application
-iqaros:
-	enabled: false
 # IQRF Cloud Provisioning configuration
 iqrfCloudProvisioning:
 	enabled: false
@@ -58,10 +51,6 @@ mosquittoPlugin:
 # Network manager
 networkManager:
 	enabled: false
-# Node-RED
-nodeRed:
-	enabled: false
-	url: /node-red/
 # Remount endpoints
 remount:
 	enabled: false

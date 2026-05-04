@@ -84,12 +84,12 @@ final class FeatureManagerTest extends TestCase {
 		$this->copy();
 		$expected = [
 			'enabled' => true,
-			'url' => '/grafana/',
+			'url' => '/supervisord/',
 		];
 		Assert::noError(function () use ($expected): void {
-			$this->managerTemp->edit('grafana', $expected);
+			$this->managerTemp->edit('supervisord', $expected);
 		});
-		Assert::same($expected, $this->managerTemp->get('grafana'));
+		Assert::same($expected, $this->managerTemp->get('supervisord'));
 	}
 
 	/**
@@ -107,9 +107,9 @@ final class FeatureManagerTest extends TestCase {
 	public function testGet(): void {
 		$expected = [
 			'enabled' => false,
-			'url' => '/grafana/',
+			'url' => '/supervisord/',
 		];
-		Assert::same($expected, $this->manager->get('grafana'));
+		Assert::same($expected, $this->manager->get('supervisord'));
 	}
 
 	/**
