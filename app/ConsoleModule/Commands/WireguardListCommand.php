@@ -41,11 +41,11 @@ class WireguardListCommand extends WireguardCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$tunnels = [];
 		foreach ($this->repository->findAll() as $tunnel) {
-			$tunnels[] = [$tunnel->getName(), $this->manager->getTunnelState($tunnel)];
+			$tunnels[] = [$tunnel->getInterfaceIdentifier(), $tunnel->getName(), $this->manager->getTunnelState($tunnel)];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List of WireGuard tunnels');
-		$style->table(['Name', 'State'], $tunnels);
+		$style->table(['Interface identifier', 'Name', 'State'], $tunnels);
 		return Command::SUCCESS;
 	}
 

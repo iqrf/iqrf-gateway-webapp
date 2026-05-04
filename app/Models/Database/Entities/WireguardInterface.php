@@ -41,7 +41,12 @@ class WireguardInterface implements JsonSerializable {
 	/**
 	 * Prefix for interface identifier used in system commands.
 	 */
-	private const interface_prefix = 'wg_iqrf_';
+	private const INTERFACE_PREFIX = 'wg_iqrf_';
+
+	/**
+	 * Regex for matching the identifier for verification and extraction of the ID from the identifier string.
+	 */
+	private const INTERFACE_IDENTIFIER_REGEX = '/^wg_iqrf_(\d+)$/';
 
 	/**
 	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
@@ -195,7 +200,28 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string Interface identifier
 	 */
 	public function getInterfaceIdentifier(): string {
-		return self::interface_prefix . strval($this->getId());
+		return self::INTERFACE_PREFIX . strval($this->getId());
+	}
+
+	/**
+	 * Returns the interface identifier regex
+	 * @return string Interface identifier regex
+	 */
+	public static function getIdentifierRegex(): string {
+		return self::INTERFACE_IDENTIFIER_REGEX;
+	}
+
+	/**
+	 * Verifies identifier format using verification regex.
+	 * @param string $identifier Identifier to verify
+	 * @return int|null Interface ID extracted from identifier if valid, otherwise null
+	*/
+	public static function verifyIdentifier(string $identifier): ?int {
+		$regexResult = preg_match(self::INTERFACE_IDENTIFIER_REGEX, $identifier, $matches);
+		if (!$regexResult) {
+			return null;
+		}
+		return intval($matches[1]);
 	}
 
 	/**

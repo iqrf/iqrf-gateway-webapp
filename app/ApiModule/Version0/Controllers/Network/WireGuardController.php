@@ -602,7 +602,7 @@ class WireGuardController extends BaseNetworkController {
 	private function serializeTunnel(WireguardInterface $iface): array
 	{
 		$tunnel = $iface->jsonSerialize();
-		$tunnel['publicKey'] = $this->manager->generatePublicKey($tunnel['privateKey']);
+		$tunnel['publicKey'] = $this->manager->generatePublicKey($iface->getPrivateKey());
 		return $tunnel;
 	}
 

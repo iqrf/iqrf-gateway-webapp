@@ -39,7 +39,7 @@ class WireguardActivateCommand extends WireguardCommand {
 	 * Configures the Wireguard activate command
 	 */
 	protected function configure(): void {
-		$this->addArgument('name', InputArgument::OPTIONAL, 'Name of WireGuard tunnel to activate');
+		$this->addArgument('identifier', InputArgument::OPTIONAL, 'Identifier of WireGuard tunnel to activate');
 	}
 
 	/**
@@ -51,18 +51,18 @@ class WireguardActivateCommand extends WireguardCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Activate WireGuard tunnel');
-		$tunnelName = $input->getArgument('name');
-		if ($tunnelName === null) {
+		$tunnelIdentifier = $input->getArgument('identifier');
+		if ($tunnelIdentifier === null) {
 			$style->error('No WireGuard tunnel specified.');
 			return Command::FAILURE;
 		}
-		$tunnel = $this->repository->findInterfaceByName($tunnelName);
+		$tunnel = $this->repository->findInterfaceByInterfaceIdentifier($tunnelIdentifier);
 		if (!$tunnel instanceof WireguardInterface) {
-			$style->error('WireGuard tunnel ' . $tunnelName . ' does not exist.');
+			$style->error('WireGuard tunnel ' . $tunnelIdentifier . ' does not exist.');
 			return Command::FAILURE;
 		}
 		if ($this->manager->isTunnelActive($tunnel)) {
-			$style->block('WireGuard tunnel ' . $tunnelName . ' is already active.', 'INFO', 'fg=white;bg=blue', ' ', true);
+			$style->block('WireGuard tunnel ' . $tunnelIdentifier . ' is already active.', 'INFO', 'fg=white;bg=blue', ' ', true);
 			return Command::SUCCESS;
 		}
 		try {
@@ -72,7 +72,7 @@ class WireguardActivateCommand extends WireguardCommand {
 			$style->error($e->getMessage());
 			return Command::FAILURE;
 		}
-		$style->success('WireGuard tunnel ' . $tunnelName . ' has been activated.');
+		$style->success('WireGuard tunnel ' . $tunnelIdentifier . ' has been activated.');
 		return Command::SUCCESS;
 	}
 

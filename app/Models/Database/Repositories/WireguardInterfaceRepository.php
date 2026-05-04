@@ -21,7 +21,9 @@ declare(strict_types = 1);
 namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\WireguardInterface;
+use App\NetworkModule\Exceptions\WireguardInvalidEndpointIdentifierFormatException;
 use Doctrine\ORM\EntityRepository;
+use ValueError;
 
 /**
  * WireGuard interface repository
@@ -36,6 +38,19 @@ class WireguardInterfaceRepository extends EntityRepository {
 	 */
 	public function findInterfaceByName(string $name): ?WireguardInterface {
 		return $this->findOneBy(['name' => $name]);
+	}
+
+	/**
+	 * Finds WireGuard interface by interface identifier string
+	 * @param string $identifier Interface identifier
+	 * @return WireguardInterface|null WireGuard interface entity
+	 */
+	public function findInterfaceByInterfaceIdentifier(string $identifier): ?WireguardInterface {
+		$id = WireguardInterface::verifyIdentifier($identifier);
+		if ($id === null) {
+			return null;
+		}
+		return $this->find($id);
 	}
 
 }

@@ -38,7 +38,7 @@ class WireguardDeactivateCommand extends WireguardCommand {
 	 * Configures the Wireguard deactivate command
 	 */
 	protected function configure(): void {
-		$this->addArgument('name', InputArgument::OPTIONAL, 'Name of WireGuard tunnel to deactivate');
+		$this->addArgument('identifier', InputArgument::OPTIONAL, 'Identifier of WireGuard tunnel to deactivate');
 	}
 
 	/**
@@ -50,25 +50,25 @@ class WireguardDeactivateCommand extends WireguardCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Deactivate WireGuard tunnel');
-		$tunnelName = $input->getArgument('name');
-		if ($tunnelName === null) {
+		$tunnelIdentifier = $input->getArgument('identifier');
+		if ($tunnelIdentifier === null) {
 			$style->error('No WireGuard tunnel specified.');
 			return Command::FAILURE;
 		}
-		$tunnel = $this->repository->findInterfaceByName($tunnelName);
+		$tunnel = $this->repository->findInterfaceByInterfaceIdentifier($tunnelIdentifier);
 		if (!$tunnel instanceof WireguardInterface) {
-			$style->error('WireGuard tunnel ' . $tunnelName . ' does not exist.');
+			$style->error('WireGuard tunnel ' . $tunnelIdentifier . ' does not exist.');
 			return Command::FAILURE;
 		}
 		if (!$this->manager->isTunnelActive($tunnel)) {
-			$style->block('WireGuard tunnel ' . $tunnelName . ' is not active.', 'INFO', 'fg=white;bg=blue', ' ', true);
+			$style->block('WireGuard tunnel ' . $tunnelIdentifier . ' is not active.', 'INFO', 'fg=white;bg=blue', ' ', true);
 			return Command::SUCCESS;
 		}
 		if (!$this->manager->deleteTunnel($tunnel)) {
-			$style->error('An error has occurred while deactivating WiregGuard tunnel ' . $tunnelName);
+			$style->error('An error has occurred while deactivating WiregGuard tunnel ' . $tunnelIdentifier);
 			return Command::FAILURE;
 		}
-		$style->success('WireGuard tunnel ' . $tunnelName . ' has been deactivated.');
+		$style->success('WireGuard tunnel ' . $tunnelIdentifier . ' has been deactivated.');
 		return Command::SUCCESS;
 	}
 
