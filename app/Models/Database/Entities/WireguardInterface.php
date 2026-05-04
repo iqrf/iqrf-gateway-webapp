@@ -84,6 +84,27 @@ class WireguardInterface implements JsonSerializable {
 	}
 
 	/**
+	 * Returns the interface identifier regex
+	 * @return string Interface identifier regex
+	 */
+	public static function getIdentifierRegex(): string {
+		return self::INTERFACE_IDENTIFIER_REGEX;
+	}
+
+	/**
+	 * Verifies identifier format using verification regex.
+	 * @param string $identifier Identifier to verify
+	 * @return int|null Interface ID extracted from identifier if valid, otherwise null
+	 */
+	public static function verifyIdentifier(string $identifier): ?int {
+		$regexResult = preg_match(self::INTERFACE_IDENTIFIER_REGEX, $identifier, $matches);
+		if (!$regexResult) {
+			return null;
+		}
+		return intval($matches[1]);
+	}
+
+	/**
 	 * Returns Interface name
 	 * @return string Interface name
 	 */
@@ -201,27 +222,6 @@ class WireguardInterface implements JsonSerializable {
 	 */
 	public function getInterfaceIdentifier(): string {
 		return self::INTERFACE_PREFIX . strval($this->getId());
-	}
-
-	/**
-	 * Returns the interface identifier regex
-	 * @return string Interface identifier regex
-	 */
-	public static function getIdentifierRegex(): string {
-		return self::INTERFACE_IDENTIFIER_REGEX;
-	}
-
-	/**
-	 * Verifies identifier format using verification regex.
-	 * @param string $identifier Identifier to verify
-	 * @return int|null Interface ID extracted from identifier if valid, otherwise null
-	*/
-	public static function verifyIdentifier(string $identifier): ?int {
-		$regexResult = preg_match(self::INTERFACE_IDENTIFIER_REGEX, $identifier, $matches);
-		if (!$regexResult) {
-			return null;
-		}
-		return intval($matches[1]);
 	}
 
 	/**

@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\WireguardInterface;
-use App\NetworkModule\Exceptions\WireguardInvalidEndpointIdentifierFormatException;
 use Doctrine\ORM\EntityRepository;
-use ValueError;
 
 /**
  * WireGuard interface repository
