@@ -21,30 +21,30 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\WireguardInterfaceRepository;
-use App\NetworkModule\Models\WireguardManager;
+use App\Models\Database\Repositories\WireGuardInterfaceRepository;
+use App\NetworkModule\Models\WireGuardManager;
 
 /**
  * Base WireGuard command
  */
-abstract class WireguardCommand extends EntityManagerCommand {
+abstract class WireGuardCommand extends EntityManagerCommand {
 
 	/**
-	 * @var WireguardInterfaceRepository WireGuard interface repository
+	 * @var WireGuardInterfaceRepository WireGuard interface repository
 	 */
-	protected readonly WireguardInterfaceRepository $repository;
+	protected readonly WireGuardInterfaceRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param WireguardManager $manager WireGuard manager
+	 * @param WireGuardManager $manager WireGuard manager
 	 */
 	public function __construct(
 		EntityManager $entityManager,
-		protected readonly WireguardManager $manager,
+		protected readonly WireGuardManager $manager,
 	) {
 		parent::__construct($entityManager);
-		$this->repository = $entityManager->getWireguardInterfaceRepository();
+		$this->repository = $entityManager->getWireGuardInterfaceRepository();
 	}
 
 }

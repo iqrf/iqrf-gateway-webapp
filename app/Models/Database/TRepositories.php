@@ -30,11 +30,11 @@ use App\Models\Database\Entities\SshKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
-use App\Models\Database\Entities\WireguardInterface;
-use App\Models\Database\Entities\WireguardInterfaceIpv4;
-use App\Models\Database\Entities\WireguardInterfaceIpv6;
-use App\Models\Database\Entities\WireguardPeer;
-use App\Models\Database\Entities\WireguardPeerAddress;
+use App\Models\Database\Entities\WireGuardInterface;
+use App\Models\Database\Entities\WireGuardInterfaceIpv4;
+use App\Models\Database\Entities\WireGuardInterfaceIpv6;
+use App\Models\Database\Entities\WireGuardPeer;
+use App\Models\Database\Entities\WireGuardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
@@ -45,11 +45,11 @@ use App\Models\Database\Repositories\SshKeyRepository;
 use App\Models\Database\Repositories\UserInvitationRepository;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Database\Repositories\UserVerificationRepository;
-use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
-use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
-use App\Models\Database\Repositories\WireguardInterfaceRepository;
-use App\Models\Database\Repositories\WireguardPeerAddressRepository;
-use App\Models\Database\Repositories\WireguardPeerRepository;
+use App\Models\Database\Repositories\WireGuardInterfaceIpv4Repository;
+use App\Models\Database\Repositories\WireGuardInterfaceIpv6Repository;
+use App\Models\Database\Repositories\WireGuardInterfaceRepository;
+use App\Models\Database\Repositories\WireGuardPeerAddressRepository;
+use App\Models\Database\Repositories\WireGuardPeerRepository;
 
 /**
  * @mixin EntityManager
@@ -138,42 +138,42 @@ trait TRepositories {
 
 	/**
 	 * Returns the WireGuard interface IPv4 repository
-	 * @return WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
+	 * @return WireGuardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
-	public function getWireguardInterfaceIpv4Repository(): WireguardInterfaceIpv4Repository {
-		return $this->getRepository(WireguardInterfaceIpv4::class);
+	public function getWireGuardInterfaceIpv4Repository(): WireGuardInterfaceIpv4Repository {
+		return $this->getRepository(WireGuardInterfaceIpv4::class);
 	}
 
 	/**
 	 * Returns the WireGuard interface IPv6 repository
-	 * @return WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
+	 * @return WireGuardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
-	public function getWireguardInterfaceIpv6Repository(): WireguardInterfaceIpv6Repository {
-		return $this->getRepository(WireguardInterfaceIpv6::class);
+	public function getWireGuardInterfaceIpv6Repository(): WireGuardInterfaceIpv6Repository {
+		return $this->getRepository(WireGuardInterfaceIpv6::class);
 	}
 
 	/**
 	 * Returns the WireGuard interface repository
-	 * @return WireguardInterfaceRepository WireGuard interface repository
+	 * @return WireGuardInterfaceRepository WireGuard interface repository
 	 */
-	public function getWireguardInterfaceRepository(): WireguardInterfaceRepository {
-		return $this->getRepository(WireguardInterface::class);
+	public function getWireGuardInterfaceRepository(): WireGuardInterfaceRepository {
+		return $this->getRepository(WireGuardInterface::class);
 	}
 
 	/**
 	 * Returns the WireGuard peer repository
-	 * @return WireguardPeerRepository WireGuard peer repository
+	 * @return WireGuardPeerRepository WireGuard peer repository
 	 */
-	public function getWireguardPeerRepository(): WireguardPeerRepository {
-		return $this->getRepository(WireguardPeer::class);
+	public function getWireGuardPeerRepository(): WireGuardPeerRepository {
+		return $this->getRepository(WireGuardPeer::class);
 	}
 
 	/**
 	 * Returns the WireGuard peer address repository
-	 * @return WireguardPeerAddressRepository WireGuard peer address repository
+	 * @return WireGuardPeerAddressRepository WireGuard peer address repository
 	 */
-	public function getWireguardPeerAddressRepository(): WireguardPeerAddressRepository {
-		return $this->getRepository(WireguardPeerAddress::class);
+	public function getWireGuardPeerAddressRepository(): WireGuardPeerAddressRepository {
+		return $this->getRepository(WireGuardPeerAddress::class);
 	}
 
 }

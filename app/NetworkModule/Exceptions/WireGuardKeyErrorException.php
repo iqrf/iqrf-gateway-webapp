@@ -23,8 +23,8 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates that requested WireGuard tunnel does not exist
+ * The exception that indicates that WireGuard key generation error
  */
-class NonexistentWireguardTunnelException extends RuntimeException {
+class WireGuardKeyErrorException extends RuntimeException {
 
 }

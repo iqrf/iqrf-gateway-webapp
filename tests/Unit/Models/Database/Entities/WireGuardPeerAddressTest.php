@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Models\Database\Entities\WireguardPeerAddress
- * @covers App\Models\Database\Entities\WireguardPeerAddress
+ * TEST: App\Models\Database\Entities\WireGuardPeerAddress
+ * @covers App\Models\Database\Entities\WireGuardPeerAddress
  * @phpVersion >= 7.4
  * @testCase
  */
@@ -26,9 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
-use App\Models\Database\Entities\WireguardInterface;
-use App\Models\Database\Entities\WireguardPeer;
-use App\Models\Database\Entities\WireguardPeerAddress;
+use App\Models\Database\Entities\WireGuardInterface;
+use App\Models\Database\Entities\WireGuardPeer;
+use App\Models\Database\Entities\WireGuardPeerAddress;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi;
 use Tester\Assert;
@@ -39,7 +39,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for WireGuard peer address entity
  */
-final class WireguardPeerAddressTest extends TestCase {
+final class WireGuardPeerAddressTest extends TestCase {
 
 	/**
 	 * @var MultiAddress IPv4 address entity
@@ -52,19 +52,19 @@ final class WireguardPeerAddressTest extends TestCase {
 	private MultiAddress $ipv6Entity;
 
 	/**
-	 * @var WireguardInterface WireGuard interface entity
+	 * @var WireGuardInterface WireGuard interface entity
 	 */
-	private WireguardInterface $interfaceEntity;
+	private WireGuardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer WireGuard peer entity
+	 * @var WireGuardPeer WireGuard peer entity
 	 */
-	private WireguardPeer $peerEntity;
+	private WireGuardPeer $peerEntity;
 
 	/**
-	 * @var WireguardPeerAddress WireGuard peer address entity
+	 * @var WireGuardPeerAddress WireGuard peer address entity
 	 */
-	private WireguardPeerAddress $entity;
+	private WireGuardPeerAddress $entity;
 
 	/**
 	 * Tests the function to get WireGuard peer address entity
@@ -85,16 +85,16 @@ final class WireguardPeerAddressTest extends TestCase {
 	 * Tests the function to return WireGuard address peer entity
 	 */
 	public function testGetPeer(): void {
-		Assert::equal($this->peerEntity, $this->entity->getPeer());
+		Assert::equal($this->peerEntity, $this->entity->peer);
 	}
 
 	/**
 	 * Tests the function to set WireGuard address peer entity
 	 */
 	public function testSetPeer(): void {
-		$expected = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 30, 'vpn.test.org', 51281, $this->interfaceEntity);
-		$this->entity->setPeer($expected);
-		Assert::equal($expected, $this->entity->getPeer());
+		$expected = new WireGuardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 30, 'vpn.test.org', 51281, $this->interfaceEntity);
+		$this->entity->peer = $expected;
+		Assert::equal($expected, $this->entity->peer);
 	}
 
 	/**
@@ -126,14 +126,14 @@ final class WireguardPeerAddressTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->interfaceEntity);
+		$this->interfaceEntity = new WireGuardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
+		$this->peerEntity = new WireGuardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->interfaceEntity);
 		$this->ipv4Entity = new MultiAddress(Multi::factory('192.168.1.2'), 24);
 		$this->ipv6Entity = new MultiAddress(Multi::factory('::'), 48);
-		$this->entity = new WireguardPeerAddress($this->ipv4Entity, $this->peerEntity);
+		$this->entity = new WireGuardPeerAddress($this->ipv4Entity, $this->peerEntity);
 	}
 
 }
 
-$test = new WireguardPeerAddressTest();
+$test = new WireGuardPeerAddressTest();
 $test->run();

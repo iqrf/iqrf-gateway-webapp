@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Enums;
 
 /**
- * Wireguard IP stack type
+ * WireGuard IP stack type
  */
-enum WireguardIpStack: string {
+enum WireGuardIpStack: string {
 
 	/// Dual-stack
 	case DUAL = 'both';

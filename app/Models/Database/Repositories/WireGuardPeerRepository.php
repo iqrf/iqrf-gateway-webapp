@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2026 IQRF Tech s.r.o.
- * Copyright 2019-2026 MICRORISC s.r.o.
+ * Copyright 2017-2025 IQRF Tech s.r.o.
+ * Copyright 2019-2025 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@
  */
 declare(strict_types = 1);
 
-namespace App\NetworkModule\Exceptions;
+namespace App\Models\Database\Repositories;
 
-use RuntimeException;
+use App\Models\Database\Entities\WireGuardPeer;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * The exception that indicates that WireGuard key generation error
+ * WireGuard peer repository
+ * @extends EntityRepository<WireGuardPeer>
  */
-class WireguardKeyErrorException extends RuntimeException {
+class WireGuardPeerRepository extends EntityRepository {
 
 }

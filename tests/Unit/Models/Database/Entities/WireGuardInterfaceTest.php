@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Models\Database\Entities\WireguardInterface
- * @covers App\Models\Database\Entities\WireguardInterface
+ * TEST: App\Models\Database\Entities\WireGuardInterface
+ * @covers App\Models\Database\Entities\WireGuardInterface
  * @phpVersion >= 7.4
  * @testCase
  */
@@ -26,10 +26,10 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
-use App\Models\Database\Entities\WireguardInterface;
-use App\Models\Database\Entities\WireguardInterfaceIpv4;
-use App\Models\Database\Entities\WireguardInterfaceIpv6;
-use App\Models\Database\Entities\WireguardPeer;
+use App\Models\Database\Entities\WireGuardInterface;
+use App\Models\Database\Entities\WireGuardInterfaceIpv4;
+use App\Models\Database\Entities\WireGuardInterfaceIpv6;
+use App\Models\Database\Entities\WireGuardPeer;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,7 +41,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for WireGuard interface entity
  */
-class WireguardInterfaceTest extends TestCase {
+class WireGuardInterfaceTest extends TestCase {
 
 	/**
 	 * Interface prefix (and interface identifier value when ID = null)
@@ -64,30 +64,30 @@ class WireguardInterfaceTest extends TestCase {
 	private const PORT = 51775;
 
 	/**
-	 * @var WireguardInterfaceIpv4 IPv4 address entity
+	 * @var WireGuardInterfaceIpv4 IPv4 address entity
 	 */
-	private WireguardInterfaceIpv4 $ipv4Entity;
+	private WireGuardInterfaceIpv4 $ipv4Entity;
 
 	/**
-	 * @var WireguardInterfaceIpv6 IPv6 address entity
+	 * @var WireGuardInterfaceIpv6 IPv6 address entity
 	 */
-	private WireguardInterfaceIpv6 $ipv6Entity;
+	private WireGuardInterfaceIpv6 $ipv6Entity;
 
 	/**
-	 * @var WireguardPeer WireGuard peer entity
+	 * @var WireGuardPeer WireGuard peer entity
 	 */
-	private WireguardPeer $peerEntity;
+	private WireGuardPeer $peerEntity;
 
 	/**
-	 * @var WireguardInterface WireGuard interface entity
+	 * @var WireGuardInterface WireGuard interface entity
 	 */
-	private WireguardInterface $entity;
+	private WireGuardInterface $entity;
 
 	/**
 	 * Tests the function to return wg interface name
 	 */
 	public function testGetName(): void {
-		Assert::same(self::NAME, $this->entity->getName());
+		Assert::same(self::NAME, $this->entity->name);
 	}
 
 	/**
@@ -95,15 +95,15 @@ class WireguardInterfaceTest extends TestCase {
 	 */
 	public function testSetName(): void {
 		$expected = 'testwg';
-		$this->entity->setName($expected);
-		Assert::same($expected, $this->entity->getName());
+		$this->entity->name = $expected;
+		Assert::same($expected, $this->entity->name);
 	}
 
 	/**
 	 * Tests the function to return wg interface private key
 	 */
 	public function testGetPrivateKey(): void {
-		Assert::same(self::PRIVATE_KEY, $this->entity->getPrivateKey());
+		Assert::same(self::PRIVATE_KEY, $this->entity->privateKey);
 	}
 
 	/**
@@ -111,15 +111,15 @@ class WireguardInterfaceTest extends TestCase {
 	 */
 	public function testSetPrivateKey(): void {
 		$expected = '2JEsG/gBEGZW6DyNO1c12U9XAXZYHOzHbe8jL8sLM2k=';
-		$this->entity->setPrivateKey($expected);
-		Assert::same($expected, $this->entity->getPrivateKey());
+		$this->entity->privateKey = $expected;
+		Assert::same($expected, $this->entity->privateKey);
 	}
 
 	/**
 	 * Tests the function to return wg interface listen port
 	 */
 	public function testGetPort(): void {
-		Assert::same(self::PORT, $this->entity->getPort());
+		Assert::same(self::PORT, $this->entity->port);
 	}
 
 	/**
@@ -127,82 +127,58 @@ class WireguardInterfaceTest extends TestCase {
 	 */
 	public function testSetPort(): void {
 		$expected = 51820;
-		$this->entity->setPort($expected);
-		Assert::same($expected, $this->entity->getPort());
-	}
-
-	/**
-	 * Tests the function to clear wg interface listen port
-	 */
-	public function testSetPortNull(): void {
-		$this->entity->setPort();
-		Assert::null($this->entity->getPort());
+		$this->entity->port = $expected;
+		Assert::same($expected, $this->entity->port);
 	}
 
 	/**
 	 * Tests the function to return wg interface ipv4 address and prefix
 	 */
 	public function testGetIpv4(): void {
-		Assert::equal($this->ipv4Entity, $this->entity->getIpv4());
+		Assert::equal($this->ipv4Entity, $this->entity->ipv4);
 	}
 
 	/**
 	 * Tests the function to set wg interface ipv4 address and prefix
 	 */
 	public function testSetIpv4(): void {
-		$expected = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('10.0.0.20'), 24), $this->entity);
-		$this->entity->setIpv4($expected);
-		Assert::equal($expected, $this->entity->getIpv4());
-	}
-
-	/**
-	 * Tests the function to clear wg interface ipv4 address and prefix
-	 */
-	public function testSetIpv4Null(): void {
-		$this->entity->setIpv4();
-		Assert::null($this->entity->getIpv4());
+		$expected = new WireGuardInterfaceIpv4(new MultiAddress(Multi::factory('10.0.0.20'), 24), $this->entity);
+		$this->entity->ipv4 = $expected;
+		Assert::equal($expected, $this->entity->ipv4);
 	}
 
 	/**
 	 * Tests the function to return wg interface ipv6 address and prefix
 	 */
 	public function testGetIpv6(): void {
-		Assert::equal($this->ipv6Entity, $this->entity->getIpv6());
+		Assert::equal($this->ipv6Entity, $this->entity->ipv6);
 	}
 
 	/**
 	 * Tests the function to set wg interface ipv6 address and prefix
 	 */
 	public function testSetIpv6(): void {
-		$expected = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('::20'), 48), $this->entity);
-		$this->entity->setIpv6($expected);
-		Assert::equal($expected, $this->entity->getIpv6());
-	}
-
-	/**
-	 * Tests the function to clear wg interface ipv6 address and prefix
-	 */
-	public function testSetIpv6Null(): void {
-		$this->entity->setIpv6();
-		Assert::null($this->entity->getIpv6());
+		$expected = new WireGuardInterfaceIpv6(new MultiAddress(Multi::factory('::20'), 48), $this->entity);
+		$this->entity->ipv6 = $expected;
+		Assert::equal($expected, $this->entity->ipv6);
 	}
 
 	/**
 	 * Tests the function to add wg interface peer
 	 */
 	public function testAddPeer(): void {
-		$this->entity->addPeer($this->peerEntity);
-		Assert::true($this->entity->getPeers()->contains($this->peerEntity));
+		$this->entity->peers->add($this->peerEntity);
+		Assert::true($this->entity->peers->contains($this->peerEntity));
 	}
 
 	/**
 	 * Tests the function to remove wg interface peer
 	 */
 	public function testDeletePeer(): void {
-		$this->entity->addPeer($this->peerEntity);
-		Assert::true($this->entity->getPeers()->contains($this->peerEntity));
-		$this->entity->deletePeer($this->peerEntity);
-		Assert::false($this->entity->getPeers()->contains($this->peerEntity));
+		$this->entity->peers->add($this->peerEntity);
+		Assert::true($this->entity->peers->contains($this->peerEntity));
+		$this->entity->peers->removeElement($this->peerEntity);
+		Assert::false($this->entity->peers->contains($this->peerEntity));
 	}
 
 	/**
@@ -210,10 +186,10 @@ class WireguardInterfaceTest extends TestCase {
 	 */
 	public function testSetPeers(): void {
 		$expected = new ArrayCollection();
-		Assert::equal($expected, $this->entity->getPeers());
+		Assert::equal($expected, $this->entity->peers);
 		$expected->add($this->peerEntity);
-		$this->entity->setPeers($expected);
-		Assert::equal($expected, $this->entity->getPeers());
+		$this->entity->peers = $expected;
+		Assert::equal($expected, $this->entity->peers);
 	}
 
 	/**
@@ -225,9 +201,9 @@ class WireguardInterfaceTest extends TestCase {
 			'name' => self::NAME,
 			'port' => null,
 		];
-		$this->entity->setPort();
-		$this->entity->setIpv4();
-		$this->entity->setIpv6();
+		$this->entity->port = null;
+		$this->entity->ipv4 = null;
+		$this->entity->ipv6 = null;
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
@@ -244,7 +220,7 @@ class WireguardInterfaceTest extends TestCase {
 	 */
 	public function testWgSerializePeer(): void {
 		$expected = sprintf('wg set \'%s\' \'private-key\' \'%s\' \'listen-port\' \'%u\' \'peer\' \'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=\' \'endpoint\' \'vpn.example.org:51280\' \'persistent-keepalive\' \'25\' \'allowed-ips\' \'\'', self::INTERFACE_PREFIX, self::PRIVATE_KEY, self::PORT);
-		$this->entity->addPeer($this->peerEntity);
+		$this->entity->peers->add($this->peerEntity);
 		Assert::same($expected, $this->entity->wgSerialize());
 	}
 
@@ -300,15 +276,15 @@ class WireguardInterfaceTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new WireguardInterface(self::NAME, self::PRIVATE_KEY, self::PORT);
-		$this->ipv4Entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->entity);
-		$this->ipv6Entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('2001:db8::'), 32), $this->entity);
-		$this->entity->setIpv4($this->ipv4Entity);
-		$this->entity->setIpv6($this->ipv6Entity);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->entity);
+		$this->entity = new WireGuardInterface(self::NAME, self::PRIVATE_KEY, self::PORT);
+		$this->ipv4Entity = new WireGuardInterfaceIpv4(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->entity);
+		$this->ipv6Entity = new WireGuardInterfaceIpv6(new MultiAddress(Multi::factory('2001:db8::'), 32), $this->entity);
+		$this->entity->ipv4 = $this->ipv4Entity;
+		$this->entity->ipv6 = $this->ipv6Entity;
+		$this->peerEntity = new WireGuardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->entity);
 	}
 
 }
 
-$test = new WireguardInterfaceTest();
+$test = new WireGuardInterfaceTest();
 $test->run();

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\NetworkModule\Models\WireguardManager
- * @covers App\NetworkModule\Models\WireguardManager
+ * TEST: App\NetworkModule\Models\WireGuardManager
+ * @covers App\NetworkModule\Models\WireGuardManager
  * @phpVersion >= 7.4
  * @testCase
  */
@@ -26,20 +26,24 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Models;
 
-use App\Models\Database\Entities\WireguardInterface;
-use App\Models\Database\Entities\WireguardPeer;
-use App\Models\Database\Entities\WireguardPeerAddress;
+use App\Models\Database\Entities\WireGuardInterface;
+use App\Models\Database\Entities\WireGuardInterfaceIpv4;
+use App\Models\Database\Entities\WireGuardInterfaceIpv6;
+use App\Models\Database\Entities\WireGuardPeer;
+use App\Models\Database\Entities\WireGuardPeerAddress;
 use App\Models\Database\EntityManager;
 use App\NetworkModule\Entities\MultiAddress;
-use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
-use App\NetworkModule\Exceptions\WireguardKeyErrorException;
-use App\NetworkModule\Models\WireguardManager;
+use App\NetworkModule\Enums\WireGuardIpStack;
+use App\NetworkModule\Exceptions\WireGuardInvalidEndpointException;
+use App\NetworkModule\Exceptions\WireGuardKeyErrorException;
+use App\NetworkModule\Models\WireGuardManager;
 use Darsyn\IP\Version\Multi;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Iqrf\ServiceManager\IServiceManager;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\ArrayHash;
+use ReflectionClass;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -48,7 +52,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WireGuard manager
  */
-final class WireguardManagerTest extends TestCase {
+final class WireGuardManagerTest extends TestCase {
 
 	use CommandExecutorTestCase;
 
@@ -56,10 +60,10 @@ final class WireguardManagerTest extends TestCase {
 	 * Commands to be executed during testing
 	 */
 	private const COMMANDS = [
-		'privateKey' => 'umask 077 && wg genkey',
+		'privateKey' => 'wg genkey',
 		'publicKey' => 'wg pubkey',
-		'tunnelState' => 'wg show \'wg_iqrf_\'',
-		'deleteTunnel' => 'ip link delete dev \'wg_iqrf_\'',
+		'tunnelState' => 'wg show \'wg_iqrf_0\'',
+		'deleteTunnel' => 'ip link delete dev \'wg_iqrf_0\'',
 	];
 
 	/**
@@ -71,14 +75,14 @@ final class WireguardManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var WireguardInterface WireGuard interface entity
+	 * @var WireGuardInterface WireGuard interface entity
 	 */
-	private WireguardInterface $interfaceEntity;
+	private WireGuardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer WireGuard peer entity
+	 * @var WireGuardPeer WireGuard peer entity
 	 */
-	private WireguardPeer $peerEntity;
+	private WireGuardPeer $peerEntity;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -86,14 +90,53 @@ final class WireguardManagerTest extends TestCase {
 	private EntityManager $entityManager;
 
 	/**
-	 * @var WireguardManager WireGuard manager
+	 * @var WireGuardManager WireGuard manager
 	 */
-	private WireguardManager $manager;
+	private WireGuardManager $manager;
 
 	/**
 	 * @var MockInterface|IServiceManager Mocked service manager
 	 */
 	private MockInterface|IServiceManager $serviceManager;
+
+	/**
+	 * Tests the function to get the interface IP stack (IPv4 only).
+	 */
+	public function testGetInterfaceIpStackIpv4(): void {
+		$this->interfaceEntity->ipv4 = new WireGuardInterfaceIpv4(
+			new MultiAddress(Multi::factory('192.168.1.1'), 24),
+			$this->interfaceEntity,
+		);
+		$this->interfaceEntity->ipv6 = null;
+		Assert::same(WireGuardIpStack::IPV4, $this->manager->getInterfaceIpStack($this->interfaceEntity));
+	}
+
+	/**
+	 * Tests the function to get the interface IP stack (IPv6 only).
+	 */
+	public function testGetInterfaceIpStackIpv6(): void {
+		$this->interfaceEntity->ipv4 = null;
+		$this->interfaceEntity->ipv6 = new WireGuardInterfaceIpv6(
+			new MultiAddress(Multi::factory('::1'), 128),
+			$this->interfaceEntity,
+		);
+		Assert::same(WireGuardIpStack::IPV6, $this->manager->getInterfaceIpStack($this->interfaceEntity));
+	}
+
+	/**
+	 * Tests the function to get the interface IP stack (dual stack).
+	 */
+	public function testGetInterfaceIpStackDual(): void {
+		$this->interfaceEntity->ipv4 = new WireGuardInterfaceIpv4(
+			new MultiAddress(Multi::factory('192.168.1.1'), 24),
+			$this->interfaceEntity,
+		);
+		$this->interfaceEntity->ipv6 = new WireGuardInterfaceIpv6(
+			new MultiAddress(Multi::factory('::1'), 128),
+			$this->interfaceEntity,
+		);
+		Assert::same(WireGuardIpStack::DUAL, $this->manager->getInterfaceIpStack($this->interfaceEntity));
+	}
 
 	/**
 	 * Tests the function to create peer (requires database mock - method saves data to db)
@@ -115,14 +158,14 @@ final class WireguardManagerTest extends TestCase {
 	 * Tests the function to create peer address
 	 */
 	public function testCreatePeerAddress(): void {
-		$testPeer = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
+		$testPeer = new WireGuardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
 		$addrs = [
 			ArrayHash::from([
 				'address' => '192.168.1.2',
 				'prefix' => 24,
 			], true),
 		];
-		$this->peerEntity->addAddress(new WireguardPeerAddress(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->peerEntity));
+		$this->peerEntity->addresses->add(new WireGuardPeerAddress(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->peerEntity));
 		$this->manager->createPeerAddresses($addrs, $testPeer);
 		Assert::equal($this->peerEntity, $testPeer);
 	}
@@ -142,14 +185,14 @@ final class WireguardManagerTest extends TestCase {
 	public function testValidateEndpointInvalid(): void {
 		Assert::exception(function (): void {
 			$this->manager->validateEndpoint('nonexistenttestdomain.org');
-		}, WireguardInvalidEndpointException::class);
+		}, WireGuardInvalidEndpointException::class);
 	}
 
 	/**
 	 * Tests the function to generate WireGuard keypair
 	 */
 	public function testGenerateKeys(): void {
-		$manager = Mockery::mock(WireguardManager::class, [$this->commandExecutor, $this->entityManager, $this->serviceManager])->makePartial();
+		$manager = Mockery::mock(WireGuardManager::class, [$this->commandExecutor, $this->entityManager, $this->serviceManager])->makePartial();
 		$manager->shouldReceive('generatePrivateKey')
 			->andReturn(self::WG_KEYPAIR['privateKey']);
 		$manager->shouldReceive('generatePublicKey')
@@ -180,7 +223,7 @@ final class WireguardManagerTest extends TestCase {
 		);
 		Assert::throws(function (): void {
 			$this->manager->generatePrivateKey();
-		}, WireguardKeyErrorException::class);
+		}, WireGuardKeyErrorException::class);
 	}
 
 	/**
@@ -211,7 +254,7 @@ final class WireguardManagerTest extends TestCase {
 		);
 		Assert::throws(function (): void {
 			$this->manager->generatePublicKey('');
-		}, WireguardKeyErrorException::class);
+		}, WireGuardKeyErrorException::class);
 	}
 
 	/**
@@ -280,7 +323,7 @@ final class WireguardManagerTest extends TestCase {
 		$this->receiveCommand(
 			command: self::COMMANDS['deleteTunnel'],
 			needSudo: true,
-			stderr: 'Cannot find device "wg_iqrf_"',
+			stderr: 'Cannot find device "wg_iqrf_0"',
 			exitCode: 1,
 		);
 		Assert::false($this->manager->deleteTunnel($this->interfaceEntity));
@@ -292,19 +335,24 @@ final class WireguardManagerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->setUpCommandExecutor();
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
+		// WireGuard interface entity
+		$this->interfaceEntity = new WireGuardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$interfaceReflection = new ReflectionClass($this->interfaceEntity);
+		$idProperty = $interfaceReflection->getProperty('id');
+		$idProperty->setValue($this->interfaceEntity, 0);
+		// WireGuard peer entity
+		$this->peerEntity = new WireGuardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
 		$this->entityManager = Mockery::mock(EntityManager::class);
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv4Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv6Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerRepository');
+		$this->entityManager->shouldReceive('getWireGuardInterfaceIpv4Repository');
+		$this->entityManager->shouldReceive('getWireGuardInterfaceIpv6Repository');
+		$this->entityManager->shouldReceive('getWireGuardInterfaceRepository');
+		$this->entityManager->shouldReceive('getWireGuardPeerAddressRepository');
+		$this->entityManager->shouldReceive('getWireGuardPeerRepository');
 		$this->serviceManager = Mockery::mock(IServiceManager::class);
-		$this->manager = new WireguardManager($this->commandExecutor, $this->entityManager, $this->serviceManager);
+		$this->manager = new WireGuardManager($this->commandExecutor, $this->entityManager, $this->serviceManager);
 	}
 
 }
 
-$test = new WireguardManagerTest();
+$test = new WireGuardManagerTest();
 $test->run();

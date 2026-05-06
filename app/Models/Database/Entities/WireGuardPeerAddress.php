@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
-use App\Models\Database\Repositories\WireguardPeerAddressRepository;
+use App\Models\Database\Repositories\WireGuardPeerAddressRepository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\DBAL\Types\Types;
@@ -31,10 +31,10 @@ use JsonSerializable;
 /**
  * WireGuard peer entity
  */
-#[ORM\Entity(repositoryClass: WireguardPeerAddressRepository::class)]
+#[ORM\Entity(repositoryClass: WireGuardPeerAddressRepository::class)]
 #[ORM\Table(name: 'wireguard_peer_addresses')]
 #[ORM\HasLifecycleCallbacks]
-class WireguardPeerAddress implements JsonSerializable {
+class WireGuardPeerAddress implements JsonSerializable {
 
 	use TId;
 
@@ -53,13 +53,13 @@ class WireguardPeerAddress implements JsonSerializable {
 	/**
 	 * Constructor
 	 * @param MultiAddress $address Peer address
-	 * @param WireguardPeer $peer WireGuard peer
+	 * @param WireGuardPeer $peer WireGuard peer
 	 */
 	public function __construct(
 		MultiAddress $address,
-		#[ORM\ManyToOne(targetEntity: WireguardPeer::class, inversedBy: 'addresses')]
+		#[ORM\ManyToOne(targetEntity: WireGuardPeer::class, inversedBy: 'addresses')]
 		#[ORM\JoinColumn(name: 'peer_id', nullable: false)]
-		private WireguardPeer $peer,
+		public WireGuardPeer $peer,
 	) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
@@ -83,22 +83,6 @@ class WireguardPeerAddress implements JsonSerializable {
 	}
 
 	/**
-	 * Returns WireGuard peer
-	 * @return WireguardPeer WireGuard peer
-	 */
-	public function getPeer(): WireguardPeer {
-		return $this->peer;
-	}
-
-	/**
-	 * Sets WireGuard peer
-	 * @param WireguardPeer $peer WireGuard peer
-	 */
-	public function setPeer(WireguardPeer $peer): void {
-		$this->peer = $peer;
-	}
-
-	/**
 	 * Serializes WireGuard peer allowed IP into JSON
 	 * @return array{
 	 *     id: int|null,
@@ -109,7 +93,7 @@ class WireguardPeerAddress implements JsonSerializable {
 	public function jsonSerialize(): array {
 		$address = $this->address->getVersion() === 4 ? $this->address->getDotAddress() : $this->address->getCompactedAddress();
 		return [
-			'id' => $this->getId(),
+			'id' => $this->id,
 			'address' => $address,
 			'prefix' => $this->prefix,
 		];

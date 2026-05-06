@@ -20,31 +20,31 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
-use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireGuardInterface;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * WireGuard interface repository
- * @extends EntityRepository<WireguardInterface>
+ * @extends EntityRepository<WireGuardInterface>
  */
-class WireguardInterfaceRepository extends EntityRepository {
+class WireGuardInterfaceRepository extends EntityRepository {
 
 	/**
 	 * Finds WireGuard interface by specified name
 	 * @param string $name WireGuard interface name
-	 * @return WireguardInterface|null WireGuard interface entity
+	 * @return WireGuardInterface|null WireGuard interface entity
 	 */
-	public function findInterfaceByName(string $name): ?WireguardInterface {
+	public function findInterfaceByName(string $name): ?WireGuardInterface {
 		return $this->findOneBy(['name' => $name]);
 	}
 
 	/**
 	 * Finds WireGuard interface by interface identifier string
 	 * @param string $identifier Interface identifier
-	 * @return WireguardInterface|null WireGuard interface entity
+	 * @return WireGuardInterface|null WireGuard interface entity
 	 */
-	public function findInterfaceByInterfaceIdentifier(string $identifier): ?WireguardInterface {
-		$id = WireguardInterface::verifyIdentifier($identifier);
+	public function findInterfaceByInterfaceIdentifier(string $identifier): ?WireGuardInterface {
+		$id = WireGuardInterface::verifyIdentifier($identifier);
 		if ($id === null) {
 			return null;
 		}

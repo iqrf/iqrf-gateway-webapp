@@ -29,8 +29,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command to list WireGuard tunnels
  */
-#[AsCommand(name: 'wireguard:list', description: 'Lists WireGuard tunnels')]
-class WireguardListCommand extends WireguardCommand {
+#[AsCommand(
+	name: 'wireguard:list',
+	description: 'Lists WireGuard tunnels',
+	aliases: ['wg:list']
+)]
+class WireGuardListCommand extends WireGuardCommand {
 
 	/**
 	 * Executes the WireGuard list key list command
@@ -41,7 +45,7 @@ class WireguardListCommand extends WireguardCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$tunnels = [];
 		foreach ($this->repository->findAll() as $tunnel) {
-			$tunnels[] = [$tunnel->getInterfaceIdentifier(), $tunnel->getName(), $this->manager->getTunnelState($tunnel)];
+			$tunnels[] = [$tunnel->getInterfaceIdentifier(), $tunnel->name, $this->manager->getTunnelState($tunnel)];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List of WireGuard tunnels');

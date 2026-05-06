@@ -18,15 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\Models\Database\Repositories;
+namespace App\NetworkModule\Exceptions;
 
-use App\Models\Database\Entities\WireguardInterfaceIpv6;
-use Doctrine\ORM\EntityRepository;
+use RuntimeException;
 
 /**
- * WireGuard interface IPv6 repository
- * @extends EntityRepository<WireguardInterfaceIpv6>
+ * The exception that indicates that WireGuard key pair does not match
  */
-class WireguardInterfaceIpv6Repository extends EntityRepository {
+class WireGuardKeyMismatchException extends RuntimeException {
 
 }

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Models\Database\Entities\WireguardInterfaceIpv4
- * @covers App\Models\Database\Entities\WireguardInterfaceIpv4
+ * TEST: App\Models\Database\Entities\WireGuardInterfaceIpv6
+ * @covers App\Models\Database\Entities\WireGuardInterfaceIpv6
  * @phpVersion >= 7.4
  * @testCase
  */
@@ -26,8 +26,8 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
-use App\Models\Database\Entities\WireguardInterface;
-use App\Models\Database\Entities\WireguardInterfaceIpv4;
+use App\Models\Database\Entities\WireGuardInterface;
+use App\Models\Database\Entities\WireGuardInterfaceIpv6;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi;
 use Tester\Assert;
@@ -38,27 +38,27 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for WireGuard interface entity
  */
-class WireguardInterfaceIpv4Test extends TestCase {
+class WireGuardInterfaceIpv6Test extends TestCase {
 
 	/**
-	 * IPv4 address
+	 * IPv6 address
 	 */
-	private const ADDRESS = '192.168.1.2';
+	private const ADDRESS = '2001:db8::';
 
 	/**
-	 * IPv4 address prefix
+	 * IPv6 address prefix
 	 */
-	private const PREFIX = 24;
+	private const PREFIX = 32;
 
 	/**
-	 * @var WireguardInterface WireGuard interface entity
+	 * @var WireGuardInterface WireGuard interface entity
 	 */
-	private WireguardInterface $interfaceEntity;
+	private WireGuardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardInterfaceIpv4 WireGuard interface IPv4 entity
+	 * @var WireGuardInterfaceIpv6 WireGuard interface IPv4 entity
 	 */
-	private WireguardInterfaceIpv4 $entity;
+	private WireGuardInterfaceIpv6 $entity;
 
 	/**
 	 * Tests the function to get address entity
@@ -72,7 +72,7 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	 * Tests the function to set address entity
 	 */
 	public function testSetAddress(): void {
-		$expected = new MultiAddress(Multi::factory('192.168.0.101'), 24);
+		$expected = new MultiAddress(Multi::factory('2001:db8::'), 24);
 		$this->entity->setAddress($expected);
 		Assert::equal($expected, $this->entity->getAddress());
 	}
@@ -81,16 +81,16 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	 * Tests the function to get interface entity
 	 */
 	public function testGetInterface(): void {
-		Assert::equal($this->interfaceEntity, $this->entity->getInterface());
+		Assert::equal($this->interfaceEntity, $this->entity->interface);
 	}
 
 	/**
 	 * Tests the function to set interface entity
 	 */
 	public function testSetInterface(): void {
-		$expected = new WireguardInterface('wg1', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0b=', 51820);
-		$this->entity->setInterface($expected);
-		Assert::equal($expected, $this->entity->getInterface());
+		$expected = new WireGuardInterface('wg1', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0b=', 51820);
+		$this->entity->interface = $expected;
+		Assert::equal($expected, $this->entity->interface);
 	}
 
 	/**
@@ -109,18 +109,18 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	 * Tests the function to convert entity into string representation of IPv4 address
 	 */
 	public function testToString(): void {
-		Assert::same('192.168.1.2/24', $this->entity->toString());
+		Assert::same('2001:db8::/32', $this->entity->toString());
 	}
 
 	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
+		$this->interfaceEntity = new WireGuardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$this->entity = new WireGuardInterfaceIpv6(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
 	}
 
 }
 
-$test = new WireguardInterfaceIpv4Test();
+$test = new WireGuardInterfaceIpv6Test();
 $test->run();

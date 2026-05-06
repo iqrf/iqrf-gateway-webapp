@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
-use App\Models\Database\Entities\WireguardInterfaceIpv4;
+use App\Models\Database\Entities\WireGuardInterfaceIpv4;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * WireGuard interface IPv4 repository
- * @extends EntityRepository<WireguardInterfaceIpv4>
+ * @extends EntityRepository<WireGuardInterfaceIpv4>
  */
-class WireguardInterfaceIpv4Repository extends EntityRepository {
+class WireGuardInterfaceIpv4Repository extends EntityRepository {
 
 }
