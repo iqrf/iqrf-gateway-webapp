@@ -207,6 +207,8 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfUploadedFile.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/installationCheck.json
+		InstallUserCreate:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/installUserCreate.json
 		Journal:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/journal.json
 		JournalRecords:

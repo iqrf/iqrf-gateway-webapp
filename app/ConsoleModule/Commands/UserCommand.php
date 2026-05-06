@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Exceptions\InvalidUserRoleException;
+use App\CoreModule\Exceptions\Users\UserRoleInvalidException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
@@ -101,7 +101,7 @@ abstract class UserCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @param UserRole|null $default Default user's role
 	 * @return UserRole User's role
-	 * @throws InvalidUserRoleException Role does not exist
+	 * @throws UserRoleInvalidException Role does not exist
 	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askRole(InputInterface $input, OutputInterface $output, ?UserRole $default): UserRole {

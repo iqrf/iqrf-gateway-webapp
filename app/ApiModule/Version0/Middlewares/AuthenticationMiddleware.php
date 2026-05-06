@@ -43,7 +43,6 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
-		'/api/v0/users',
 		'/api/v0/security/users',
 		'/api/v0/maintenance/restore',
 	];
@@ -55,6 +54,7 @@ class AuthenticationMiddleware implements IMiddleware {
 		'/api/v0/account/passwordRecovery',
 		'/api/v0/account/signIn',
 		'/api/v0/installation',
+		'/api/v0/installation/user',
 		'/api/v0/features',
 		'/api/v0/openapi',
 		'/api/v0/user/password/recovery',

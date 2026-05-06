@@ -49,6 +49,10 @@ export const useApiClient = (): Client => {
 			}
 			// Handle HTTP Error 401 Unauthorized response
 			if (error.response.status === 401) {
+				// Installation wizard failure
+				if (error.response.config.url === '/installation/user') {
+					throw error;
+				}
 				const userStore = useUserStore();
 				await userStore.signOut();
 				// Prevent duplicate redirect to sign in page

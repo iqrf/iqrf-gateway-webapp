@@ -31,17 +31,19 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
+use App\CoreModule\Exceptions\Users\UserEmailConflictException;
+use App\CoreModule\Exceptions\Users\UsernameConflictException;
+use App\CoreModule\Exceptions\Users\UserPasswordRequiredException;
+use App\CoreModule\Exceptions\Users\UserRoleInvalidException;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
-use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Nette\Mail\SendException;
 use ValueError;
@@ -123,38 +125,18 @@ class UsersController extends BaseSecurityController {
 							$ref: '#/components/schemas/Error'
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		if ($this->repository->count([]) !== 0) {
-			$this->validators->checkScopes($request, ['users:admin']);
-		}
+		$this->validators->checkScopes($request, ['users:admin']);
 		$this->validators->validateRequest('userCreate', $request);
 		$json = $request->getJsonBodyCopy();
 		try {
-			if ($this->manager->checkUsernameUniqueness($json['username'])) {
-				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
-			}
-			$email = $json['email'] ?? null;
-			$password = $json['password'] ?? null;
-			if ($email !== null && $this->manager->checkEmailUniqueness($email)) {
-				throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
-			}
-			if ($email === null && $password === null) {
-				throw new ClientErrorException('Password is required if e-mail address is not provided', ApiResponse::S400_BAD_REQUEST);
-			}
-			$user = new User(
-				username: $json['username'],
-				email: $email,
-				password: $password,
-				role: UserRole::fromString($json['role']),
-				language: UserLanguage::from($json['language']),
-			);
-			if ($password === null) {
-				$user->setState(UserState::Invited);
-			}
-			$this->entityManager->persist($user);
-			$this->entityManager->flush();
+			$user = $this->manager->create($json);
+		} catch (UsernameConflictException | UserEmailConflictException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
+		} catch (UserPasswordRequiredException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidEmailAddressException $e) {
 			throw new ClientErrorException('Invalid email address: ' . $e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (InvalidUserRoleException $e) {
+		} catch (UserRoleInvalidException $e) {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		$responseBody = ['emailSent' => false];
@@ -266,7 +248,7 @@ class UsersController extends BaseSecurityController {
 			}
 			try {
 				$user->setRole(UserRole::fromString($json['role']));
-			} catch (InvalidUserRoleException $e) {
+			} catch (UserRoleInvalidException $e) {
 				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}

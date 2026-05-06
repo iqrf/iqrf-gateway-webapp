@@ -80,6 +80,14 @@ export interface UserCreate extends UserBase, WithBaseUrl {
 }
 
 /**
+ * Installation wizard user create interface
+ */
+export interface InstallUserCreate extends UserCreate {
+	/// Factory password
+	factoryPassword: string;
+}
+
+/**
  * User edit interface
  */
 export interface UserEdit extends UserBase, WithBaseUrl {

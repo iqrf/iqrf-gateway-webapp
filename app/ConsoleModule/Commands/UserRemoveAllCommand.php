@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Exceptions\InvalidUserRoleException;
+use App\CoreModule\Exceptions\Users\UserRoleInvalidException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Enums\UserRole;
 use RuntimeException;
@@ -59,7 +59,7 @@ class UserRemoveAllCommand extends UserCommand {
 		$style = new SymfonyStyle($input, $output);
 		try {
 			$role = $this->askUsersRole($input, $output);
-		} catch (InvalidUserRoleException) {
+		} catch (UserRoleInvalidException) {
 			$style->error('Role ' . $input->getOption('role') . ' does not exist.');
 			return 1;
 		}
@@ -86,7 +86,7 @@ class UserRemoveAllCommand extends UserCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return UserRole|null Role
-	 * @throws InvalidUserRoleException Role does not exist
+	 * @throws UserRoleInvalidException Role does not exist
 	 */
 	protected function askUsersRole(InputInterface $input, OutputInterface $output): ?UserRole {
 		$role = $input->getOption('role');

@@ -15,5 +15,6 @@
 
 services:
 	- App\InstallModule\Models\DependencyManager(%sudo%)
+	- App\InstallModule\Models\InstallWizardManager(@fileManager.managers.iqrfGatewayWebapp)
 	- App\InstallModule\Models\PhpModuleManager
 	- App\InstallModule\Models\SudoManager

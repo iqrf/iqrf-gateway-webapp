@@ -1,0 +1,48 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/installUserCreate.json",
+	"type": "object",
+	"title": "User Creation",
+	"additionalProperties": false,
+	"required": [
+		"factoryPassword",
+		"username",
+		"password",
+		"language",
+		"role"
+	],
+	"properties": {
+		"baseUrl": {
+			"$id": "#/properties/baseUrl",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/baseUrl"
+		},
+		"factoryPassword": {
+			"$id": "#/properties/factoryPassword",
+			"title": "Factory password",
+			"type": "string",
+			"minLength": 1,
+			"pattern": "^[ -~]+$",
+			"example": "8Yz#t>pL^sD|Uq&bW@"
+		},
+		"username": {
+			"$id": "#/properties/username",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/username"
+		},
+		"email": {
+			"$id": "#/properties/email",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/email"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/password"
+		},
+		"language": {
+			"$id": "#/properties/language",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
+		},
+		"role": {
+			"$id": "#/properties/role",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/role"
+		}
+	}
+}

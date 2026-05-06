@@ -3,8 +3,8 @@
 declare(strict_types = 1);
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Enums;
 
-use App\Exceptions\InvalidUserRoleException;
+use App\CoreModule\Exceptions\Users\UserRoleInvalidException;
 use ValueError;
 
 /**
@@ -45,13 +45,13 @@ enum UserRole: string {
 	 * Returns user role from string value
 	 * @param string $value User role string value
 	 * @return self User role
-	 * @throws InvalidUserRoleException
+	 * @throws UserRoleInvalidException
 	 */
 	public static function fromString(string $value): self {
 		try {
 			return self::from($value);
 		} catch (ValueError $e) {
-			throw new InvalidUserRoleException('Invalid role: "' . $value . '"', previous: $e);
+			throw new UserRoleInvalidException('Invalid role: "' . $value . '"', previous: $e);
 		}
 	}
 

@@ -22,6 +22,11 @@ namespace App\CoreModule\Models;
 
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiResponse;
+use App\CoreModule\Exceptions\Users\UserEmailConflictException;
+use App\CoreModule\Exceptions\Users\UsernameConflictException;
+use App\CoreModule\Exceptions\Users\UserPasswordRequiredException;
+use App\CoreModule\Exceptions\Users\UserRoleInvalidException;
+use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidUserStateException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\PasswordRecovery;
@@ -29,7 +34,9 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\UserMailSender;
 use BadMethodCallException;
@@ -55,6 +62,56 @@ class UserManager {
 		private readonly UserMailSender $mailSender,
 	) {
 		$this->repository = $entityManager->getUserRepository();
+	}
+
+	/**
+	 * Checks if application has any users
+	 */
+	public function hasUsers(): bool {
+		return $this->repository->count([]) !== 0;
+	}
+
+	/**
+	 * Create a new user and return user entity
+	 * @param array{
+	 *  username: string,
+	 *  email: string|null,
+	 *  password: string|null,
+	 *  role: string,
+	 *  language: string,
+	 * } $data User data
+	 * @return User New user entity
+	 * @throws UsernameConflictException Thrown if user with specified name already exists
+	 * @throws UserEmailConflictException Thrown if user with specified e-mail already exists
+	 * @throws UserPasswordRequiredException Thrown if password is required for user creation (not invitation)
+	 * @throws InvalidEmailAddressException Thrown if email address is not valid
+	 * @throws UserRoleInvalidException Thrown if provided role is not a valid role value
+	 */
+	public function create(array $data): User {
+		if ($this->checkUsernameUniqueness($data['username'])) {
+			throw new UsernameConflictException('Username is already in use.');
+		}
+		$email = $data['email'] ?? null;
+		$password = $data['password'] ?? null;
+		if ($email !== null && $this->checkEmailUniqueness($email)) {
+			throw new UserEmailConflictException('E-main address is already in use.');
+		}
+		if ($email === null && $password === null) {
+			throw new UserPasswordRequiredException('Password is required if e-mail address is not provided.');
+		}
+		$user = new User(
+			username: $data['username'],
+			email: $email,
+			password: $password,
+			role: UserRole::fromString($data['role']),
+			language: UserLanguage::from($data['language']),
+		);
+		if ($password === null) {
+			$user->setState(UserState::Invited);
+		}
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		return $user;
 	}
 
 	/**

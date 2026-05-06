@@ -28,6 +28,15 @@ limitations under the License.
 			v-model='formValidity'
 			:disabled='componentState === ComponentState.Action'
 		>
+			<IPasswordInput
+				v-model='user.factoryPassword'
+				:label='$t("components.install.wizard.adminUserCreation.factoryPassword")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.install.wizard.adminUserCreation.validation.factoryPassword.required")),
+					(v: string) => v.length === 0 || ValidationRules.regex(v, /^[\u0020-\u007E]+$/, $t("components.common.validations.password.invalid")),
+				]'
+				required
+			/>
 			<ITextInput
 				v-model='user.username'
 				:label='$t("components.common.fields.username")'
@@ -102,7 +111,7 @@ limitations under the License.
 <script lang='ts' setup>
 import {
 	type EmailSentResponse,
-	type UserCreate,
+	type InstallUserCreate,
 	type UserCredentials,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
@@ -134,7 +143,8 @@ const componentProps = defineProps<{
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const installStore = useInstallStore();
 const userStore = useUserStore();
-const user: Ref<UserCreate> = ref({
+const user: Ref<InstallUserCreate> = ref({
+	factoryPassword: '',
 	username: '',
 	password: '',
 	email: '',
@@ -155,15 +165,14 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const data: UserCreate = {
+	const data: InstallUserCreate = {
 		...user.value,
 		baseUrl: new UrlBuilder().getBaseUrl(),
 	};
 	try {
 		const response: EmailSentResponse = await useApiClient()
-			.getSecurityServices()
-			.getUserService()
-			.create(data);
+			.getInstallationService()
+			.createUser(data);
 		if (response.emailSent) {
 			toast.success(i18n.t('user.messages.verificationSent'));
 		}

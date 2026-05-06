@@ -16,7 +16,12 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type InstallationChecks } from '../types';
+import {
+	type EmailSentResponse,
+	type InstallationChecks,
+	type InstallUserCreate,
+} from '../types';
+import { UserUtils } from '../utils/UserUtils';
 
 import { BaseService } from './BaseService';
 
@@ -32,6 +37,17 @@ export class InstallationService extends BaseService {
 	public async check(): Promise<InstallationChecks> {
 		const response: AxiosResponse<InstallationChecks> =
 			await this.axiosInstance.get('/installation');
+		return response.data;
+	}
+
+	/**
+	 * Create initial user
+	 * @param {InstallUserCreate} user User data
+	 * @return {Promise<EmailSentResponse>} Email sent response
+	 */
+	public async createUser(user: InstallUserCreate): Promise<EmailSentResponse> {
+		const response: AxiosResponse<EmailSentResponse> =
+			await this.axiosInstance.post('/installation/user', UserUtils.serialize(user));
 		return response.data;
 	}
 

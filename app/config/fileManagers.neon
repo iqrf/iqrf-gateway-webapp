@@ -45,6 +45,9 @@ fileManager:
 		iqrfGatewayUploader:
 			directory: %paths.iqrfGatewayUploader.configDir%
 			type: unprivileged
+		iqrfGatewayWebapp:
+			directory: %paths.iqrfGatewayWebapp.configDir%
+			type: unprivileged
 		mender:
 			directory: %paths.mender.configDir%
 			type: privileged
